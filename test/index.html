@@ -5,50 +5,50 @@
 </head>
 <body>
       <script>
-        function setup() {
-      createCanvas(480, 480);
-      textFont('Courier New', 12);
-      textAlign(LEFT, TOP);
-    }
-    
-    function draw() {
-      background(0);
-      let r = 20;          // Radius of the sphere in grid units
-      let N = 40;          // Grid size (40x40 characters)
-      let theta = frameCount * 0.01;  // Rotation angle for animation
-      let L_x = sin(theta);  // Light direction x-component
-      let L_y = 0;           // Light direction y-component
-      let L_z = cos(theta);  // Light direction z-component
-      let str = '';          // String to hold the ASCII representation
-    
-      // Build the grid row by row
-      for (let j = 0; j < N; j++) {
-        for (let i = 0; i < N; i++) {
-          let x = i - 20;    // X-coordinate centered at (20, 20)
-          let y = j - 20;    // Y-coordinate centered at (20, 20)
-          let distSq = x * x + y * y;  // Squared distance from center
-    
-          if (distSq <= r * r) {
-            // Point is within the sphere's circular projection
-            let z = sqrt(r * r - distSq);  // Z-coordinate on sphere surface
-            let normal_x = x / r;  // Normal vector x-component
-            let normal_y = y / r;  // Normal vector y-component
-            let normal_z = z / r;  // Normal vector z-component
-            // Brightness via dot product of normal and light direction
-            let brightness = max(0, normal_x * L_x + normal_y * L_y + normal_z * L_z);
-            let char = floor(brightness * 10);  // Map to 0-10
-            if (char > 9) char = 9;  // Clamp to 0-9
-            str += char;  // Add digit to string
-          } else {
-            str += ' ';  // Space for points outside the sphere
-          }
-        }
-        if (j < N - 1) str += '\n';  // Newline after each row except the last
+function setup() {
+  createCanvas(720, 720);
+  textFont('Courier New', 12);
+  textAlign(LEFT, TOP);
+}
+
+function draw() {
+  background(0);
+  let N = 60;          // Grid size increased to 60x60
+  let r = 30;          // Radius adjusted to fit the grid
+  let theta = frameCount * 0.01;
+  let L_x = sin(theta);
+  let L_y = 0;
+  let L_z = cos(theta);
+  let ambient = 0.1;   // Ambient light factor
+  let diffuse = 0.9;   // Diffuse light factor
+  let str = '';
+
+  for (let j = 0; j < N; j++) {
+    for (let i = 0; i < N; i++) {
+      let x = i - N / 2;
+      let y = j - N / 2;
+      let distSq = x * x + y * y;
+      if (distSq <= r * r) {
+        let z = sqrt(r * r - distSq);
+        let normal_x = x / r;
+        let normal_y = y / r;
+        let normal_z = z / r;
+        let dot_product = normal_x * L_x + normal_y * L_y + normal_z * L_z;
+        let brightness = ambient + diffuse * max(0, dot_product);
+        brightness = constrain(brightness, 0, 1);  // Keep brightness between 0 and 1
+        let char = floor(brightness * 10);         // Map to digits 0-9
+        if (char > 9) char = 9;                    // Cap at 9
+        str += char;
+      } else {
+        str += ' ';
       }
-    
-      fill(255);  // White text color
-      text(str, 0, 0);  // Draw the entire string at the top-left corner
     }
+    if (j < N - 1) str += '\n';  // Add newline except on the last row
+  }
+
+  fill(255);
+  text(str, 0, 0);
+}
       </script>
 </body>
 </html>
