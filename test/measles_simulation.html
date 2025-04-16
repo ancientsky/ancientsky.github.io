@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Measles Outbreak Simulation - Configurable</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center content horizontally */
+        }
+        h1, h2, p, ul {
+             max-width: 800px; /* Limit width of text elements */
+             width: 90%;
+        }
+        #main-container {
+            display: flex;
+            flex-direction: column; /* Stack simulation and epicurve */
+            align-items: center; /* Center items within this container */
+            margin-top: 20px;
+            width: fit-content; /* Adjust width to content */
+            background-color: #fff; /* White background for the container */
+            border: 1px solid #ccc;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+        #simulation-container {
+            width: 600px; /* Canvas width */
+        }
+        #canvas-container {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0; /* Padding top/bottom */
+            min-height: 400px; /* Ensure space for canvas */
+            background-color: #ffffff; /* White background for canvas area */
+        }
+         #epicurve-container {
+            padding: 10px; /* Padding around the SVG */
+            min-height: 220px; /* Ensure space for epicurve + padding */
+            width: 100%; /* Take full width of parent */
+            background-color: #f8f8f8; /* Slightly different background */
+            border-top: 1px solid #ccc;
+            margin-top: 5px; /* Space between sim and curve */
+            box-sizing: border-box; /* Include padding in height/width */
+        }
+        #controls-stats {
+             width: 100%; /* Take full width of parent */
+             padding: 15px; /* Increased padding */
+             background-color: #e9e9e9;
+             border-top: 1px solid #ccc;
+             text-align: center;
+             box-sizing: border-box; /* Include padding in width */
+        }
+        #controls-stats p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        /* Input Controls Styling */
+        .controls-section {
+            display: flex;
+            justify-content: space-around; /* Distribute items */
+            align-items: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+        }
+        .input-group {
+            margin: 5px 10px;
+            display: flex;
+            flex-direction: column; /* Stack label and input */
+            align-items: center;
+        }
+        .input-group label {
+            font-size: 0.85em;
+            margin-bottom: 3px;
+            color: #333;
+        }
+        .input-group input[type="number"] {
+            width: 70px; /* Fixed width for number inputs */
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            text-align: center;
+        }
+        /* Disable inputs visually */
+        .input-group input:disabled {
+            background-color: #eee;
+            cursor: not-allowed;
+        }
+        /* Buttons styling */
+        .buttons-section {
+             margin-top: 10px;
+        }
+
+        .legend {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 5px;
+            border: 1px solid #555;
+            vertical-align: middle;
+        }
+        /* State Colors */
+        .healthy { background-color: blue; }
+        .exposed { background-color: yellow; }
+        .infectious { background-color: red; }
+        .recovered { background-color: gray; }
+        .vaccinated { background-color: limegreen; }
+
+        button {
+            padding: 8px 15px;
+            margin: 5px 5px 0 5px; /* Adjusted margin */
+            cursor: pointer;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+        }
+         button:hover {
+             background-color: #ddd;
+         }
+         hr {
+             width: 90%;
+             max-width: 800px;
+             margin-top: 30px;
+             border: 0;
+             border-top: 1px solid #ccc;
+         }
+         /* Style for the epicurve title */
+         #epicurve-title {
+             text-align: center;
+             font-weight: bold;
+             margin-bottom: 10px; /* Space below title */
+             color: #555;
+             width: 100%; /* Ensure it takes width */
+             padding-top: 5px; /* Add some space above */
+             border-top: 1px solid #ccc; /* Separator line */
+             margin-top: 5px; /* Space above */
+         }
+         /* D3 Chart Specific Styles */
+        .epicurve-chart .axis path,
+        .epicurve-chart .axis line { fill: none; stroke: #555; shape-rendering: crispEdges; }
+        .epicurve-chart .axis text { font-size: 10px; fill: #333; }
+        .epicurve-chart .bar { fill: rgba(255, 0, 0, 0.6); shape-rendering: crispEdges; }
+        .epicurve-chart .bar:hover { fill: rgba(255, 0, 0, 1); }
+        .epicurve-chart .grid line { stroke: lightgrey; stroke-opacity: 0.7; shape-rendering: crispEdges; }
+        .epicurve-chart .grid path { stroke-width: 0; }
+
+    </style>
+</head>
+<body>
+
+    <h1>Measles Outbreak Simulation</h1>
+    <h2>Scenario: Spicy Noodles Heaven, Zhongzheng District, Taipei (Configurable)</h2>
+
+    <p>
+        This simulation visualizes a potential measles spread. Use the controls below to set the initial parameters before clicking Reset, then Start the simulation. The epi curve (rendered using D3.js) tracks the number of new infections over simulated time ("days").
+    </p>
+    <p>
+        <strong>Legend:</strong>
+        <span class="legend healthy"></span> Healthy |
+        <span class="legend exposed"></span> Exposed |
+        <span class="legend infectious"></span> Infectious |
+        <span class="legend recovered"></span> Recovered |
+        <span class="legend vaccinated"></span> Vaccinated
+    </p>
+
+    <div id="main-container">
+        <div id="simulation-container">
+            <div id="canvas-container">
+                </div>
+        </div>
+
+        <div id="epicurve-title">Epidemic Curve (New Cases per Day)</div>
+        <div id="epicurve-container">
+             </div>
+
+
+        <div id="controls-stats">
+            <div class="controls-section">
+                <div class="input-group">
+                    <label for="population-size">Population Size:</label>
+                    <input type="number" id="population-size" name="population-size" min="2" value="100">
+                </div>
+                <div class="input-group">
+                    <label for="initial-infectious">Initial Infectious:</label>
+                    <input type="number" id="initial-infectious" name="initial-infectious" min="1" value="1">
+                </div>
+                <div class="input-group">
+                    <label for="vaccination-rate">Vaccination Rate (%):</label>
+                    <input type="number" id="vaccination-rate" name="vaccination-rate" min="0" max="100" step="1" value="85">
+                </div>
+            </div>
+
+            <p>Simulation Status: <span id="status">Stopped</span> | Day: <span id="current-day">0</span></p>
+            <p>
+                Healthy: <span id="healthy-count">0</span> |
+                Exposed: <span id="exposed-count">0</span> |
+                Infectious: <span id="infectious-count">0</span> |
+                Recovered: <span id="recovered-count">0</span> |
+                Vaccinated: <span id="vaccinated-count">0</span> |
+                Total: <span id="total-count">0</span>
+            </p>
+
+            <div class="buttons-section">
+                 <button id="start-button">Start</button>
+                 <button id="stop-button">Stop</button>
+                 <button id="reset-button">Apply Settings & Reset</button>
+            </div>
+        </div>
+    </div>
+
+
+    <hr> <h2>Training Exercise Context</h2>
+    <p>
+        This simulation serves as a visual aid for the contact tracing training exercise. It helps trainees understand the potential scope of an outbreak and the impact of vaccination coverage. The epi curve shows the progression of the outbreak over time. Trainees can now adjust parameters to see how different scenarios (e.g., lower vaccination rates) might play out.
+    </p>
+    <p>
+        Trainees would still use the mock guest list and other materials (forms, database, scripts) to practice their roles, using this simulation and its outputs (like the epi curve pattern) as context for the urgency and scale of the response.
+    </p>
+
+
+    <script>
+        // --- p5.js Sketch ---
+
+        // --- Simulation Parameters (Defaults, read from inputs later) ---
+        const restaurantWidth = 600;
+        const restaurantHeight = 400;
+        const personRadius = 4;
+        // const populationSize = 100; // Now read from input
+        // const initialInfectious = 1; // Now read from input
+        // const vaccinationRate = 0.85; // Now read from input
+
+        // --- Disease Parameters ---
+        const transmissionRadius = personRadius * 3.5;
+        const transmissionProbability = 0.18;
+        const incubationPeriod = 200;
+        const infectiousPeriod = 350;
+
+        // --- Epi Curve Parameters ---
+        const epiCurveMargin = {top: 20, right: 20, bottom: 40, left: 40};
+        const epiCurveContainerId = '#epicurve-container';
+        const framesPerDay = 45;
+
+        // --- Global Variables ---
+        let people = [];
+        let simulationRunning = false;
+        let simCanvas = null;
+        let epiCurveData = {};
+        let currentDay = 0;
+        let framesToday = 0;
+        let newCasesToday = 0;
+        let maxCasesInADay = 0;
+
+        // --- D3 Chart Variables ---
+        let d3Svg = null;
+        let d3XScale = null;
+        let d3YScale = null;
+        let d3XAxisGroup = null;
+        let d3YAxisGroup = null;
+        let d3ChartWidth = 0;
+        let d3ChartHeight = 0;
+        let d3BarsGroup = null;
+        let d3YGridGroup = null;
+
+        // --- HTML Element References ---
+        let inputPopulationSize = null;
+        let inputInitialInfectious = null;
+        let inputVaccinationRate = null;
+        let startButton = null;
+        let stopButton = null;
+        let resetButton = null;
+
+
+        // --- Person Class (remains the same) ---
+        class Person {
+             constructor(id, state = 'HEALTHY') { this.id = id; this.x = random(personRadius, restaurantWidth - personRadius); this.y = random(personRadius, restaurantHeight - personRadius); this.vx = random(-1, 1); this.vy = random(-1, 1); this.state = state; this.exposureTimer = 0; this.infectiousTimer = 0; this.color = 'blue'; if (window.color) { this.updateColor(); } }
+             move() { this.x += this.vx; this.y += this.vy; if (this.x < personRadius || this.x > restaurantWidth - personRadius) { this.vx *= -1; this.x = constrain(this.x, personRadius, restaurantWidth - personRadius); } if (this.y < personRadius || this.y > restaurantHeight - personRadius) { this.vy *= -1; this.y = constrain(this.y, personRadius, restaurantHeight - personRadius); } }
+             updateState() { if (this.state === 'VACCINATED' || this.state === 'RECOVERED') return; if (this.state === 'EXPOSED') { this.exposureTimer--; if (this.exposureTimer <= 0) { this.state = 'INFECTIOUS'; this.infectiousTimer = infectiousPeriod; this.updateColor(); } } else if (this.state === 'INFECTIOUS') { this.infectiousTimer--; if (this.infectiousTimer <= 0) { this.state = 'RECOVERED'; this.updateColor(); } } }
+             updateColor() { switch (this.state) { case 'HEALTHY': this.color = color(0, 0, 255); break; case 'EXPOSED': this.color = color(255, 255, 0); break; case 'INFECTIOUS': this.color = color(255, 0, 0); break; case 'RECOVERED': this.color = color(128, 128, 128); break; case 'VACCINATED': this.color = color(0, 255, 0); break; } }
+             display() { fill(this.color); noStroke(); ellipse(this.x, this.y, personRadius * 2, personRadius * 2); }
+             checkInfection(others) { if (this.state !== 'INFECTIOUS') return; for (let other of others) { if (other.id !== this.id && other.state === 'HEALTHY') { let d = dist(this.x, this.y, other.x, other.y); if (d < transmissionRadius) { if (random(1) < transmissionProbability) { other.state = 'EXPOSED'; other.exposureTimer = incubationPeriod; other.updateColor(); newCasesToday++; } } } } }
+        } // End Person Class
+
+
+        // --- Read and Validate Inputs ---
+        function readInputs() {
+            let popSize = parseInt(inputPopulationSize.value) || 100;
+            let initialInf = parseInt(inputInitialInfectious.value) || 1;
+            let vaccRatePercent = parseFloat(inputVaccinationRate.value) || 85;
+
+            // Validation
+            popSize = max(2, popSize); // Need at least 2 people
+            initialInf = max(1, initialInf); // Need at least 1 infectious
+            initialInf = min(initialInf, popSize); // Cannot have more infectious than population
+            vaccRatePercent = constrain(vaccRatePercent, 0, 100); // Clamp rate between 0 and 100
+
+            // Update input fields with validated values (optional, good UX)
+            inputPopulationSize.value = popSize;
+            inputInitialInfectious.value = initialInf;
+            inputVaccinationRate.value = vaccRatePercent;
+
+            return {
+                popSize: popSize,
+                initialInf: initialInf,
+                vaccRate: vaccRatePercent / 100.0 // Convert percentage to rate (0-1)
+            };
+        }
+
+        // --- Enable/Disable Input Fields ---
+        function setInputState(enabled) {
+            inputPopulationSize.disabled = !enabled;
+            inputInitialInfectious.disabled = !enabled;
+            inputVaccinationRate.disabled = !enabled;
+        }
+
+
+        // --- p5.js setup function ---
+        function setup() {
+            console.log("Setup started...");
+            // Get HTML element references
+            inputPopulationSize = document.getElementById('population-size');
+            inputInitialInfectious = document.getElementById('initial-infectious');
+            inputVaccinationRate = document.getElementById('vaccination-rate');
+            startButton = document.getElementById('start-button');
+            stopButton = document.getElementById('stop-button');
+            resetButton = document.getElementById('reset-button');
+
+            // Main simulation canvas
+            simCanvas = createCanvas(restaurantWidth, restaurantHeight);
+            if (simCanvas) { simCanvas.parent('canvas-container'); console.log("Simulation canvas parented."); }
+            else { console.error("Failed to create simulation canvas!"); }
+
+            // Initialize D3 Chart
+            initD3Chart();
+
+            frameRate(30);
+            // Initialize with values from inputs
+            const initialParams = readInputs();
+            initializeSimulation(initialParams.popSize, initialParams.initialInf, initialParams.vaccRate);
+
+            noLoop(); // Start paused
+            updateCounts();
+            setInputState(true); // Inputs enabled initially
+            document.getElementById('status').innerText = "Ready";
+            console.log("Setup finished.");
+
+
+            // --- Event Listeners for Buttons ---
+            startButton.addEventListener('click', () => {
+                if (!simulationRunning) {
+                    loop(); // Start p5 draw loop
+                    simulationRunning = true;
+                    setInputState(false); // Disable inputs
+                    document.getElementById('status').innerText = "Running";
+                }
+            });
+
+            stopButton.addEventListener('click', () => {
+                if (simulationRunning) {
+                    noLoop(); // Stop p5 draw loop
+                    simulationRunning = false;
+                    setInputState(true); // Enable inputs
+                    document.getElementById('status').innerText = "Paused";
+                }
+            });
+
+            resetButton.addEventListener('click', () => {
+                console.log("Reset button clicked.");
+                noLoop(); // Ensure loop is stopped
+                simulationRunning = false;
+                const params = readInputs(); // Read current values from inputs
+                initializeSimulation(params.popSize, params.initialInf, params.vaccRate); // Re-initialize with new values
+                updateCounts();
+                setInputState(true); // Ensure inputs are enabled
+                document.getElementById('status').innerText = "Reset (Ready)";
+            });
+        }
+
+        // --- Initialize D3 Chart Structure (Called once from setup) ---
+        function initD3Chart() {
+            console.log("Initializing D3 chart...");
+             try {
+                 const container = d3.select(epiCurveContainerId);
+                 if (container.empty()) { console.error("D3 init failed: Container not found", epiCurveContainerId); return; }
+                 const containerWidth = container.node().getBoundingClientRect().width;
+                 const containerHeight = 200; // Fixed height
+
+                 d3ChartWidth = containerWidth - epiCurveMargin.left - epiCurveMargin.right;
+                 d3ChartHeight = containerHeight - epiCurveMargin.top - epiCurveMargin.bottom;
+
+                 container.select("svg").remove(); // Clear previous SVG
+
+                 d3Svg = container.append("svg").attr("width", containerWidth).attr("height", containerHeight).attr("class", "epicurve-chart")
+                   .append("g").attr("transform", `translate(${epiCurveMargin.left},${epiCurveMargin.top})`);
+
+                 d3XScale = d3.scaleBand().range([0, d3ChartWidth]).padding(0.1);
+                 d3YScale = d3.scaleLinear().range([d3ChartHeight, 0]);
+
+                 d3XAxisGroup = d3Svg.append("g").attr("class", "axis x-axis").attr("transform", `translate(0,${d3ChartHeight})`);
+                 d3YAxisGroup = d3Svg.append("g").attr("class", "axis y-axis");
+
+                 d3Svg.append("text").attr("class", "x-axis-label").attr("text-anchor", "middle").attr("x", d3ChartWidth / 2).attr("y", d3ChartHeight + epiCurveMargin.bottom - 5).style("font-size", "12px").text("Day");
+                 d3Svg.append("text").attr("class", "y-axis-label").attr("text-anchor", "middle").attr("transform", "rotate(-90)").attr("x", -d3ChartHeight / 2).attr("y", -epiCurveMargin.left + 15).style("font-size", "12px").text("New Cases");
+
+                 d3BarsGroup = d3Svg.append("g").attr("class", "bars");
+                 d3YGridGroup = d3Svg.append("g").attr("class", "grid y-grid");
+
+                 console.log("D3 chart initialized.");
+             } catch (error) { console.error("Error initializing D3 chart:", error); }
+        }
+
+
+        // --- Initialize or Reset Simulation State (Now accepts parameters) ---
+        function initializeSimulation(popSize, initialInf, vaccRate) {
+            console.log(`Initializing simulation with Pop: ${popSize}, Initial Inf: ${initialInf}, Vacc Rate: ${vaccRate}`);
+            people = [];
+            // Start Epi Curve Data with Index Case(s) on Day 0
+            epiCurveData = { 0: initialInf }; // Use passed-in initialInf
+            currentDay = 1;
+            framesToday = 0;
+            newCasesToday = 0;
+            maxCasesInADay = initialInf; // Use passed-in initialInf
+
+            let vaccinatedCount = 0;
+            let healthyCount = 0;
+            // Ensure potentialSusceptible is calculated correctly
+            const potentialSusceptible = Math.max(0, popSize - initialInf); // Cannot be negative
+
+            // Create non-infectious population
+            for (let i = 0; i < potentialSusceptible; i++) {
+                let p = new Person(i); // ID starts from 0 for non-infectious
+                if (random(1) < vaccRate) { // Use passed-in vaccRate
+                    p.state = 'VACCINATED';
+                    vaccinatedCount++;
+                } else {
+                    p.state = 'HEALTHY';
+                    healthyCount++;
+                }
+                if (typeof color === 'function') { p.updateColor(); }
+                people.push(p);
+            }
+            // Create initial infectious population
+            for (let i = 0; i < initialInf; i++) {
+                // Ensure unique IDs, start after susceptible IDs
+                let p = new Person(potentialSusceptible + i, 'INFECTIOUS');
+                p.infectiousTimer = infectiousPeriod;
+                if (typeof color === 'function') { p.updateColor(); }
+                people.push(p);
+            }
+
+             console.log(`Created: ${healthyCount} H, ${vaccinatedCount} V, ${initialInf} I`);
+             if (simCanvas) {
+                 redraw(); // Trigger draw() -> updateD3Chart()
+                 console.log("Initial redraw() called.");
+             }
+             document.getElementById('current-day').innerText = 0; // Show Day 0 initially
+             updateCounts(); // Update counts immediately after initialization
+             updateD3Chart(); // Update D3 chart immediately after initialization
+        }
+
+        // --- p5.js draw function (main loop) ---
+        function draw() {
+            // --- Update Simulation Time and Epi Curve Data ---
+            if (simulationRunning) {
+                framesToday++;
+                if (framesToday >= framesPerDay) {
+                    epiCurveData[currentDay] = newCasesToday;
+                    if (newCasesToday > maxCasesInADay) { maxCasesInADay = newCasesToday; }
+                    currentDay++;
+                    framesToday = 0; newCasesToday = 0;
+                    document.getElementById('current-day').innerText = currentDay - 1;
+                }
+            }
+
+            // --- Draw Main Simulation ---
+            background(255); stroke(150); noFill();
+            rect(0, 0, restaurantWidth - 1, restaurantHeight - 1);
+            // Use slice to avoid modifying array while iterating (safer if needed, though maybe not strictly necessary here)
+            people.slice().forEach(person => {
+                 person.move();
+                 person.updateState();
+                 person.display();
+                 if (simulationRunning) { person.checkInfection(people); }
+            });
+
+
+            // --- Update D3 Chart ---
+            updateD3Chart();
+
+            // --- Update Stats Display ---
+            updateCounts();
+        }
+
+        // --- Function to Update the D3 Epi Curve (remains the same) ---
+        function updateD3Chart() {
+             if (!d3Svg || !d3XScale || !d3YScale) { return; }
+             try {
+                 const formattedData = Object.entries(epiCurveData).map(([day, cases]) => ({ day: parseInt(day), cases: cases }));
+                 let maxDay = formattedData.length > 0 ? d3.max(formattedData, d => d.day) : 0;
+
+                 d3XScale.domain(d3.range(maxDay + 1));
+                 d3YScale.domain([0, Math.max(1, maxCasesInADay)]);
+
+                 const xAxis = d3.axisBottom(d3XScale).tickValues(d3XScale.domain().filter(d => d === 0 || d % 5 === 0 || d === maxDay)); // Show 0, multiples of 5, last day
+                 const yAxis = d3.axisLeft(d3YScale).ticks(Math.min(5, Math.max(1,maxCasesInADay))).tickFormat(d3.format("d")); // Integer format for ticks
+
+                 d3XAxisGroup.transition().duration(200).call(xAxis);
+                 d3YAxisGroup.transition().duration(200).call(yAxis);
+
+                 const yGrid = d3.axisLeft(d3YScale).ticks(Math.min(5, Math.max(1,maxCasesInADay))).tickSize(-d3ChartWidth).tickFormat("");
+                 d3YGridGroup.call(yGrid);
+
+                 d3BarsGroup.selectAll("rect.bar").data(formattedData, d => d.day)
+                     .join(
+                         enter => enter.append("rect").attr("class", "bar")
+                             .attr("x", d => d3XScale(d.day)).attr("y", d3ChartHeight)
+                             .attr("width", d3XScale.bandwidth()).attr("height", 0)
+                             .call(enter => enter.transition().duration(500)
+                                 .attr("y", d => d3YScale(d.cases))
+                                 .attr("height", d => d3ChartHeight - d3YScale(d.cases))),
+                         update => update
+                             .call(update => update.transition().duration(500)
+                                 .attr("x", d => d3XScale(d.day)).attr("y", d => d3YScale(d.cases))
+                                 .attr("width", d3XScale.bandwidth()).attr("height", d => d3ChartHeight - d3YScale(d.cases))),
+                         exit => exit
+                             .call(exit => exit.transition().duration(300)
+                                 .attr("y", d3ChartHeight).attr("height", 0).remove())
+                     );
+             } catch (error) { console.error("Error updating D3 chart:", error); }
+        }
+
+
+        // --- Function to Update the Counts Display (remains the same) ---
+        function updateCounts() {
+             let counts = { HEALTHY: 0, EXPOSED: 0, INFECTIOUS: 0, RECOVERED: 0, VACCINATED: 0 };
+             // Ensure people array exists and has elements
+             if(people && people.length > 0) {
+                 for (let person of people) { if (counts.hasOwnProperty(person.state)) { counts[person.state]++; } else { console.warn("Unknown person state:", person.state); } }
+             }
+             document.getElementById('healthy-count').innerText = counts.HEALTHY;
+             document.getElementById('exposed-count').innerText = counts.EXPOSED;
+             document.getElementById('infectious-count').innerText = counts.INFECTIOUS;
+             document.getElementById('recovered-count').innerText = counts.RECOVERED;
+             document.getElementById('vaccinated-count').innerText = counts.VACCINATED;
+             // Update total based on actual people array length, or sum of counts
+             document.getElementById('total-count').innerText = people.length; // More reliable
+        }
+
+    </script>
+
+</body>
+</html>
+
