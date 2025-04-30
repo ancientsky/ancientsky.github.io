@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兒童結核病接觸者發病風險預測評分系統</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* 使用 Inter 和 Noto Sans TC 字體 */
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            /* 背景漸層 */
+            background: linear-gradient(to bottom right, #f0f9ff, #f9fafb); /* 更柔和的淡藍到淡灰 */
+        }
+        /* 自訂訊息框樣式 */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none; /* 預設隱藏 */
+            max-width: 90%;
+            text-align: center;
+            border-width: 1px;
+        }
+        .message-box-success {
+            background-color: #f0fdf4; /* Tailwind green-50 */
+            color: #166534; /* Tailwind green-800 */
+            border-color: #bbf7d0; /* Tailwind green-200 */
+        }
+        .message-box-error {
+            background-color: #fef2f2; /* Tailwind red-50 */
+            color: #991b1b; /* Tailwind red-800 */
+            border-color: #fecaca; /* Tailwind red-200 */
+        }
+        /* 表單區塊樣式 */
+        .form-section {
+            background-color: #ffffff; /* 白色背景 */
+            padding: 1.5rem; /* p-6 */
+            border-radius: 0.75rem; /* rounded-xl */
+            margin-bottom: 1.5rem; /* mb-6 */
+            border: 1px solid #e5e7eb; /* Tailwind gray-200 */
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); /* 細微陰影 */
+        }
+        .form-section:last-of-type {
+             margin-bottom: 0; /* 最後一個區塊移除底部間距 */
+        }
+
+        /* 標籤樣式 */
+        label.section-label { /* 用於區塊標題 */
+            display: block;
+            margin-bottom: 1rem; /* mb-4 */
+            font-weight: 600; /* font-semibold */
+            color: #1f2937; /* Tailwind gray-800 */
+            font-size: 1rem; /* text-base */
+        }
+        /* 輸入框和下拉選單樣式 */
+        select, input[type="radio"] {
+            margin-top: 0.25rem;
+        }
+        select {
+            width: 100%;
+            padding: 0.75rem; /* p-3 */
+            border: 1px solid #d1d5db; /* Tailwind border-gray-300 */
+            border-radius: 0.5rem; /* Tailwind rounded-lg */
+            background-color: #f9fafb; /* 輕微灰底 */
+            box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            appearance: none; /* 移除預設下拉箭頭 */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+        }
+        select:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            border-color: #60a5fa; /* Tailwind blue-400 */
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3); /* Tailwind ring-blue-300 */
+            background-color: #ffffff; /* Focus 時變白 */
+        }
+        /* Radio button 容器 */
+        .radio-option { /* 修改容器名稱以更清晰 */
+            margin-bottom: 0.75rem; /* mb-3 */
+            display: flex;
+            align-items: center; /* 確保垂直居中對齊 */
+        }
+         .radio-option:last-child {
+             margin-bottom: 0;
+         }
+        .radio-option input[type="radio"] {
+            height: 1rem; /* h-4 */
+            width: 1rem; /* w-4 */
+            color: #3b82f6; /* Tailwind blue-600 */
+            border-color: #9ca3af; /* Tailwind gray-400 */
+            cursor: pointer;
+            flex-shrink: 0; /* 防止 radio button 被壓縮 */
+        }
+        .radio-option input[type="radio"]:focus {
+            ring: 2px;
+            ring-offset-2;
+            ring-blue-500;
+        }
+        .radio-option label { /* Radio 選項的 label */
+             margin-left: 0.5rem; /* ml-2 */
+             margin-bottom: 0; /* 移除 label 預設的 mb */
+             font-weight: 400; /* font-normal */
+             color: #4b5563; /* Tailwind gray-600 */
+             cursor: pointer;
+             line-height: 1.5; /* 確保文字行高正常 */
+        }
+
+        /* 計算按鈕樣式 */
+        button[type="submit"] {
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            color: white;
+            padding: 0.875rem 1.5rem; /* py-3.5 px-6 */
+            border: none;
+            border-radius: 0.5rem; /* Tailwind rounded-lg */
+            font-weight: 600; /* font-semibold */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            width: 100%; /* 按鈕寬度填滿 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Tailwind shadow-md */
+            margin-top: 1rem; /* mt-4 */
+        }
+        button[type="submit"]:hover {
+            background-color: #2563eb; /* Tailwind blue-600 */
+        }
+         button[type="submit"]:active {
+             transform: scale(0.98); /* 按下時稍微縮小 */
+         }
+        /* 結果顯示區域樣式 */
+        #resultArea {
+            margin-top: 2rem; /* mt-8 */
+            padding: 1.5rem; /* p-6 */
+            background-color: #eff6ff; /* Tailwind blue-50 */
+            border: 1px solid #bfdbfe; /* Tailwind blue-200 */
+            border-radius: 0.75rem; /* Tailwind rounded-xl */
+            transition: all 0.3s ease-in-out;
+            opacity: 0; /* 初始隱藏 */
+            transform: translateY(10px); /* 初始位置 */
+        }
+        #resultArea.visible { /* 用於控制顯示動畫 */
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #resultArea h3 {
+            font-size: 1.125rem; /* Tailwind text-lg */
+            font-weight: 600; /* font-semibold */
+            margin-bottom: 0.75rem; /* mb-3 */
+            color: #1e40af; /* Tailwind blue-800 */
+            text-align: center;
+        }
+        #resultArea p {
+            color: #1e3a8a; /* Tailwind blue-900 */
+            line-height: 1.6;
+            text-align: center;
+        }
+        #scoreValue {
+            font-weight: 700; /* font-bold */
+            font-size: 1.75rem; /* Tailwind text-3xl */
+            color: #1d4ed8; /* Tailwind blue-700 */
+            display: block; /* 讓分數獨佔一行 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        #riskExplanation {
+            margin-top: 0.5rem; /* mt-2 */
+            font-size: 1rem; /* text-base */
+        }
+        /* 引用來源樣式 */
+        footer {
+            margin-top: 2rem; /* mt-8 */
+            padding-top: 1rem; /* pt-4 */
+            border-top: 1px solid #e5e7eb; /* Tailwind gray-200 */
+            text-align: center;
+            font-size: 0.75rem; /* text-xs */
+            color: #6b7280; /* Tailwind gray-500 */
+        }
+        footer a {
+            color: #3b82f6; /* Tailwind blue-500 */
+            text-decoration: underline;
+        }
+        footer a:hover {
+            color: #1d4ed8; /* Tailwind blue-700 */
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <div class="bg-gray-50 p-6 md:p-10 rounded-xl shadow-xl w-full max-w-xl border border-gray-200">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">兒童結核病接觸者發病風險預測</h1>
+            <p class="text-sm text-gray-500">根據 Fang et al. (2014) 研究模型，適用於 0-12 歲兒童接觸者</p>
+        </div>
+
+        <form id="tbRiskForm">
+            <div class="form-section">
+                <label for="tstResult" class="section-label">1. 接觸者 TST 結果 (mm):</label>
+                <select id="tstResult" name="tstResult" required class="block w-full">
+                    <option value="" disabled selected>請選擇 TST 硬結大小</option>
+                    <option value="0"> &lt; 10 mm </option>
+                    <option value="2"> 10-14 mm </option>
+                    <option value="3"> 15-19 mm </option>
+                    <option value="4"> ≥ 20 mm </option>
+                </select>
+            </div>
+
+            <div class="form-section">
+                <label class="section-label">2. 指標個案痰液抹片結果:</label>
+                <div class="space-y-2">
+                    <div class="radio-option">
+                        <input type="radio" id="smearNegative" name="smearResult" value="0" required>
+                        <label for="smearNegative">陰性 (Negative)</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="smearPositive" name="smearResult" value="1">
+                        <label for="smearPositive">陽性 (Positive)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label class="section-label">3. 指標個案居住地區:</label>
+                <p class="text-xs text-gray-500 mb-3 -mt-2">（高發生率地區定義請參考研究原文或當地衛生單位指引）</p>
+                <div class="space-y-2">
+                    <div class="radio-option">
+                        <input type="radio" id="areaNonHigh" name="residenceArea" value="0" required>
+                        <label for="areaNonHigh">非高發生率地區 (Non-high-incidence)</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="areaHigh" name="residenceArea" value="2">
+                        <label for="areaHigh">高發生率地區 (High-incidence)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label class="section-label">4. 指標個案性別:</label>
+                <div class="space-y-2">
+                    <div class="radio-option">
+                        <input type="radio" id="sexMale" name="indexSex" value="0" required>
+                        <label for="sexMale">男性 (Male)</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="sexFemale" name="indexSex" value="1">
+                        <label for="sexFemale">女性 (Female)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit">計算風險分數</button>
+            </div>
+        </form>
+
+        <div id="resultArea">
+             <h3>評估結果</h3>
+             <p>總風險分數:</p>
+             <p><span id="scoreValue"></span></p>
+             <p id="riskExplanation"></p>
+             <p class="text-xs text-blue-700 mt-4">注意：此分數預測在未接受潛伏結核感染治療 (IPT) 的情況下，三年內發展為活動性結核病的風險。結果僅供參考，實際處置應由專業醫師評估。</p>
+        </div>
+
+        <footer>
+            <p>資料來源：Chan PC, Peng SS, Chiou MY, et al. Risk for Tuberculosis in Child Contacts: Development and Validation of a Predictive Score. Am J Respir Crit Care Med. 2014;189(2):203-213. doi:10.1164/rccm.201305-0863OC</p>
+            <p><a href="https://doi.org/10.1164/rccm.201305-0863OC" target="_blank" rel="noopener noreferrer">查看研究原文 (DOI)</a></p>
+        </footer>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script>
+        const form = document.getElementById('tbRiskForm');
+        const resultArea = document.getElementById('resultArea');
+        const scoreValue = document.getElementById('scoreValue');
+        const riskExplanation = document.getElementById('riskExplanation');
+        const messageBox = document.getElementById('messageBox');
+
+        // 顯示訊息提示框
+        function showMessage(message, type = 'error') { // 預設為 error
+            messageBox.textContent = message;
+            messageBox.className = `message-box ${type === 'success' ? 'message-box-success' : 'message-box-error'}`;
+            messageBox.style.display = 'block';
+
+            // 3 秒後自動隱藏
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 3000);
+        }
+
+        // 根據分數獲取風險解釋
+        function getRiskExplanation(score) {
+            switch (score) {
+                case 8: // 研究中未明確定義分數 8 的風險，但基於模型推算應為最高
+                case 7:
+                    return "極高風險：預測三年內發病風險接近 100%。應立即進行詳細評估並考慮預防性治療。";
+                case 6:
+                    return "高風險：預測三年內發病風險約為 7.8%。建議進行詳細評估並強烈考慮預防性治療。";
+                case 5:
+                    return "中高風險：預測三年內發病風險約為 4.3%。建議進行評估並考慮預防性治療。";
+                case 4:
+                    return "中度風險：預測三年內發病風險約為 1.0%。建議進行評估，是否治療需綜合考量。";
+                case 3:
+                    return "稍低風險：預測三年內發病風險約為 0.7%。風險相對較低，但仍需監測。";
+                case 2:
+                    return "低風險：預測三年內發病風險約為 0.2%。風險較低。";
+                case 1:
+                case 0:
+                    return "極低風險：預測三年內發病風險低於 0.2%。風險非常低。";
+                default:
+                    return "無法計算風險，請檢查輸入。";
+            }
+        }
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // 防止表單提交導致頁面刷新
+
+            // 隱藏舊結果，重設樣式
+            resultArea.classList.remove('visible');
+
+
+            // 獲取表單數據
+            const formData = new FormData(form);
+            const tstResultValue = formData.get('tstResult'); // 先取得字串值
+            const smearResultValue = formData.get('smearResult');
+            const residenceAreaValue = formData.get('residenceArea');
+            const indexSexValue = formData.get('indexSex');
+
+             // 檢查是否有未選擇的項目
+             if (!tstResultValue || !smearResultValue || !residenceAreaValue || !indexSexValue) {
+                 showMessage('請確保所有項目都已選擇！', 'error');
+                 return; // 停止執行
+             }
+
+            // 將值轉為數字進行計算
+            const tstScore = parseInt(tstResultValue);
+            const smearScore = parseInt(smearResultValue);
+            const areaScore = parseInt(residenceAreaValue);
+            const sexScore = parseInt(indexSexValue);
+
+            // 計算總分
+            const totalScore = tstScore + smearScore + areaScore + sexScore;
+
+            // 顯示結果
+            scoreValue.textContent = totalScore;
+            riskExplanation.textContent = getRiskExplanation(totalScore);
+
+            // 加入淡入和輕微向上移動的動畫效果
+            // 使用 requestAnimationFrame 確保在下一幀渲染時應用 class
+            requestAnimationFrame(() => {
+                 resultArea.classList.add('visible'); // 顯示結果區域並觸發動畫
+            });
+
+
+            // 平滑滾動到結果區域（可選）
+            // resultArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    </script>
+</body>
+</html>
+
