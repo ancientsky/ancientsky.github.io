@@ -8,9 +8,11 @@
         body {
             font-family: 'Arial', '微軟正黑體', sans-serif;
             line-height: 1.6;
-            margin: 20px;
+            margin: 0; /* Reset margin */
+            padding-top: 70px; /* Add padding to top for fixed menu icon */
             background-color: #f4f4f4;
             color: #333;
+            position: relative; /* Needed for absolute positioning of cards */
         }
         .container {
             max-width: 800px;
@@ -38,6 +40,47 @@
         li {
             margin-bottom: 10px;
         }
+
+        /* --- Menu Icon and Menu Styling --- */
+        .menu-icon {
+            position: fixed; /* Fix position on scroll */
+            top: 20px;
+            right: 20px;
+            font-size: 30px; /* Adjust size as needed */
+            cursor: pointer;
+            z-index: 100; /* Ensure it's above other content */
+            background-color: #0056b3;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            user-select: none; /* Prevent text selection on icon */
+        }
+        .menu {
+            position: fixed; /* Fix position */
+            top: 60px; /* Position below the icon */
+            right: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 99; /* Below the icon but above content */
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            padding: 10px 0;
+        }
+        .menu a {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            white-space: nowrap; /* Prevent wrapping */
+            display: block; /* Make the whole area clickable */
+        }
+        .menu a:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* --- Card Styling --- */
         .card-container {
             margin-top: 30px;
             padding: 15px;
@@ -45,12 +88,17 @@
             border-radius: 8px;
             overflow: hidden; /* Hide overflowing cards during transition */
             position: relative;
-            min-height: 80px; /* Ensure container has some height */
+            min-height: 120px; /* Ensure container has enough height for cards */
+        }
+         .card-container h2 {
+            border-bottom: none; /* Remove border for this section heading */
+            margin-top: 0;
+            padding-bottom: 0;
+            text-align: center; /* Center the heading */
         }
         .card {
             border: 1px solid #b3d9ff;
             padding: 15px;
-            margin-bottom: 10px; /* Space between cards if they were all visible */
             border-radius: 5px;
             background-color: #ffffff;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
@@ -58,25 +106,43 @@
             opacity: 0;
             transition: opacity 1s ease-in-out; /* Fade transition */
             position: absolute; /* Stack cards */
-            top: 15px; /* Match container padding */
+            top: 60px; /* Position below the heading */
             left: 15px; /* Match container padding */
             right: 15px; /* Match container padding */
+            min-height: 50px; /* Ensure card has some height */
+            display: flex; /* Use flex for centering card content if needed */
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
         .card.active {
-            display: block; /* Show the active card */
+            display: flex; /* Show the active card */
             opacity: 1;
         }
     </style>
 </head>
 <body>
 
+    <div class="menu-icon" id="menuIcon">
+        ☰
+    </div>
+
+    <div class="menu" id="navMenu">
+        <a href="#section-intro">簡介</a>
+        <a href="#section-snacks">健康零食建議</a>
+        <a href="#section-drinks">無熱量飲品</a>
+        <a href="#section-acupressure">穴道按摩</a>
+        <a href="#section-other-tips">其他建議</a>
+        <a href="#section-card-summary">貼心建議摘要</a>
+    </div>
+
 <div class="container">
-    <h1>提升思考效率的健康替代方案與穴道按摩</h1>
+    <h1 id="section-intro">提升思考效率的健康替代方案與穴道按摩</h1>
 
     <p>您提到吃零食能幫助思考，但又擔心發胖。這是一個常見的困擾，許多人會透過吃東西來獲得感官刺激或短暫的能量，以幫助集中注意力。以下提供一些健康的替代方案，希望能幫助您在保持清醒專注的同時，也能維持健康體態。</p>
 
     <div class="section">
-        <h2>一、 健康的替代零食建議</h2>
+        <h2 id="section-snacks">一、 健康的替代零食建議</h2>
         <p>選擇低熱量、高纖維、或能提供穩定能量的食物。</p>
         <ul>
             <li>
@@ -101,7 +167,7 @@
     </div>
 
     <div class="section">
-        <h2>二、 無熱量的飲品</h2>
+        <h2 id="section-drinks">二、 無熱量的飲品</h2>
         <p>有時候口渴也會被誤認為飢餓，補充水分非常重要。</p>
         <ul>
             <li>
@@ -120,34 +186,39 @@
     </div>
 
     <div class="section">
-        <h2>三、 穴道按摩：提神醒腦的非食物方案</h2>
+        <h2 id="section-acupressure">三、 穴道按摩：提神醒腦的非食物方案</h2>
         <p>穴位按摩透過刺激特定點，幫助改善氣血循環，緩解疲勞，提升專注力。</p>
 
         <h3>百會穴 (Bǎi Huì)</h3>
-        <p><strong>如何找：</strong> 位於頭頂正中央，從兩耳尖向上延伸與鼻子向上延伸的交點。</p>
-        <p><strong>如何按：</strong> 用指腹或掌根輕柔按壓或揉按1-2分鐘，感受輕微痠脹。</p>
+        <p><strong>作用：</strong> 被認為是諸陽之會，有助於提升陽氣、醒腦開竅、鎮定安神。對於頭暈、疲勞、失眠、焦慮有幫助。</p>
+        <p><strong>如何找：</strong> 位於頭頂正中央。找法是從兩耳尖連線，與鼻子向上延伸的中心線的交點。</p>
+        <p><strong>如何按：</strong> 用指腹或掌根輕輕按壓或以畫圓的方式揉按，約1-2分鐘。感覺到輕微的痠脹感即可。</p>
 
         <h3>印堂穴 (Yìn Táng)</h3>
+        <p><strong>作用：</strong> 位於前額，有助於安神定志、清頭明目，緩解前額疼痛和疲勞。</p>
         <p><strong>如何找：</strong> 位於兩眉頭連線的正中間。</p>
-        <p><strong>如何按：** 用指腹輕柔按壓或揉按1-2分鐘，也可向上推揉。</strong></p>
+        <p><strong>如何按：** 用指腹輕輕按壓或以畫圓的方式揉按，約1-2分鐘。也可以用指腹在此處輕輕向上推揉。**</p>
 
         <h3>太陽穴 (Tài Yáng)</h3>
-        <p><strong>如何找：</strong> 位於眉梢和外眼角向後約一寸的凹陷處。</p>
-        <p><strong>如何按：</strong> 用指腹或拇指以畫圓方式揉按兩側太陽穴，1-2分鐘。</p>
+        <p><strong>作用：</strong> 緩解頭痛、眼部疲勞，提神醒腦。這是大家比較熟悉的穴位。</p>
+        <p><strong>如何找：</strong> 位於眉梢和外眼角之間，向後約一寸（約一個拇指寬度）的凹陷處。</p>
+        <p><strong>如何按：</strong> 用指腹或拇指輕輕以畫圓的方式揉按，左右兩側同時進行，約1-2分鐘。</p>
 
         <h3>風池穴 (Fēng Chí)</h3>
-        <p><strong>如何找：** 位於後頸部，枕骨下方，靠近脊椎兩側的凹陷處。</strong></p>
-        <p><strong>如何按：</strong> 用拇指向上頂著頭骨下緣按壓或揉按，1-2分鐘。</p>
+        <p><strong>作用：</strong> 位於後頸部，有助於緩解後頸部僵硬、頭痛、眼睛疲勞，改善腦部供血，提神。</p>
+        <p><strong>如何找：** 位於後頸部，當枕骨（後腦勺骨頭）下方，斜方肌和胸鎖乳突肌之間的凹陷處。簡單來說，沿著後腦勺的骨頭下緣摸，在靠近脊椎兩側可以摸到明顯的凹陷。**</p>
+        <p><strong>如何按：</strong> 用拇指向上頂著頭骨下緣按壓，持續按壓或以畫圓的方式揉按，約1-2分鐘。</p>
 
         <h3>合谷穴 (Hé Gǔ)</h3>
-        <p><strong>如何找：</strong> 位於手背虎口處，拇指與食指合攏時肌肉隆起的最高點。</p>
-        <p><strong>如何按：</strong> 用另一隻手的拇指按壓，朝向食指方向施力，感受痠脹，1-2分鐘，左右手交替。</p>
+        <p><strong>作用：</strong> 是人體的重要穴位，有「顏面合谷收」之說，對於頭痛、牙痛、眼睛疲勞等頭面部問題都有幫助，也能促進全身氣血循環，提升整體精神。</p>
+        <p><strong>如何找：</strong> 位於手背虎口處，食指與拇指合攏時，虎口處肌肉隆起的最高點。</p>
+        <p><strong>如何按：</strong> 用另一隻手的拇指按壓，朝向食指方向按壓，感到痠脹感即可。持續按壓或揉按，約1-2分鐘。左右手交替進行。</p>
 
-        <p><strong>穴位按摩小提醒：</strong> 力度適中，以痠脹感為宜；可搭配深呼吸；持之以恆效果更好。</p>
+        <p><strong>穴位按摩小提醒：</strong> 力度適中，以痠脹感為宜；可搭配深呼吸；持之以恆效果更好；非醫療替代；特殊情況需諮詢專業。</p>
     </div>
 
     <div class="section">
-        <h2>四、 其他提神與覺察建議</h2>
+        <h2 id="section-other-tips">四、 其他提神與覺察建議</h2>
         <ul>
             <li>**起身活動：** 每隔一段時間就起身走動或伸展，促進血液循環。</li>
             <li>**深呼吸：** 透過幾次深而慢的呼吸來放鬆或重新聚焦。</li>
@@ -158,6 +229,7 @@
     </div>
 
     <div class="card-container">
+        <h2 id="section-card-summary">五、 貼心建議 (小卡片內容摘要)</h2>
         <div class="card">多喝白開水，水是最好的提神飲料！</div>
         <div class="card">試試穴道按摩：按壓百會、印堂等穴位幫助清醒。</div>
         <div class="card">累了就起身動一動，短暫活動幫助腦袋重新開機。</div>
@@ -170,6 +242,7 @@
 </div>
 
 <script>
+    // --- JavaScript for Auto-Playing Cards ---
     document.addEventListener('DOMContentLoaded', () => {
         const cards = document.querySelectorAll('.card-container .card');
         let currentCardIndex = 0;
@@ -185,12 +258,12 @@
 
             // 顯示指定索引的卡片並添加 active class
             if (cards[index]) {
-                cards[index].style.display = 'block';
-                // Use a small delay to ensure display:block is processed before transition
-                setTimeout(() => {
+                // Use a small delay to ensure display:flex is processed before transition
+                 cards[index].style.display = 'flex'; // Use flex as per CSS
+                 setTimeout(() => {
                     cards[index].classList.add('active');
                     cards[index].style.opacity = '1';
-                }, 10);
+                 }, 10); // Small delay
             }
         }
 
@@ -208,6 +281,33 @@
             // 設定定時器，每隔一段時間切換到下一張卡片
             setInterval(nextCard, intervalTime);
         }
+
+        // --- JavaScript for Menu Toggle ---
+        const menuIcon = document.getElementById('menuIcon');
+        const navMenu = document.getElementById('navMenu');
+
+        menuIcon.addEventListener('click', () => {
+            if (navMenu.style.display === 'flex') {
+                navMenu.style.display = 'none';
+            } else {
+                navMenu.style.display = 'flex';
+            }
+        });
+
+        // Optional: Hide menu when a link is clicked
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.style.display = 'none';
+            });
+        });
+
+        // Optional: Hide menu when clicking outside (basic implementation)
+        document.addEventListener('click', (event) => {
+            // Check if the click was outside the menu icon and the menu itself
+            if (!menuIcon.contains(event.target) && !navMenu.contains(event.target)) {
+                 navMenu.style.display = 'none';
+            }
+        });
     });
 </script>
 
