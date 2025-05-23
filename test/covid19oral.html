@@ -227,7 +227,7 @@
                         <p><strong class="interaction-icon text-red-500">藥物交互作用：</strong><span class="font-bold text-red-600">多且複雜</span> (因Ritonavir為強CYP3A抑制劑)。</p>
                         <p><strong class="usage-icon text-gray-700">用法用量：</strong>每日2次，共3錠，持續5天。</p>
                         <p><strong class="pregnancy-icon text-pink-500">懷孕建議：</strong>醫師評估效益大於風險可使用。</p>
-                        <p><strong class="kidney-icon text-purple-500">腎功能不全：</strong>中度需減量，重度不建議。</p>
+                        <p><strong class="kidney-icon text-purple-500">腎功能不全：</strong>輕度(eGFR ≥60至&lt;90):不需調整。中度(eGFR ≥30至&lt;60):Nirmatrelvir 150mg + Ritonavir 100mg 每日2次。重度(eGFR &lt;30,含透析):首日Nirmatrelvir 300mg + Ritonavir 100mg 1次,後續Nirmatrelvir 150mg + Ritonavir 100mg 每日1次;血液透析日於透析後給藥。</p>
                         <p><strong class="liver-icon text-orange-500">肝功能不全：</strong>重度不建議。</p>
                     </div>
                 </div>
@@ -483,15 +483,6 @@
                 const content = header.nextElementSibling;
                 const arrow = header.querySelector('.accordion-arrow');
                 
-                // Close other open accordions if you want only one open at a time
-                // accordionHeaders.forEach(otherHeader => {
-                //     if (otherHeader !== header) {
-                //         otherHeader.nextElementSibling.classList.remove('open');
-                //         otherHeader.nextElementSibling.style.display = 'none';
-                //         otherHeader.querySelector('.accordion-arrow').classList.remove('open');
-                //     }
-                // });
-
                 content.classList.toggle('open');
                 arrow.classList.toggle('open');
                 if (content.classList.contains('open')) {
