@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 口服藥物資訊圖表 (含AI輔助)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #f0f9ff; /* Light blue background */
+        }
+        .drug-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease-in-out;
+        }
+        .drug-card:hover {
+            transform: translateY(-5px);
+        }
+        .section-title {
+            font-size: 1.75rem; /* 28px */
+            font-weight: 700;
+            color: #1e3a8a; /* Dark blue */
+            margin-bottom: 1.5rem; /* 24px */
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #3b82f6; /* Blue accent */
+        }
+        .sub-title {
+            font-size: 1.25rem; /* 20px */
+            font-weight: 600;
+            color: #1e40af; /* Darker blue */
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .pill {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .pill-green {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .pill-red {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .pill-yellow {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .pill-blue {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .info-box {
+            background-color: #e0f2fe; /* Lighter blue */
+            border-left: 4px solid #3b82f6; /* Blue border */
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        .table-header {
+            background-color: #3b82f6; /* Blue */
+            color: white;
+            font-weight: 600;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid #e5e7eb; /* Light gray border */
+        }
+        tr:nth-child(even) {
+            background-color: #f3f4f6; /* Lighter gray for even rows */
+        }
+        /* Custom icon styles */
+        .mechanism-icon::before { content: "⚙️"; margin-right: 0.5em; }
+        .efficacy-icon::before { content: "📈"; margin-right: 0.5em; }
+        .sideeffect-icon::before { content: "⚠️"; margin-right: 0.5em; }
+        .interaction-icon::before { content: "🔄"; margin-right: 0.5em; }
+        .usage-icon::before { content: "💊"; margin-right: 0.5em; }
+        .pregnancy-icon::before { content: "🤰"; margin-right: 0.5em; }
+        .kidney-icon::before { content: "🦴"; margin-right: 0.5em; /* Using bone as a stand-in for kidney */ }
+        .liver-icon::before { content: "🌿"; margin-right: 0.5em; /* Using plant as a stand-in for liver */ }
+        .eligibility-icon::before { content: "✅"; margin-right: 0.5em; }
+        .notes-icon::before { content: "📝"; margin-right: 0.5em; }
+
+        /* Accordion styles */
+        .accordion-item {
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+        .accordion-header {
+            background-color: #eff6ff;
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .accordion-header:hover {
+            background-color: #dbeafe;
+        }
+        .accordion-content {
+            padding: 1rem;
+            background-color: white;
+            display: none; /* Hidden by default */
+        }
+        .accordion-content.open {
+            display: block;
+        }
+        .accordion-arrow {
+            transition: transform 0.3s ease;
+        }
+        .accordion-arrow.open {
+            transform: rotate(90deg);
+        }
+
+        /* AI Feature Styles */
+        .ai-feature-card {
+            background-color: #ffffff;
+            border: 1px solid #bfdbfe; /* Light blue border */
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .ai-feature-title {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 600;
+            color: #1d4ed8; /* Medium blue */
+            margin-bottom: 0.75rem;
+        }
+        .ai-disclaimer {
+            font-size: 0.875rem; /* 14px */
+            color: #ef4444; /* Red for warning */
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            background-color: #fee2e2;
+            border-left: 3px solid #dc2626;
+            border-radius: 4px;
+        }
+        .ai-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #9ca3af;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            resize: vertical;
+        }
+        .ai-button {
+            background-color: #2563eb; /* Blue */
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .ai-button:hover {
+            background-color: #1d4ed8; /* Darker blue */
+        }
+        .ai-button:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        .ai-result-area {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f9fafb; /* Very light gray */
+            border: 1px solid #e5e7eb; /* Light gray border */
+            border-radius: 6px;
+            min-height: 50px;
+            white-space: pre-wrap; /* Preserve line breaks in AI response */
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #3b82f6; /* Blue */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            display: inline-block;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="container mx-auto max-w-6xl">
+        <header class="mb-12 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-blue-700 mb-4">COVID-19 口服抗病毒藥物比較</h1>
+            <p class="text-lg text-gray-600">Paxlovid、Molnupiravir、Xocova 之介紹、公費條件與注意事項 (含AI輔助功能)</p>
+        </header>
+
+        <section id="drug-comparison" class="mb-12">
+            <h2 class="section-title">藥物特性比較</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="drug-card p-6">
+                    <h3 class="text-2xl font-bold text-blue-600 mb-3">Paxlovid (倍拉維)</h3>
+                    <p class="mb-4 text-sm text-gray-500">Nirmatrelvir/Ritonavir</p>
+                    <div class="space-y-3">
+                        <p><strong class="mechanism-icon text-blue-500">作用機制：</strong>3CL蛋白酶抑制劑 + Ritonavir增強藥效。</p>
+                        <p><strong class="efficacy-icon text-green-500">臨床療效：</strong>高風險族群降低住院/死亡風險可達 <span class="font-bold text-green-600">89%</span>。</p>
+                        <p><strong class="sideeffect-icon text-yellow-500">常見副作用：</strong>味覺改變、腹瀉、血壓升高。</p>
+                        <p><strong class="interaction-icon text-red-500">藥物交互作用：</strong><span class="font-bold text-red-600">多且複雜</span> (因Ritonavir為強CYP3A抑制劑)。</p>
+                        <p><strong class="usage-icon text-gray-700">用法用量：</strong>每日2次，共3錠，持續5天。</p>
+                        <p><strong class="pregnancy-icon text-pink-500">懷孕建議：</strong>醫師評估效益大於風險可使用。</p>
+                        <p><strong class="kidney-icon text-purple-500">腎功能不全：</strong>中度需減量，重度不建議。</p>
+                        <p><strong class="liver-icon text-orange-500">肝功能不全：</strong>重度不建議。</p>
+                    </div>
+                </div>
+
+                <div class="drug-card p-6">
+                    <h3 class="text-2xl font-bold text-blue-600 mb-3">Molnupiravir (莫納皮拉韋)</h3>
+                    <p class="mb-4 text-sm text-gray-500">Lagevrio</p>
+                     <div class="space-y-3">
+                        <p><strong class="mechanism-icon text-blue-500">作用機制：</strong>誘導病毒RNA錯誤突變 (RdRp抑制劑)。</p>
+                        <p><strong class="efficacy-icon text-green-500">臨床療效：</strong>高風險族群降低住院/死亡風險約 <span class="font-bold text-green-600">30%</span>。</p>
+                        <p><strong class="sideeffect-icon text-yellow-500">常見副作用：</strong>腹瀉、噁心、暈眩。</p>
+                        <p><strong class="interaction-icon text-green-500">藥物交互作用：</strong><span class="font-bold text-green-600">目前未發現顯著</span>。</p>
+                        <p><strong class="usage-icon text-gray-700">用法用量：</strong>每日2次，共4顆膠囊，持續5天。</p>
+                        <p><strong class="pregnancy-icon text-red-500">懷孕建議：</strong><span class="font-bold text-red-600">不建議/禁用</span>。</p>
+                        <p><strong class="kidney-icon text-green-500">腎功能不全：</strong>通常不需調整。</p>
+                        <p><strong class="liver-icon text-green-500">肝功能不全：</strong>通常不需調整。</p>
+                    </div>
+                </div>
+
+                <div class="drug-card p-6">
+                    <h3 class="text-2xl font-bold text-blue-600 mb-3">Xocova (可核福)</h3>
+                    <p class="mb-4 text-sm text-gray-500">Ensitrelvir</p>
+                     <div class="space-y-3">
+                        <p><strong class="mechanism-icon text-blue-500">作用機制：</strong>3CL蛋白酶抑制劑。</p>
+                        <p><strong class="efficacy-icon text-green-500">臨床療效：</strong>治療Omicron症狀有效，<span class="font-bold text-blue-600">具暴露後預防潛力(PEP)</span>。</p>
+                        <p><strong class="sideeffect-icon text-yellow-500">常見副作用：</strong>短暫性HDL-C降低、三酸甘油酯升高。</p>
+                        <p><strong class="interaction-icon text-red-500">藥物交互作用：</strong><span class="font-bold text-red-600">預期多且複雜</span> (本身為強CYP3A抑制劑)。</p>
+                        <p><strong class="usage-icon text-gray-700">用法用量：</strong>首日3錠，後每日1錠，持續5天。</p>
+                        <p><strong class="pregnancy-icon text-red-500">懷孕建議：</strong><span class="font-bold text-red-600">禁用</span>。</p>
+                        <p><strong class="kidney-icon text-gray-500">腎功能不全：</strong>資訊待確認。</p>
+                        <p><strong class="liver-icon text-gray-500">肝功能不全：</strong>資訊待確認。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="eligibility" class="mb-12">
+            <h2 class="section-title">公費給藥適用條件 (臺灣疾管署)</h2>
+            <div class="info-box">
+                <h3 class="sub-title eligibility-icon">一般先決條件</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-1">
+                    <li>COVID-19確診 (PCR、醫事快篩、或核准之家用快篩陽性)。</li>
+                    <li>發病5天內開始治療。</li>
+                    <li>輕度至中度COVID-19，且未使用氧氣治療。</li>
+                    <li>具有至少一項重症風險因子。</li>
+                </ul>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>點擊查看重症風險因子</span>
+                    <span class="accordion-arrow">▶</span>
+                </div>
+                <div class="accordion-content">
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>年齡 ≥ 65歲</li>
+                        <li>糖尿病</li>
+                        <li>慢性腎病</li>
+                        <li>心血管疾病（不含高血壓）</li>
+                        <li>慢性肺疾</li>
+                        <li>癌症</li>
+                        <li>懷孕（或產後6週內）</li>
+                        <li>BMI ≥ 30 (或兒童青少年BMI > 同齡第95百分位)</li>
+                        <li>慢性肝病</li>
+                        <li>失能 (腦性麻痺、發展遲緩等)</li>
+                        <li>精神疾病 (思覺失調症等)</li>
+                        <li>失智症</li>
+                        <li>結核病</li>
+                        <li>影響免疫功能之疾病 (HIV、移植、免疫抑制劑)</li>
+                        <li>吸菸（或已戒菸者）**須同時具有任一其他風險因子**</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-6 mt-6">
+                <div class="p-4 border border-blue-200 rounded-lg bg-blue-50">
+                    <h4 class="font-semibold text-blue-700 mb-2">Paxlovid 適用：</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                        <li>成人或≥12歲且≥40公斤兒童青少年。</li>
+                        <li>符合一般先決條件及具重症風險因子。</li>
+                        <li>懷孕婦女：醫師評估效益大於風險可使用。</li>
+                        <li><span class="pill pill-blue">一般首選</span></li>
+                    </ul>
+                </div>
+                <div class="p-4 border border-yellow-200 rounded-lg bg-yellow-50">
+                    <h4 class="font-semibold text-yellow-700 mb-2">Molnupiravir 適用：</h4>
+                     <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                        <li>≥18歲成人。</li>
+                        <li>符合一般先決條件及具重症風險因子 (懷孕除外)。</li>
+                        <li><span class="font-bold">關鍵：</span>無法使用Paxlovid/瑞德西韋時 (如重度腎/肝功能不全、嚴重藥物交互作用)。</li>
+                        <li>醫師需記錄無法使用Paxlovid原因。</li>
+                         <li><span class="pill pill-yellow">二線選擇</span></li>
+                    </ul>
+                </div>
+                <div class="p-4 border border-green-200 rounded-lg bg-green-50">
+                    <h4 class="font-semibold text-green-700 mb-2">Xocova 適用：</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                        <li>≥12歲 (依藥品仿單)。</li>
+                        <li>具重症風險因子且無法使用Paxlovid/瑞德西韋之輕症個案。</li>
+                        <li>懷孕及哺乳禁用。</li>
+                        <li><span class="pill pill-yellow">二線選擇</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="precautions" class="mb-12">
+            <h2 class="section-title">關鍵使用注意事項</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="info-box">
+                    <h3 class="sub-title notes-icon">所有口服藥物一般指引</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li><span class="font-semibold">及時啟用：</span>症狀出現5天內。</li>
+                        <li><span class="font-semibold">完成療程：</span>務必完成5天療程，勿擅自停藥。</li>
+                        <li><span class="font-semibold">忘記服藥：</span>依藥物指示處理，勿服雙倍劑量。</li>
+                        <li><span class="font-semibold">隔離措施：</span>治療期間及治療後仍需遵守隔離指引。</li>
+                    </ul>
+                </div>
+                <div class="info-box bg-red-50 border-red-500">
+                     <h3 class="sub-title interaction-icon text-red-700">藥物交互作用管理 (尤其 Paxlovid & Xocova)</h3>
+                    <ul class="list-disc list-inside text-red-700 space-y-1">
+                        <li><span class="font-semibold">患者責任：</span>主動告知醫師所有用藥 (含中草藥、保健品)。</li>
+                        <li><span class="font-semibold">醫師責任：</span>詳盡用藥整合、查詢交互作用資料庫。</li>
+                        <li>Paxlovid與Xocova皆為<span class="font-bold">強效CYP3A抑制劑</span>，交互作用風險高。</li>
+                        <li>若無法安全管理交互作用，可能需改用Molnupiravir。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="accordion-item mt-6">
+                <div class="accordion-header">
+                    <span>Paxlovid 重要藥物交互作用範例 (Xocova具相似潛力)</span>
+                    <span class="accordion-arrow">▶</span>
+                </div>
+                <div class="accordion-content">
+                    <p class="mb-2 text-sm text-gray-600">以下為部分範例，實際用藥請務必諮詢醫師或藥師，並查閱完整藥物交互作用資訊。</p>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead class="table-header">
+                                <tr>
+                                    <th>交互作用藥物/類別</th>
+                                    <th>潛在不良後果</th>
+                                    <th>一般管理建議</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>抗心律不整藥物 (Amiodarone)</td>
+                                    <td>心律不整風險增加</td>
+                                    <td>通常禁忌併用</td>
+                                </tr>
+                                <tr>
+                                    <td>抗凝血劑 (Rivaroxaban, Apixaban)</td>
+                                    <td>出血風險顯著增加</td>
+                                    <td>通常禁忌併用或需極謹慎評估</td>
+                                </tr>
+                                <tr>
+                                    <td>Statin類降血脂藥 (Simvastatin)</td>
+                                    <td>肌肉病變風險增加</td>
+                                    <td>Simvastatin禁忌併用，其他可能需暫停/減量</td>
+                                </tr>
+                                <tr>
+                                    <td>免疫抑制劑 (Tacrolimus)</td>
+                                    <td>藥物濃度顯著升高，毒性大增</td>
+                                    <td>避免併用或需極密切監測下調整</td>
+                                </tr>
+                                 <tr>
+                                    <td>苯二氮平類鎮靜安眠藥 (Midazolam口服)</td>
+                                    <td>鎮靜作用延長、呼吸抑制</td>
+                                    <td>通常禁忌併用</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-6 p-6 bg-yellow-50 border border-yellow-300 rounded-lg">
+                <h3 class="sub-title text-yellow-700">EUA 與知情同意</h3>
+                 <ul class="list-disc list-inside text-yellow-800 space-y-1">
+                    <li>多數藥物經<span class="font-semibold">緊急使用授權 (EUA)</span> 提供。</li>
+                    <li>EUA藥物若發生嚴重不良反應，<span class="font-semibold">通常不適用藥害救濟</span>。</li>
+                    <li>醫師必須向病人<span class="font-semibold">充分說明效益、風險</span>並取得知情同意。</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="ai-features" class="mb-12">
+            <h2 class="section-title">✨ AI 輔助資訊</h2>
+            
+            <div class="ai-feature-card">
+                <h3 class="ai-feature-title">AI 智能問答</h3>
+                <p class="text-sm text-gray-600 mb-2">您可以針對本頁面提供的COVID-19口服藥物資訊提出問題，AI將嘗試提供相關答覆。</p>
+                <p class="ai-disclaimer"><strong>重要提示：</strong>AI回覆僅供參考，資訊可能不完整或非最新，不能取代專業醫師或藥師的診斷與建議。請務必諮詢醫療專業人員。</p>
+                <textarea id="ai-question-input" class="ai-input" rows="3" placeholder="請在此輸入您關於本頁藥物資訊的問題..."></textarea>
+                <button id="ask-ai-button" class="ai-button">
+                    <span id="ask-ai-button-text">提問</span>
+                    <div id="ask-ai-loading" class="loading-spinner" style="display: none;"></div>
+                </button>
+                <div id="ai-question-result" class="ai-result-area" style="display: none;"></div>
+            </div>
+
+            <div class="ai-feature-card">
+                <h3 class="ai-feature-title">藥物交互作用初步檢查</h3>
+                <p class="text-sm text-gray-600 mb-2">若您考慮使用Paxlovid或Xocova，可輸入您目前正在服用的其他藥物，AI將提供初步的潛在交互作用風險提示。</p>
+                <p class="ai-disclaimer"><strong>極重要提示：</strong>此功能僅為初步參考，藥物交互作用非常複雜且因人而異。AI提供的資訊可能不完整或不適用於您的特定情況。**在調整任何藥物治療前，您必須諮詢您的醫師或藥師，並提供完整的用藥史。** 切勿僅依賴此AI結果自行決定。</p>
+                <textarea id="drug-interaction-input" class="ai-input" rows="4" placeholder="請在此輸入您目前服用的所有藥物名稱，每種藥物一行，例如：\n阿斯匹靈\n維生素C\n降血壓藥物X"></textarea>
+                <button id="check-interaction-button" class="ai-button">
+                     <span id="check-interaction-button-text">✨ 初步檢查交互作用</span>
+                     <div id="check-interaction-loading" class="loading-spinner" style="display: none;"></div>
+                </button>
+                <div id="drug-interaction-result" class="ai-result-area" style="display: none;"></div>
+            </div>
+        </section>
+
+        <section id="summary" class="mb-8">
+            <h2 class="section-title">總結與重要提示</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="p-6 rounded-lg bg-blue-100 border border-blue-300">
+                    <h3 class="text-xl font-semibold text-blue-700 mb-3">民眾應注意</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>若有症狀且屬高風險族群，<span class="font-semibold">儘速就醫</span>。</li>
+                        <li>務必向醫師提供<span class="font-semibold">完整用藥清單</span>及健康狀況。</li>
+                        <li>充分理解藥物效益、風險及EUA規定。</li>
+                        <li><span class="font-semibold">嚴格遵守醫囑</span>，完成5天療程。</li>
+                        <li>若有嚴重副作用，立即告知醫師。</li>
+                    </ul>
+                </div>
+                <div class="p-6 rounded-lg bg-green-100 border border-green-300">
+                    <h3 class="text-xl font-semibold text-green-700 mb-3">處方醫師核心考量</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>依最新指引評估病人是否符合用藥條件。</li>
+                        <li>開立Paxlovid/Xocova前，<span class="font-semibold">務必詳查藥物交互作用</span>。</li>
+                        <li>提供清晰衛教資訊，取得知情同意並記錄。</li>
+                        <li>開立二線藥物(Molnupiravir/Xocova)時，需註明理由。</li>
+                        <li>持續關注疾管署最新指引。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 py-6 border-t border-gray-300">
+            <p class="text-sm text-gray-500">本資訊僅供參考，不能取代專業醫療建議。若有健康問題，請務必諮詢醫師或藥師。</p>
+            <p class="text-sm text-gray-500">資料整理自臺灣疾病管制署相關指引及藥品資訊。</p>
+        </footer>
+    </div>
+
+    <script>
+        // JavaScript for Accordion (Existing)
+        const accordionHeaders = document.querySelectorAll('.accordion-header');
+        accordionHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const arrow = header.querySelector('.accordion-arrow');
+                
+                // Close other open accordions if you want only one open at a time
+                // accordionHeaders.forEach(otherHeader => {
+                //     if (otherHeader !== header) {
+                //         otherHeader.nextElementSibling.classList.remove('open');
+                //         otherHeader.nextElementSibling.style.display = 'none';
+                //         otherHeader.querySelector('.accordion-arrow').classList.remove('open');
+                //     }
+                // });
+
+                content.classList.toggle('open');
+                arrow.classList.toggle('open');
+                if (content.classList.contains('open')) {
+                    content.style.display = 'block';
+                } else {
+                    content.style.display = 'none';
+                }
+            });
+        });
+
+        // --- AI Feature JavaScript ---
+
+        const apiKey = ""; // API Key will be injected by the environment if needed
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+        // Helper function to call Gemini API
+        async function callGeminiAPI(promptText, buttonElement, loadingElement, resultElement, buttonTextElement, originalButtonText) {
+            buttonElement.disabled = true;
+            loadingElement.style.display = 'inline-block';
+            buttonTextElement.style.display = 'none';
+            resultElement.style.display = 'block';
+            resultElement.textContent = '正在處理您的請求，請稍候...';
+
+            let chatHistory = [{ role: "user", parts: [{ text: promptText }] }];
+            const payload = { contents: chatHistory };
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('API Error Response:', errorData);
+                    throw new Error(`API 請求失敗，狀態碼：${response.status}. ${errorData?.error?.message || ''}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    resultElement.textContent = text;
+                } else {
+                    console.error('Unexpected API response structure:', result);
+                    resultElement.textContent = '抱歉，無法取得有效的AI回覆。請檢查API回應結構。';
+                }
+
+            } catch (error) {
+                console.error('Gemini API 呼叫失敗:', error);
+                resultElement.textContent = `發生錯誤：${error.message} 請稍後再試。`;
+            } finally {
+                buttonElement.disabled = false;
+                loadingElement.style.display = 'none';
+                buttonTextElement.style.display = 'inline-block';
+            }
+        }
+
+        // AI 智能問答 功能
+        const aiQuestionInput = document.getElementById('ai-question-input');
+        const askAiButton = document.getElementById('ask-ai-button');
+        const aiQuestionResult = document.getElementById('ai-question-result');
+        const askAiLoading = document.getElementById('ask-ai-loading');
+        const askAiButtonText = document.getElementById('ask-ai-button-text');
+
+        askAiButton.addEventListener('click', () => {
+            const userInput = aiQuestionInput.value.trim();
+            if (!userInput) {
+                aiQuestionResult.style.display = 'block';
+                aiQuestionResult.textContent = '請先輸入您的問題。';
+                return;
+            }
+
+            const prompt = `你是一個AI助理。請根據網頁上關於COVID-19口服藥物 Paxlovid、Molnupiravir、Xocova 的資訊（包含它們的特性、公費條件、副作用、藥物交互作用、使用注意事項）來回答以下問題：「${userInput}」。請在回答的開頭和結尾強調，此回覆僅供參考，不能取代專業醫療建議，且使用者應諮詢醫師或藥師獲得專業意見。如果問題超出本網頁資訊範圍，請婉拒回答並建議使用者諮詢專業人士。`;
+            callGeminiAPI(prompt, askAiButton, askAiLoading, aiQuestionResult, askAiButtonText, "提問");
+        });
+
+        // 藥物交互作用初步檢查 功能
+        const drugInteractionInput = document.getElementById('drug-interaction-input');
+        const checkInteractionButton = document.getElementById('check-interaction-button');
+        const drugInteractionResult = document.getElementById('drug-interaction-result');
+        const checkInteractionLoading = document.getElementById('check-interaction-loading');
+        const checkInteractionButtonText = document.getElementById('check-interaction-button-text');
+
+        checkInteractionButton.addEventListener('click', () => {
+            const userInput = drugInteractionInput.value.trim();
+            if (!userInput) {
+                drugInteractionResult.style.display = 'block';
+                drugInteractionResult.textContent = '請先輸入您目前服用的藥物清單。';
+                return;
+            }
+            const prompt = `你是一個AI助理。使用者正在考慮服用COVID-19口服藥物Paxlovid或Xocova，並提供了他們目前正在服用的藥物清單：「${userInput}」。已知Paxlovid和Xocova是強效CYP3A抑制劑，可能與多種藥物產生交互作用。請根據此資訊，初步評估是否存在潛在的交互作用風險。請不要提供具體的醫療處置建議，僅提示可能的風險，並在回答的開頭和結尾強力建議使用者務必諮詢醫師或藥師以獲得專業且個人化的評估，因為藥物交互作用非常複雜。強調你的回答不是醫療建議，且僅為初步參考，絕對不能取代專業醫療人員的判斷。`;
+            callGeminiAPI(prompt, checkInteractionButton, checkInteractionLoading, drugInteractionResult, checkInteractionButtonText, "✨ 初步檢查交互作用");
+        });
+
+    </script>
+</body>
+</html>
