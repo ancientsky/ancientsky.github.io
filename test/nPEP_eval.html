@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nPEP 評估流程</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>nPEP 評估流程</h1>
+        <div id="start" class="node">
+            <p>開始：是否有已知的或可能的 HIV 暴露？</p>
+            <button onclick="showNext('q2')">是</button>
+            <button onclick="showResult('result-no-nPEP')">否</button>
+        </div>
+
+        <div id="q2" class="node hidden">
+            <p>2. 屬於哪種暴露類型？</p>
+            <button onclick="showNext('flow-a')">性接觸</button>
+            <button onclick="showNext('flow-b')">藥物注射暴露</button>
+            <button onclick="showNext('flow-c')">其他暴露</button>
+        </div>
+
+        <div id="flow-a" class="node hidden">
+            <p>A1. 是否使用保險套？</p>
+            <button onclick="showResult('result-no-nPEP')">是，保險套完整</button>
+            <button onclick="showNext('a2')">否，或保險套未完整使用</button>
+        </div>
+
+        <div id="a2" class="node hidden">
+            <p>A2. 暴露者是否正依照建議服用 PrEP？</p>
+            <button onclick="showResult('result-case-by-case')">是 (需進一步評估)</button>
+            <button onclick="showNext('a3')">否</button>
+        </div>
+
+        <div id="a3" class="node hidden">
+            <p>A3. 感染源是否具有持續的 HIV 病毒抑制？</p>
+            <button onclick="showResult('result-no-nPEP')">是 (通常不建議 nPEP)</button>
+            <button onclick="showNext('a4')">否，或病毒抑制狀態不明</button>
+        </div>
+
+        <div id="a4" class="node hidden">
+            <p>A4. 屬於哪種性行為？</p>
+            <button onclick="showResult('result-nPEP')">肛交或陰道性交，且感染源具有可檢測到的病毒血症或病毒抑制狀態不明</button>
+            <button onclick="showResult('result-case-by-case')">肛交或陰道性交，且感染源 HIV 狀態未知</button>
+            <button onclick="showResult('result-no-nPEP')">口交-生殖器接觸 (通常不建議 nPEP)</button>
+        </div>
+
+        <div id="flow-b" class="node hidden">
+            <p>B1. 藥物注射是否導致接觸到感染源的血液？</p>
+            <button onclick="showResult('result-no-nPEP')">否</button>
+            <button onclick="showNext('b2')">是</button>
+        </div>
+
+        <div id="b2" class="node hidden">
+            <p>B2. 感染源是否具有持續的 HIV 病毒抑制？</p>
+            <button onclick="showResult('result-case-by-case')">是 (需進一步評估)</button>
+            <button onclick="showResult('result-nPEP')">否，或病毒抑制狀態不明</button>
+        </div>
+
+        <div id="flow-c" class="node hidden">
+            <p>C1. 屬於哪種暴露？</p>
+            <button onclick="showResult('result-no-nPEP')">口腔-口腔接觸、相互手淫、接觸到與 HIV 傳播無關的體液</button>
+            <button onclick="showResult('result-case-by-case')">血液或其他具感染性的體液噴濺到有傷口或黏膜的皮膚</button>
+            <button onclick="showResult('result-no-nPEP')">被丟棄的針頭扎傷 (一般情況)</button>
+            <button onclick="showResult('result-case-by-case')">被丟棄的針頭扎傷 (特殊情況)</button>
+            <button onclick="showResult('result-case-by-case')">人類咬傷 (有血液暴露)</button>
+            <button onclick="showResult('result-no-nPEP')">人類咬傷 (無血液暴露)</button>
+        </div>
+
+        <div id="result-nPEP" class="result hidden">
+            <h2>建議使用 nPEP</h2>
+            <p>請諮詢醫護人員以進行進一步評估。</p>
+            <button onclick="resetFlow()">重新評估</button>
+        </div>
+
+        <div id="result-no-nPEP" class="result hidden">
+            <h2>不建議使用 nPEP</h2>
+            <p>請諮詢醫護人員以進行進一步評估。</p>
+            <button onclick="resetFlow()">重新評估</button>
+        </div>
+
+        <div id="result-case-by-case" class="result hidden">
+            <h2>需由醫護人員逐案評估</h2>
+            <p>請諮詢醫護人員以進行風險效益評估並決定是否使用 nPEP。</p>
+            <button onclick="resetFlow()">重新評估</button>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
