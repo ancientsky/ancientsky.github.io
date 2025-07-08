@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅遊後健康風險評估</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans TC", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            line-height: 1.6;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e0e0;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid #f0f0f0;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+        }
+
+        header h1 {
+            color: #0056b3;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group, fieldset {
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+
+        input[type="radio"], 
+        input[type="checkbox"] {
+            margin-right: 8px;
+            transform: scale(1.2);
+        }
+
+        input[type="radio"] + label,
+        input[type="checkbox"] + label {
+            font-weight: normal;
+            display: inline-block;
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+
+        fieldset {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+
+        legend {
+            font-weight: 600;
+            padding: 0 10px;
+            color: #0056b3;
+            font-size: 1.1em;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: #fff;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        /* Results Section */
+        .hidden {
+            display: none;
+        }
+
+        #results {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        #risk-assessment {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+
+        #risk-level {
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: #fff;
+            font-size: 1.1em;
+        }
+
+        .risk-high { background-color: #dc3545; }
+        .risk-medium { background-color: #ffc107; color: #333 !important; }
+        .risk-low { background-color: #28a745; }
+
+        #rationale-section ul {
+            list-style-type: '✓ ';
+            padding-left: 20px;
+            background-color: #e9f5ff;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        #rationale-section ul li {
+            margin-bottom: 8px;
+        }
+
+        #disease-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        #disease-table th, #disease-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        #disease-table th {
+            background-color: #f2f7fc;
+            font-weight: 600;
+        }
+        
+        #disease-table tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .disclaimer {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        #recommendations {
+            background-color: #fffbe6;
+            border: 1px solid #ffeeba;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        #recommendations h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+
+        #recommendations ol li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>旅遊後健康風險評估</h1>
+            <p>本工具旨在協助您初步評估旅遊後的健康風險。結果僅供參考，無法取代專業醫療診斷。</p>
+        </header>
+
+        <form id="evaluationForm">
+            <!-- 第一步：輸入資訊 -->
+            <section id="step1">
+                <h2>第一步：請輸入您的旅遊資訊</h2>
+                
+                <div class="form-group">
+                    <label for="travel-country">旅遊國家/地區：</label>
+                    <select id="travel-country" name="travel-country" required>
+                        <option value="">請選擇...</option>
+                        <optgroup label="亞洲">
+                            <option value="sea">東南亞 (泰國, 越南, 印尼等)</option>
+                            <option value="india">南亞 (印度, 尼泊爾等)</option>
+                            <option value="jp_kr">東北亞 (日本, 韓國)</option>
+                        </optgroup>
+                        <optgroup label="非洲">
+                            <option value="ssa">撒哈拉以南非洲 (肯亞, 奈及利亞等)</option>
+                            <option value="na">北非 (埃及, 摩洛哥)</option>
+                        </optgroup>
+                        <optgroup label="美洲">
+                            <option value="sa">中南美洲 (巴西, 秘魯等)</option>
+                            <option value="na_us">北美 (美國, 加拿大)</option>
+                        </optgroup>
+                         <optgroup label="歐洲/大洋洲">
+                            <option value="eu_au">西歐/紐澳</option>
+                        </optgroup>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="travel-duration">旅遊天數：</label>
+                    <input type="number" id="travel-duration" name="travel-duration" min="1" placeholder="例如：14" required>
+                </div>
+
+                <div class="form-group">
+                    <label>旅遊目的：</label>
+                    <input type="radio" id="purpose-tourism" name="travel-purpose" value="tourism" checked> <label for="purpose-tourism">觀光</label>
+                    <input type="radio" id="purpose-vfr" name="travel-purpose" value="vfr"> <label for="purpose-vfr">探親訪友</label>
+                    <input type="radio" id="purpose-volunteer" name="travel-purpose" value="volunteer"> <label for="purpose-volunteer">志工/醫療援助</label>
+                </div>
+
+                <div class="form-group">
+                    <label>旅遊前的準備：</label>
+                    <input type="radio" id="prep-yes" name="travel-prep" value="yes"> <label for="prep-yes">已接種疫苗/服用預防藥</label>
+                    <input type="radio" id="prep-no" name="travel-prep" value="no" checked> <label for="prep-no">未做任何醫療準備</label>
+                </div>
+
+                <fieldset>
+                    <legend>暴露史 (可複選)</legend>
+                    <input type="checkbox" id="exp-mosquito" name="exposure" value="mosquito"> <label for="exp-mosquito">有被蚊蟲叮咬</label><br>
+                    <input type="checkbox" id="exp-water" name="exposure" value="water"> <label for="exp-water">曾飲用未煮沸的生水或食用路邊攤</label><br>
+                    <input type="checkbox" id="exp-animal" name="exposure" value="animal"> <label for="exp-animal">曾接觸/被動物抓咬 (貓, 狗, 猴子等)</label><br>
+                    <input type="checkbox" id="exp-freshwater" name="exposure" value="freshwater"> <label for="exp-freshwater">曾在淡水湖泊/河流中游泳</label><br>
+                </fieldset>
+
+                <fieldset>
+                    <legend>目前症狀 (可複選)</legend>
+                    <input type="checkbox" id="symp-fever" name="symptom" value="fever"> <label for="symp-fever">發燒 (體溫 > 38°C)</label><br>
+                    <input type="checkbox" id="symp-diarrhea" name="symptom" value="diarrhea"> <label for="symp-diarrhea">腹瀉</label><br>
+                    <input type="checkbox" id="symp-rash" name="symptom" value="rash"> <label for="symp-rash">皮膚問題 (出疹、黃疸)</label><br>
+                    <input type="checkbox" id="symp-respiratory" name="symptom" value="respiratory"> <label for="symp-respiratory">呼吸道症狀 (咳嗽、流鼻水)</label><br>
+                </fieldset>
+            </section>
+            
+            <button type="submit">開始評估</button>
+        </form>
+
+        <!-- 第二三步：顯示結果 -->
+        <section id="results" class="hidden">
+            <h2>第二步：風險評估與潛在疾病分析</h2>
+            <div id="risk-assessment">
+                <strong>綜合風險評估：</strong> <span id="risk-level"></span>
+            </div>
+            <div id="rationale-section">
+                <strong>評估理由：</strong>
+                <ul id="rationale-list"></ul>
+            </div>
+            <div id="disease-section">
+                <strong>可能的傳染病種類及機率：</strong>
+                <table id="disease-table">
+                    <thead>
+                        <tr>
+                            <th>潛在傳染病</th>
+                            <th>感染機率</th>
+                            <th>主要傳染途徑</th>
+                            <th>常見潛伏期</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- JavaScript will populate this -->
+                    </tbody>
+                </table>
+                 <p class="disclaimer">註：以上為根據您提供的資訊所做的初步推測，機率與疾病種類僅供參考，無法取代專業醫療診斷。</p>
+            </div>
+
+            <hr>
+
+            <h2>第三步：後續步驟與建議</h2>
+            <div id="recommendations">
+                <h3>重要提醒：</h3>
+                <ol>
+                    <li><strong>立即就醫：</strong>基於您的風險評估，強烈建議您立即前往醫療院所的「<strong>旅遊醫學門診</strong>」或「<strong>感染科</strong>」就診。</li>
+                    <li><strong>主動告知旅遊史：</strong>就醫時，請務必<strong>主動、詳細</strong>告知醫師您的完整旅遊史、活動史及症狀，這對正確診斷至關重要。</li>
+                    <li><strong>注意個人防護：</strong>在診斷明確前，若有發燒或呼吸道症狀，請佩戴口罩。若醫師懷疑是蚊媒傳染病，請注意防蚊。</li>
+                    <li><strong>持續觀察：</strong>部分傳染病潛伏期較長，即使目前無症狀，返國後仍需持續觀察自身健康狀況數週至數月。</li>
+                </ol>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        document.getElementById('evaluationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // 防止表單提交導致頁面刷新
+
+            // --- 1. 獲取使用者輸入 ---
+            const country = document.getElementById('travel-country').value;
+            const durationInput = document.getElementById('travel-duration').value;
+            const purpose = document.querySelector('input[name="travel-purpose"]:checked').value;
+            const prep = document.querySelector('input[name="travel-prep"]:checked').value;
+            const exposures = Array.from(document.querySelectorAll('input[name="exposure"]:checked')).map(el => el.value);
+            const symptoms = Array.from(document.querySelectorAll('input[name="symptom"]:checked')).map(el => el.value);
+            
+            // 驗證必要欄位
+            if (!country || !durationInput) {
+                alert('請填寫旅遊國家和天數！');
+                return;
+            }
+            const duration = parseInt(durationInput, 10);
+
+
+            // --- 2. 風險評估邏輯 ---
+            let riskScore = 0;
+            const reasons = [];
+            
+            // 根據目的地評分
+            const countryScores = { 'ssa': 10, 'sea': 8, 'india': 8, 'sa': 7, 'na': 4, 'jp_kr': 1, 'eu_au': 0 };
+            if (country && countryScores[country] > 0) {
+                riskScore += countryScores[country];
+                const countryText = document.querySelector(`#travel-country option[value="${country}"]`).innerText;
+                reasons.push(`您前往的地區 (${countryText}) 是多種傳染病的流行區。`);
+            }
+
+            // 根據旅遊天數評分
+            if (duration > 21) {
+                riskScore += 5;
+                reasons.push(`超過三週的長期旅遊會增加暴露風險。`);
+            } else if (duration > 7) {
+                riskScore += 2;
+            }
+
+            // 根據旅遊目的評分
+            if (purpose === 'vfr') {
+                riskScore += 5;
+                reasons.push(`探親訪友(VFR)旅客的感染風險通常較高，可能因居住環境與飲食習慣與當地人相似。`);
+            } else if (purpose === 'volunteer') {
+                riskScore += 7;
+                reasons.push(`志工或醫療援助活動可能會有更高的暴露機會。`);
+            }
+
+            // 根據行前準備評分
+            if (prep === 'no') {
+                riskScore += 5;
+                reasons.push(`未進行疫苗接種或藥物預防會增加感染風險。`);
+            }
+
+            // 根據暴露史評分
+            if (exposures.includes('mosquito')) {
+                riskScore += 10;
+                reasons.push(`蚊蟲叮咬是瘧疾、登革熱等疾病的主要傳播途徑。`);
+            }
+            if (exposures.includes('water')) {
+                riskScore += 8;
+                reasons.push(`不潔的飲水或食物是感染腸道傳染病 (如傷寒、A型肝炎) 的主要原因。`);
+            }
+            if (exposures.includes('animal')) {
+                riskScore += 7;
+                reasons.push(`接觸動物可能帶來狂犬病或其他動物共通傳染病的風險。`);
+            }
+            if (exposures.includes('freshwater')) {
+                riskScore += 6;
+                reasons.push(`在疫區淡水游泳有感染血吸蟲病的風險。`);
+            }
+
+            // 根據症狀評分
+            if (symptoms.includes('fever')) {
+                riskScore += 15;
+                reasons.push(`發燒是許多嚴重熱帶傳染病的共同警訊，需要高度警惕。`);
+            }
+            if (symptoms.includes('diarrhea')) riskScore += 5;
+            if (symptoms.includes('rash')) riskScore += 5;
+
+            // --- 3. 判斷潛在疾病 ---
+            const potentialDiseases = new Map();
+
+            function addDisease(name, probability, route, incubation) {
+                if (!potentialDiseases.has(name) || getProbabilityValue(probability) > getProbabilityValue(potentialDiseases.get(name).probability)) {
+                    potentialDiseases.set(name, { probability, route, incubation });
+                }
+            }
+            
+            function getProbabilityValue(probText) {
+                if (probText === '高') return 3;
+                if (probText === '中') return 2;
+                if (probText === '低') return 1;
+                return 0;
+            }
+
+            if (symptoms.includes('fever') && exposures.includes('mosquito')) {
+                if (['ssa', 'sea', 'india', 'sa'].includes(country)) addDisease('瘧疾 (Malaria)', '高', '蚊蟲叮咬', '7-30天');
+                if (['sea', 'india', 'sa'].includes(country)) addDisease('登革熱 (Dengue)', '高', '蚊蟲叮咬', '3-14天');
+                if (['sea', 'sa'].includes(country)) addDisease('屈公病 (Chikungunya)', '中', '蚊蟲叮咬', '3-7天');
+            }
+            
+            if (symptoms.includes('diarrhea') && exposures.includes('water')) {
+                if (['ssa', 'sea', 'india', 'sa', 'na'].includes(country)) {
+                    addDisease('傷寒 (Typhoid Fever)', '高', '污染的飲食', '6-30天');
+                    addDisease('A型肝炎 (Hepatitis A)', '中', '污染的飲食', '15-50天');
+                    addDisease('旅行者腹瀉 (Traveler\'s Diarrhea)', '高', '污染的飲食', '1-3天');
+                }
+            }
+
+            if (exposures.includes('animal')) {
+                addDisease('狂犬病 (Rabies)', '低', '動物抓咬', '20-90天');
+            }
+            
+            if (exposures.includes('freshwater') && ['ssa', 'sa', 'sea'].includes(country)) {
+                 addDisease('血吸蟲病 (Schistosomiasis)', '中', '經皮膚鑽入', '14-84天');
+            }
+            
+            if (symptoms.length === 0 && riskScore > 5) {
+                reasons.push("提醒：目前雖無症狀，但部分疾病潛伏期較長，仍需持續注意健康狀況。");
+            }
+            
+            if (riskScore < 5) {
+                reasons.push("根據您的輸入，感染特定旅遊傳染病的風險較低，但仍建議注意後續健康狀況。");
+            }
+
+
+            // --- 4. 生成並顯示結果 ---
+            const resultsSection = document.getElementById('results');
+            const riskLevelEl = document.getElementById('risk-level');
+            const rationaleListEl = document.getElementById('rationale-list');
+            const diseaseTableBodyEl = document.querySelector('#disease-table tbody');
+            const diseaseSectionEl = document.getElementById('disease-section');
+
+            // 清空舊結果
+            rationaleListEl.innerHTML = '';
+            diseaseTableBodyEl.innerHTML = '';
+
+            // 判定風險等級
+            let riskClass = '';
+            let riskText = '';
+            if (riskScore >= 25) {
+                riskText = '高風險';
+                riskClass = 'risk-high';
+            } else if (riskScore >= 10) {
+                riskText = '中風險';
+                riskClass = 'risk-medium';
+            } else {
+                riskText = '低風險';
+                riskClass = 'risk-low';
+            }
+            riskLevelEl.textContent = riskText;
+            riskLevelEl.className = riskClass;
+
+            // 顯示評估理由
+            reasons.forEach(reason => {
+                const li = document.createElement('li');
+                li.textContent = reason;
+                rationaleListEl.appendChild(li);
+            });
+
+            // 顯示潛在疾病表格
+            if (potentialDiseases.size > 0) {
+                // Sort diseases by probability
+                const sortedDiseases = [...potentialDiseases.entries()].sort((a, b) => {
+                    return getProbabilityValue(b[1].probability) - getProbabilityValue(a[1].probability);
+                });
+
+                sortedDiseases.forEach(([name, details]) => {
+                    const row = diseaseTableBodyEl.insertRow();
+                    row.innerHTML = `
+                        <td>${name}</td>
+                        <td>${details.probability}</td>
+                        <td>${details.route}</td>
+                        <td>${details.incubation}</td>
+                    `;
+                });
+                diseaseSectionEl.classList.remove('hidden');
+            } else {
+                diseaseSectionEl.classList.add('hidden');
+            }
+
+            // 顯示結果區塊
+            resultsSection.classList.remove('hidden');
+
+            // 捲動到結果區
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
