@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NomadHealth: A Human-Powered Health Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .stat-card h3 {
+            line-height: 1.2;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="bg-[#003B46] text-white text-center py-12 px-4">
+        <h1 class="text-4xl md:text-5xl font-black mb-2">NomadHealth</h1>
+        <p class="text-xl md:text-2xl font-light text-[#C4DFE6]">為索馬利蘭游牧民族編織一張由人驅動的健康安全網</p>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+
+        <section id="problem" class="mb-16">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-[#07575B] mb-4">看不見的危機：數位鴻溝下的健康悖論</h2>
+                <p class="text-lg text-gray-600">對於索馬利蘭的游牧社群而言，獲取醫療服務是一場與距離、成本和資訊真空的博弈。傳統的數位健康方案在嚴峻的現實面前，註定失敗。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="stat-card bg-white p-6 rounded-lg shadow-lg border-t-4 border-[#66A5AD]">
+                    <h3 class="text-5xl font-extrabold text-[#07575B] mb-3">230萬</h3>
+                    <p class="text-gray-700 font-semibold">游牧人口被遺忘</p>
+                    <p class="text-sm text-gray-500 mt-2">一個相當於大城市的龐大群體，卻在公共衛生系統中隱形。</p>
+                </div>
+                <div class="stat-card bg-white p-6 rounded-lg shadow-lg border-t-4 border-[#66A5AD]">
+                    <h3 class="text-5xl font-extrabold text-[#07575B] mb-3">&lt; 9%</h3>
+                    <p class="text-gray-700 font-semibold">穩定電力覆蓋率</p>
+                    <p class="text-sm text-gray-500 mt-2">任何需要插電的「智慧」設備，在這裡都將成為昂貴的磚塊。</p>
+                </div>
+                <div class="stat-card bg-white p-6 rounded-lg shadow-lg border-t-4 border-[#66A5AD]">
+                    <h3 class="text-5xl font-extrabold text-[#07575B] mb-3">&gt; 92%</h3>
+                    <p class="text-gray-700 font-semibold">未受過正規教育</p>
+                    <p class="text-sm text-gray-500 mt-2">複雜的App介面和文字說明，是他們無法逾越的數位高牆。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="mb-16">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-[#07575B] mb-4">我們的解方：一個以人為本的生態系統</h2>
+                <p class="text-lg text-gray-600">我們不試圖改變游牧民，而是賦能那些已經深受信賴的在地英雄——社群健康工作者 (CHW)。</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-xl p-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="text-center md:text-left">
+                    <h3 class="text-2xl font-bold text-[#003B46] mb-4">NomadHealth 智慧工具組</h3>
+                    <p class="text-gray-700 mb-6">這不是一個App，而是一套為CHW量身打造的移動工作站，整合在一個堅固的背包中，確保在最嚴苛的環境下也能運作。</p>
+                    <ul class="space-y-4 text-left">
+                        <li class="flex items-start">
+                            <span class="text-2xl text-[#66A5AD] mr-3">❶</span>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">離線優先應用程式</h4>
+                                <p class="text-gray-600">所有核心功能專為完全離線環境設計，以圖示和語音為導引，極簡易用。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="text-2xl text-[#66A5AD] mr-3">❷</span>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">太陽能供電方案</h4>
+                                <p class="text-gray-600">輕便的太陽能板與行動電源，擺脫對電網的依賴，實現能源自給自足。</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                             <span class="text-2xl text-[#66A5AD] mr-3">❸</span>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">安全的身份識別</h4>
+                                <p class="text-gray-600">低成本QR Code身份卡，僅作為安全的「指針」，不儲存任何敏感個資，保障隱私。</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="chart-container h-80 md:h-96">
+                    <canvas id="solutionDoughnutChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="mb-16">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-[#07575B] mb-4">運作原理：數據流動的閉環</h2>
+                <p class="text-lg text-gray-600">我們的系統在99%的時間裡離線工作，卻能在關鍵的1%時間裡，為公共衛生創造巨大價值。</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div class="flex flex-col items-center p-6">
+                    <div class="text-6xl mb-4 text-[#07575B]">→</div>
+                    <h3 class="text-xl font-bold mb-2">1. 離線收集</h3>
+                    <p class="text-gray-600">CHW在訪視時，使用平板電腦記錄健康數據、註冊患者、播放衛教影片。</p>
+                </div>
+                <div class="flex flex-col items-center p-6">
+                    <div class="text-6xl mb-4 text-[#07575B]">→</div>
+                    <h3 class="text-xl font-bold mb-2">2. 擇機同步</h3>
+                    <p class="text-gray-600">當CHW進入有網路的鄉鎮時，App會自動、靜默地將加密數據同步至雲端。</p>
+                </div>
+                <div class="flex flex-col items-center p-6">
+                    <div class="text-6xl mb-4 text-[#07575B]">→</div>
+                    <h3 class="text-xl font-bold mb-2">3. 數據洞察</h3>
+                    <p class="text-gray-600">NGO與衛生部夥伴透過儀表板，獲取匿名的、匯總的公共衛生情報。</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="impact" class="mb-16">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-[#07575B] mb-4">預期影響：衡量真正重要的事</h2>
+                <p class="text-lg text-gray-600">我們拒絕虛榮指標。NomadHealth的成功，將由對社群健康的真實改善來定義。以下是我們為期6個月試點計畫的目標。</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-4 text-[#003B46]">關鍵績效指標 (KPIs)</h3>
+                    <div class="chart-container h-80 md:h-96">
+                        <canvas id="kpiBarChart"></canvas>
+                    </div>
+                     <p class="text-sm text-gray-600 mt-4">此圖表比較了當前的基線狀況與我們試點計畫的具體目標，展示了在疫苗覆蓋率、產前檢查和CHW效率方面的顯著提升潛力。</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-4 text-[#003B46]">公共衛生情報：從無到有</h3>
+                    <div class="chart-container h-80 md:h-96">
+                        <canvas id="impactLineChart"></canvas>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-4">本系統將首次建立縱向健康數據集。此圖表模擬展示了系統如何將潛在疫情的發現時間從數月縮短至72小時內，實現真正的早期預警。</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="sustainability" class="mb-16">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-[#07575B] mb-4">永續之路：一個可擴展的社會企業</h2>
+                <p class="text-lg text-gray-600">為了確保長期影響力，我們將NomadHealth定位為一個具備自我造血能力的混合型社會企業。</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-bold text-[#003B46] mb-3">初期：B2N (對NGO)模式</h3>
+                        <p class="text-gray-700">我們向在地健康NGO提供基於「每位CHW每月」的訂閱服務。此費用涵蓋了智慧工具組的租賃、軟體授權、技術支持與硬體維護，將其巨大的資本支出轉化為可預測的營運支出。</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-[#003B46] mb-3">長期：B2G (對政府)模式</h3>
+                        <p class="text-gray-700">在證明模型的有效性後，我們將尋求與索馬利蘭衛生部等政府機構簽訂長期合約，將NomadHealth平台作為其全國游牧人口健康監測的官方標準，實現規模化影響。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#003B46] text-white text-center py-8 px-4">
+        <p class="font-bold text-xl mb-2">加入我們，共同證明科技向善的力量。</p>
+        <p class="text-[#C4DFE6]">NomadHealth - A project by Taiwan Can Help.</p>
+    </footer>
+
+    <script>
+        const FONT_COLOR = '#003B46';
+        const GRID_COLOR = '#C4DFE6';
+        const PALETTE = {
+            primary: '#07575B',
+            secondary: '#66A5AD',
+            accent: '#C4DFE6',
+            dark: '#003B46',
+            light: '#FFFFFF'
+        };
+
+        function processLabels(labels) {
+            const MAX_LENGTH = 16;
+            return labels.map(label => {
+                if (label.length <= MAX_LENGTH) {
+                    return label;
+                }
+                const words = label.split(' ');
+                let currentLine = '';
+                const lines = [];
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length > MAX_LENGTH) {
+                        lines.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                });
+                if (currentLine) {
+                    lines.push(currentLine.trim());
+                }
+                return lines;
+            });
+        }
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const defaultChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: FONT_COLOR,
+                        font: {
+                            family: "'Inter', sans-serif",
+                            size: 12,
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    bodyFont: {
+                        family: "'Inter', sans-serif",
+                    },
+                    titleFont: {
+                        family: "'Inter', sans-serif",
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: FONT_COLOR,
+                        font: {
+                            family: "'Inter', sans-serif",
+                            size: 12
+                        }
+                    },
+                    grid: {
+                        color: GRID_COLOR
+                    }
+                },
+                y: {
+                    ticks: {
+                        color: FONT_COLOR,
+                        font: {
+                            family: "'Inter', sans-serif",
+                            size: 12
+                        }
+                    },
+                    grid: {
+                        color: GRID_COLOR
+                    }
+                }
+            }
+        };
+
+        const solutionDoughnutCtx = document.getElementById('solutionDoughnutChart').getContext('2d');
+        new Chart(solutionDoughnutCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['賦能社群健康工作者 (CHW)', '離線優先的極簡技術', '永續的太陽能方案'],
+                datasets: [{
+                    label: '解決方案核心',
+                    data: [50, 30, 20],
+                    backgroundColor: [PALETTE.primary, PALETTE.secondary, '#00A7E1'],
+                    borderColor: PALETTE.light,
+                    borderWidth: 4
+                }]
+            },
+            options: { ...defaultChartOptions, scales: {} }
+        });
+
+        const kpiBarCtx = document.getElementById('kpiBarChart').getContext('2d');
+        const kpiLabels = processLabels(['兒童疫苗覆蓋率 (DTP3)', '孕婦產前檢查完成率', 'CHW文書時間 (小時/週)']);
+        new Chart(kpiBarCtx, {
+            type: 'bar',
+            data: {
+                labels: kpiLabels,
+                datasets: [{
+                    label: '基線 (估計)',
+                    data: [40, 30, 4],
+                    backgroundColor: PALETTE.secondary,
+                    borderColor: PALETTE.secondary,
+                    borderWidth: 1
+                }, {
+                    label: '第一年目標',
+                    data: [60, 50, 1],
+                    backgroundColor: PALETTE.primary,
+                    borderColor: PALETTE.primary,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...defaultChartOptions,
+                scales: {
+                    ...defaultChartOptions.scales,
+                    y: {
+                        ...defaultChartOptions.scales.y,
+                        beginAtZero: true,
+                        ticks: {
+                            ...defaultChartOptions.scales.y.ticks,
+                            callback: function(value, index, values) {
+                                if (index < 2) return value + '%';
+                                return value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const impactLineCtx = document.getElementById('impactLineChart').getContext('2d');
+        new Chart(impactLineCtx, {
+            type: 'line',
+            data: {
+                labels: ['傳統方法', 'NomadHealth'],
+                datasets: [{
+                    label: '潛在疫情發現時間 (天)',
+                    data: [45, 3],
+                    fill: true,
+                    backgroundColor: 'rgba(102, 165, 173, 0.2)',
+                    borderColor: PALETTE.secondary,
+                    tension: 0.1,
+                    pointBackgroundColor: PALETTE.primary,
+                    pointRadius: 5
+                }]
+            },
+            options: {
+                ...defaultChartOptions,
+                scales: {
+                    ...defaultChartOptions.scales,
+                    y: {
+                        ...defaultChartOptions.scales.y,
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '天數 (越低越好)',
+                            color: FONT_COLOR
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
