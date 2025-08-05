@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>屈公病疫苗視覺化決策指南</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #00429d, #4771b2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .kpi-box {
+            background-color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-[#a8d5e5] text-[#0d2c4e]">
+
+    <main class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold gradient-text mb-4">屈公病：全球威脅升溫</h1>
+            <p class="text-lg md:text-xl text-[#00429d]">一份給台灣民眾與醫護人員的疫苗決策指南</p>
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div class="kpi-box p-4 rounded-lg shadow-lg">
+                    <p class="text-4xl font-bold text-[#00429d]">119+</p>
+                    <p class="text-sm text-[#4771b2]">國家出現本土傳播</p>
+                </div>
+                <div class="kpi-box p-4 rounded-lg shadow-lg">
+                    <p class="text-4xl font-bold text-[#00429d]">43%</p>
+                    <p class="text-sm text-[#4771b2]">患者可能發展為慢性關節炎</p>
+                </div>
+                <div class="kpi-box p-4 rounded-lg shadow-lg">
+                    <p class="text-4xl font-bold text-[#00429d]">>22萬</p>
+                    <p class="text-sm text-[#4771b2]">2025年全球通報病例</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="mb-12 bg-white/80 p-6 rounded-xl shadow-2xl">
+            <h2 class="text-3xl font-bold text-center mb-6 text-[#00429d]">認識屈公病：不致命，但極度致殘</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div class="text-center">
+                    <p class="text-8xl">🦟</p>
+                    <p class="mt-2 text-lg font-semibold text-[#4771b2]">由埃及斑蚊與白線斑蚊傳播</p>
+                </div>
+                <div>
+                    <p class="mb-4 text-lg">屈公病是一種病毒性疾病，其最大威脅並非死亡，而是由急性期劇烈、使人衰弱的關節疼痛，以及可能持續數月甚至數年的慢性關節炎所帶來的長期失能與經濟負擔。</p>
+                    <p class="font-bold text-[#00429d]">近期鄰近台灣的中國廣東省爆發顯著疫情，凸顯了境外移入的風險，使疫苗預防成為旅遊者的重要考量。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#00429d]">疫苗對決：安全性 vs. 有效性</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-xl border-t-8 border-[#ffc107]">
+                    <h3 class="text-2xl font-bold text-center mb-4">IXCHIQ® (活性減毒疫苗 LAV)</h3>
+                    <div class="text-center mb-4">
+                        <span class="text-6xl" role="img" aria-label="warning">⚠️</span>
+                        <p class="font-semibold text-[#d35400]">高風險族群需特別注意</p>
+                    </div>
+                    <ul class="space-y-3 text-base">
+                        <li class="flex items-start"><span class="font-bold text-[#4771b2] mr-2">效力:</span> <span>單劑接種後，<span class="font-bold text-xl">98.9%</span> 成人產生保護性抗體，免疫力持久。</span></li>
+                        <li class="flex items-start"><span class="font-bold text-[#ffc107] mr-2">安全警訊:</span> <span class="font-bold">在 ≥60 歲族群中，報告了嚴重的心臟與神經不良事件。</span></li>
+                        <li class="flex items-start"><span class="font-bold text-[#ffc107] mr-2">副作用:</span> <span class="font-bold">1.6% 接種者出現嚴重類屈公病反應</span>，可能需住院治療。</li>
+                        <li class="flex items-start"><span class="font-bold text-[#4771b2] mr-2">適用年齡:</span> <span>≥18 歲。</span></li>
+                        <li class="flex items-start"><span class="font-bold text-[#ffc107] mr-2">美國CDC建議:</span> <span class="font-bold">建議暫停對 ≥60 歲者使用。</span></li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-xl border-t-8 border-[#4771b2]">
+                    <h3 class="text-2xl font-bold text-center mb-4">VIMKUNYA™ (類病毒顆粒疫苗 VLP)</h3>
+                    <div class="text-center mb-4">
+                        <span class="text-6xl" role="img" aria-label="shield">🛡️</span>
+                        <p class="font-semibold text-green-600">安全性紀錄優良</p>
+                    </div>
+                    <ul class="space-y-3 text-base">
+                        <li class="flex items-start"><span class="font-bold text-[#4771b2] mr-2">效力:</span> <span>12-64歲族群血清反應率達 <span class="font-bold text-xl">98%</span>；≥65歲族群為 <span class="font-bold text-xl">87%</span>。</span></li>
+                        <li class="flex items-start"><span class="font-bold text-green-600 mr-2">安全警訊:</span> <span class="font-bold">未發現重大安全警訊</span>，耐受性良好。</li>
+                        <li class="flex items-start"><span class="font-bold text-green-600 mr-2">副作用:</span> <span>常見為輕至中度的注射部位疼痛、疲勞等，高齡族群反應率更低。</span></li>
+                        <li class="flex items-start"><span class="font-bold text-[#4771b2] mr-2">適用年齡:</span> <span class="font-bold">≥12 歲</span>，涵蓋青少年。</li>
+                        <li class="flex items-start"><span class="font-bold text-green-600 mr-2">美國CDC建議:</span> <span class="font-bold">推薦用於所有適用年齡層，尤其是高齡者。</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+        
+        <section class="mb-12 bg-white/80 p-6 rounded-xl shadow-2xl">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#00429d]">視覺化數據比較</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-4 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-bold text-center mb-2 text-[#4771b2]">疫苗效力比較 (保護力)</h3>
+                    <p class="text-xs text-center text-gray-500 mb-2">單劑接種後血清反應率</p>
+                    <div class="chart-container"><canvas id="efficacyChart"></canvas></div>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-lg">
+                    <h3 class="text-xl font-bold text-center mb-2 text-[#4771b2]">常見不良反應發生率</h3>
+                     <p class="text-xs text-center text-gray-500 mb-2">接種後7天內</p>
+                    <div class="chart-container"><canvas id="safetyChart"></canvas></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#00429d]">我該如何選擇？接種建議流程圖</h2>
+            <div class="bg-white p-6 rounded-lg shadow-xl">
+                <div class="flex flex-col items-center">
+                    <div class="bg-[#00429d] text-white p-4 rounded-lg shadow-md text-center">
+                        <p class="font-bold text-lg">計畫前往屈公病流行地區？</p>
+                    </div>
+                    <div class="w-px h-8 bg-gray-400"></div>
+                    <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                        
+                        <div class="flex flex-col items-center">
+                            <div class="w-full border-t-2 border-gray-400 md:border-t-0 md:border-l-2 md:h-px md:w-full"></div>
+                            <div class="bg-[#73a2c6] p-3 rounded-lg shadow-md w-full">
+                                <p class="font-bold">年齡 ≥60 歲<br>或 12-17 歲？</p>
+                            </div>
+                            <div class="w-px h-4 bg-gray-400"></div>
+                            <div class="bg-green-100 border border-green-400 text-green-800 p-3 rounded-lg shadow-md w-full">
+                                <p class="font-bold">唯一建議：<br>VIMKUNYA™ (VLP)</p>
+                                <p class="text-xs mt-1">因其優異的安全性</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col items-center">
+                             <div class="w-full border-t-2 border-gray-400 md:border-t-0 md:h-px md:w-full"></div>
+                            <div class="bg-[#73a2c6] p-3 rounded-lg shadow-md w-full">
+                                <p class="font-bold">年齡 18-59 歲<br>(健康成人)</p>
+                            </div>
+                            <div class="w-px h-4 bg-gray-400"></div>
+                            <div class="bg-blue-100 border border-blue-400 text-blue-800 p-3 rounded-lg shadow-md w-full">
+                                <p class="font-bold">首選：VIMKUNYA™ (VLP)</p>
+                                <p class="text-xs mt-1">次要選項為IXCHIQ®，需與醫師詳談風險</p>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col items-center">
+                             <div class="w-full border-t-2 border-gray-400 md:border-t-0 md:border-r-2 md:h-px md:w-full"></div>
+                            <div class="bg-[#73a2c6] p-3 rounded-lg shadow-md w-full">
+                                <p class="font-bold">免疫功能不全<br>或 懷孕/哺乳期？</p>
+                            </div>
+                            <div class="w-px h-4 bg-gray-400"></div>
+                            <div class="bg-yellow-100 border border-yellow-400 text-yellow-800 p-3 rounded-lg shadow-md w-full">
+                                <p class="font-bold">唯一可考慮：<br>VIMKUNYA™ (VLP)</p>
+                                <p class="text-xs mt-1">須經醫師嚴格評估效益大於風險</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 py-6 border-t-2 border-[#00429d]/30">
+            <p class="text-lg font-semibold text-[#00429d]">最終決策前，請務必諮詢您的醫師或旅遊醫學門診。</p>
+            <p class="text-sm text-[#4771b2] mt-2">本資訊圖表依據公開科學文獻與國際衛生組織建議製作，僅供衛教參考。</p>
+        </footer>
+    </main>
+
+    <script>
+        function wrapLabel(str, maxWidth) {
+            if (str.length <= maxWidth) {
+                return str;
+            }
+            const words = str.split(' ');
+            let lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > maxWidth) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            lines.push(currentLine.trim());
+            return lines.filter(line => line.length > 0);
+        }
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+        
+        const sharedChartOptions = {
+            maintainAspectRatio: false,
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: {
+                            family: "'Noto Sans TC', sans-serif",
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    titleFont: {
+                        family: "'Noto Sans TC', sans-serif",
+                    },
+                    bodyFont: {
+                        family: "'Noto Sans TC', sans-serif",
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        font: {
+                            family: "'Noto Sans TC', sans-serif",
+                        }
+                    }
+                },
+                y: {
+                    ticks: {
+                        font: {
+                            family: "'Noto Sans TC', sans-serif",
+                        }
+                    }
+                }
+            }
+        };
+
+        const efficacyCtx = document.getElementById('efficacyChart').getContext('2d');
+        new Chart(efficacyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['青壯年 (12/18-64歲)', '高齡族群 (≥65歲)'],
+                datasets: [{
+                    label: 'IXCHIQ® (LAV)',
+                    data: [98.9, 98.9],
+                    backgroundColor: '#ffc107',
+                    borderColor: '#e8a100',
+                    borderWidth: 1
+                }, {
+                    label: 'VIMKUNYA™ (VLP)',
+                    data: [98, 87],
+                    backgroundColor: '#4771b2',
+                    borderColor: '#00429d',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...sharedChartOptions,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '血清反應率 (%)'
+                        }
+                    }
+                },
+                plugins: {
+                    ...sharedChartOptions.plugins,
+                    tooltip: {
+                        ...sharedChartOptions.plugins.tooltip,
+                        callbacks: {
+                            ...sharedChartOptions.plugins.tooltip.callbacks,
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += context.parsed.y + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const safetyCtx = document.getElementById('safetyChart').getContext('2d');
+        new Chart(safetyCtx, {
+            type: 'bar',
+            data: {
+                labels: ['頭痛', '疲勞', '肌肉疼痛', '關節疼痛', '發燒'],
+                datasets: [{
+                    label: 'IXCHIQ® (LAV)',
+                    data: [31.6, 28.5, 23.9, 17.2, 13.5],
+                    backgroundColor: '#ffc107',
+                    borderColor: '#e8a100',
+                    borderWidth: 1
+                }, {
+                    label: 'VIMKUNYA™ (VLP)',
+                    data: [18, 20, 18, 5, 2],
+                    backgroundColor: '#4771b2',
+                    borderColor: '#00429d',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                ...sharedChartOptions,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: '發生率 (%)'
+                        }
+                    }
+                },
+                 plugins: {
+                    ...sharedChartOptions.plugins,
+                    tooltip: {
+                        ...sharedChartOptions.plugins.tooltip,
+                        callbacks: {
+                            ...sharedChartOptions.plugins.tooltip.callbacks,
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.x !== null) {
+                                    label += context.parsed.x + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
