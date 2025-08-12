@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣疾管署現代化資料平台藍圖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .flow-arrow {
+            font-size: 2rem;
+            line-height: 1;
+            color: #8AC3EC;
+        }
+        .flow-box {
+            border: 2px solid #4195E0;
+            background-color: #ffffff;
+            transition: all 0.3s ease-in-out;
+        }
+        .flow-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .kpi-card {
+            background-color: white;
+            border-left: 5px solid #005CB9;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -10px;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #0075D4;
+            border: 4px solid #f0f4f8;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <h1 class="text-3xl font-bold text-[#00449E]">為台灣衛福部疾管署打造現代化資料平台</h1>
+            <p class="text-lg text-[#005CB9]">以Google Cloud建構Data Fabric架構之視覺化藍圖</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8">
+        
+        <section id="challenge" class="mb-12">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-[#00449E] mb-2">當前挑戰：超越傳統資料倉儲的極限</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">面對現代公衛挑戰，傳統架構已無法滿足即時、多樣化且龐大的數據需求，導致決策延遲與治理風險。</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="kpi-card rounded-lg shadow-lg p-6">
+                    <div class="text-6xl text-[#0075D4] mb-2">⚡️</div>
+                    <h3 class="text-2xl font-bold mb-2">資料速度 (Velocity)</h3>
+                    <p class="text-gray-600">疫情期間，數據以秒為單位產生。傳統批次處理造成數小時延遲，錯失防疫先機。</p>
+                </div>
+                <div class="kpi-card rounded-lg shadow-lg p-6">
+                    <div class="text-6xl text-[#0075D4] mb-2">📚</div>
+                    <h3 class="text-2xl font-bold mb-2">資料多樣性 (Variety)</h3>
+                    <p class="text-gray-600">從結構化病例到非結構化基因序列，異質資料難以整合，洞察力受限。</p>
+                </div>
+                <div class="kpi-card rounded-lg shadow-lg p-6">
+                    <div class="text-6xl text-[#0075D4] mb-2">☁️</div>
+                    <h3 class="text-2xl font-bold mb-2">資料量 (Volume)</h3>
+                    <p class="text-gray-600">全國性健康研究與疫情模擬動輒PB等級，傳統倉儲擴展成本高昂且效率低下。</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-12 border-t-2 border-gray-300">
+
+        <section id="architecture" class="mb-12">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-[#00449E] mb-2">架構藍圖：在GCP上建構台灣疾管署資料編織</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">我們提出一個以BigQuery與Dataplex為核心的無伺服器架構，所有服務皆落地於GCP台灣 `asia-east1` 區域，確保資料主權。</p>
+            </div>
+            <div class="bg-gray-50 rounded-xl shadow-inner p-4 md:p-8">
+                <div class="w-full text-center mb-6">
+                    <div class="flow-box rounded-lg p-4 shadow-md inline-block max-w-full">
+                        <h3 class="text-xl font-bold text-[#00449E]">消費、分析與服務層</h3>
+                        <p class="text-sm text-gray-600">提供BI、AI/ML與API服務</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4 text-sm">
+                            <div class="p-2 bg-blue-100 rounded">📊 Looker</div>
+                            <div class="p-2 bg-blue-100 rounded">🤖 Vertex AI</div>
+                            <div class="p-2 bg-blue-100 rounded">🔄 Apigee</div>
+                            <div class="p-2 bg-blue-100 rounded">📱 其他應用</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center items-center"><div class="flow-arrow">↓</div></div>
+                <div class="w-full text-center my-6">
+                    <div class="flow-box rounded-lg p-4 shadow-md inline-block max-w-full bg-[#E3F2FD]">
+                        <h3 class="text-xl font-bold text-[#00449E]">智慧管理與治理層 (The Fabric Weaver)</h3>
+                        <p class="text-sm text-gray-600">統一元數據、資料品質、生命週期與安全</p>
+                        <div class="mt-4 p-4 bg-white rounded-lg border-2 border-dashed border-[#0075D4]">
+                            <p class="text-lg font-bold text-[#005CB9]">Dataplex</p>
+                            <p class="text-xs text-gray-500">整合 Data Catalog, IAM, DLP</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center items-center"><div class="flow-arrow">↓</div></div>
+                 <div class="w-full text-center my-6">
+                    <div class="flow-box rounded-lg p-4 shadow-md inline-block max-w-full">
+                        <h3 class="text-xl font-bold text-[#00449E]">資料持久化與處理層</h3>
+                        <p class="text-sm text-gray-600">核心分析引擎與湖倉一體儲存</p>
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-4 mt-4">
+                            <div class="p-4 bg-green-100 rounded-lg text-center">
+                                <p class="font-bold">Cloud Storage</p>
+                                <p class="text-xs">(Data Lake)</p>
+                            </div>
+                            <div class="text-2xl font-bold text-[#4195E0] mx-4">↔️</div>
+                            <div class="p-4 bg-green-200 rounded-lg text-center border-4 border-green-400">
+                                <p class="font-bold">BigQuery</p>
+                                <p class="text-xs">(Core Warehouse)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center items-center"><div class="flow-arrow">↓</div></div>
+                <div class="w-full text-center mt-6">
+                     <div class="flow-box rounded-lg p-4 shadow-md inline-block max-w-full">
+                        <h3 class="text-xl font-bold text-[#00449E]">資料擷取與整合層</h3>
+                        <p class="text-sm text-gray-600">支援批次、串流與資料庫同步</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4 text-sm">
+                            <div class="p-2 bg-purple-100 rounded">📁 批次檔案</div>
+                            <div class="p-2 bg-purple-100 rounded">🌊 Pub/Sub</div>
+                            <div class="p-2 bg-purple-100 rounded">⚙️ Dataflow</div>
+                            <div class="p-2 bg-purple-100 rounded">🗄️ Datastream</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-12 border-t-2 border-gray-300">
+
+        <section id="comparison" class="mb-12">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-[#00449E] mb-2">策略性替代方案比較</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">GCP原生方案在總體擁有成本(TCO)、營運負擔與AI整合度上具備壓倒性優勢。</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-4 md:p-8">
+                <div class="chart-container">
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-12 border-t-2 border-gray-300">
+
+        <section id="security" class="mb-12">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-[#00449E] mb-2">深度安全策略：分持加密</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">透過將金鑰管理與資料儲存分離，確保沒有任何單一實體能存取明文個資，達成最高等級的資料保護。</p>
+            </div>
+            <div class="bg-white rounded-lg shadow-lg p-8 flex flex-col md:flex-row items-center justify-around gap-8">
+                <div class="text-center">
+                    <div class="p-6 border-4 border-dashed border-[#005CB9] rounded-full inline-block mb-4">
+                        <span class="text-5xl">🔑</span>
+                    </div>
+                    <h3 class="text-xl font-bold">疾管署保有金鑰主權</h3>
+                    <p class="max-w-xs">使用 Cloud EKM，加密金鑰儲存在疾管署自有環境，Google無法單獨解密資料。</p>
+                </div>
+                <div class="text-4xl text-[#8AC3EC] font-bold hidden md:block">🤝</div>
+                <div class="text-center">
+                     <div class="p-6 border-4 border-dashed border-[#4195E0] rounded-full inline-block mb-4">
+                        <span class="text-5xl">📦</span>
+                    </div>
+                    <h3 class="text-xl font-bold">GCP 負責資料儲存</h3>
+                    <p class="max-w-xs">Google負責維運高效、安全的基礎設施，但無權存取解密後的資料。</p>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-12 border-t-2 border-gray-300">
+
+        <section id="empowerment" class="mb-12">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-[#00449E] mb-2">賦予每一位使用者力量</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">從決策者到研究員，平台提供多元的自助式工具，加速從資料到洞察的過程。</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-6 flex flex-col">
+                    <h3 class="text-xl font-bold mb-4">決策者：互動式儀表板</h3>
+                    <p class="text-gray-600 mb-4">透過 Looker，決策者能即時監控疫情趨勢、疫苗覆蓋率等關鍵指標，做出由數據驅動的決策。</p>
+                    <div class="chart-container h-64 mt-auto">
+                        <canvas id="lookerDonutChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-4">公衛專家：自然語言查詢</h3>
+                    <p class="text-gray-600 mb-4">藉由 Gemini in BigQuery，專家能用中文提問，系統自動生成SQL查詢，大幅降低資料存取門檻。</p>
+                    <div class="bg-gray-100 rounded-lg p-4 mt-8 space-y-4">
+                        <div class="flex justify-end">
+                            <p class="bg-[#0075D4] text-white rounded-lg p-3 max-w-xs">顯示過去一個月各縣市的確診案例總數</p>
+                        </div>
+                        <div class="flex justify-start">
+                            <p class="bg-gray-300 rounded-lg p-3 max-w-xs">好的，正在為您查詢...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h3 class="text-xl font-bold mb-4">資料科學家：慣用工具整合</h3>
+                    <p class="text-gray-600 mb-4">科學家可繼續使用 Python/R 搭配 Vertex AI Workbench，無縫連接 BigQuery 進行深度模型建立與分析。</p>
+                    <div class="bg-gray-800 text-white rounded-lg p-4 font-mono text-sm mt-8 overflow-x-auto">
+                        <p><span class="text-purple-400">from</span> google.cloud <span class="text-purple-400">import</span> bigquery</p>
+                        <p><span class="text-green-400">client</span> = bigquery.Client()</p>
+                        <p><span class="text-green-400">query</span> = <span class="text-yellow-300">"""SELECT * FROM ..."""</span></p>
+                        <p><span class="text-green-400">df</span> = client.query(query).to_dataframe()</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-12 border-t-2 border-gray-300">
+
+        <section id="roadmap" class="mb-12">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-bold text-[#00449E] mb-2">高層次實施藍圖</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">我們建議分三階段導入，確保平台平穩上線，並逐步釋放資料價值。</p>
+            </div>
+            <div class="relative pl-8 border-l-4 border-[#8AC3EC]">
+                <div class="timeline-item mb-12 pl-8">
+                    <h3 class="text-xl font-bold text-[#005CB9]">第一階段：基礎建設與先導計畫 (1-3個月)</h3>
+                    <p class="text-gray-600">建立GCP組織與權限，鎖定台灣區域。部署核心服務，並選擇一個高價值、低風險專案進行概念驗證。</p>
+                </div>
+                <div class="timeline-item mb-12 pl-8">
+                    <h3 class="text-xl font-bold text-[#005CB9]">第二階段：擴展與治理 (4-9個月)</h3>
+                    <p class="text-gray-600">部署 Dataplex 進行資料治理，開始遷移高優先級工作負載，並導入即時串流資料源。</p>
+                </div>
+                <div class="timeline-item pl-8">
+                    <h3 class="text-xl font-bold text-[#005CB9]">第三階段：企業級規模化與進階分析 (10個月後)</h3>
+                    <p class="text-gray-600">完成舊系統遷移並除役。全面導入 Vertex AI 進行預測分析，並透過 API 將資料產品安全地分享給合作夥伴。</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-[#00449E] text-white text-center p-6 mt-12">
+        <p>&copy; 2025 現代化資料平台規劃。此為基於公開資訊的架構建議。</p>
+    </footer>
+
+    <script>
+        function wrapLabel(str, maxWidth) {
+            if (typeof str !== 'string' || str.length <= maxWidth) {
+                return str;
+            }
+            const words = str.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > maxWidth && currentLine.length > 0) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            lines.push(currentLine.trim());
+            return lines;
+        }
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+        
+        const brilliantBlues = {
+            dark: '#00449E',
+            primary: '#005CB9',
+            medium: '#0075D4',
+            light: '#4195E0',
+            lighter: '#8AC3EC',
+            accent: '#FFC107'
+        };
+
+        const comparisonChartCtx = document.getElementById('comparisonChart').getContext('2d');
+        const originalLabels = ['總體擁有成本 (TCO)', '營運維護負擔', '價值實現時間', 'AI/ML 整合度'];
+        const wrappedLabels = originalLabels.map(label => wrapLabel(label, 16));
+
+        new Chart(comparisonChartCtx, {
+            type: 'bar',
+            data: {
+                labels: wrappedLabels,
+                datasets: [
+                    {
+                        label: 'GCP 原生資料編織',
+                        data: [8, 9, 9, 10],
+                        backgroundColor: brilliantBlues.primary,
+                        borderColor: brilliantBlues.dark,
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Teradata VantageCloud',
+                        data: [4, 7, 6, 7],
+                        backgroundColor: brilliantBlues.light,
+                        borderColor: brilliantBlues.medium,
+                        borderWidth: 1
+                    },
+                    {
+                        label: '自建 MinIO & Trino',
+                        data: [5, 2, 3, 4],
+                        backgroundColor: brilliantBlues.lighter,
+                        borderColor: brilliantBlues.light,
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 10,
+                        title: {
+                            display: true,
+                            text: '評分 (越高越好)'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '各方案能力評估',
+                        font: { size: 18 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                }
+            }
+        });
+
+        const lookerDonutChartCtx = document.getElementById('lookerDonutChart').getContext('2d');
+        new Chart(lookerDonutChartCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['第一劑覆蓋', '第二劑覆蓋', '追加劑覆蓋', '未接種'],
+                datasets: [{
+                    label: '疫苗覆蓋率',
+                    data: [15, 65, 15, 5],
+                    backgroundColor: [
+                        brilliantBlues.lighter,
+                        brilliantBlues.primary,
+                        brilliantBlues.light,
+                        '#E0E0E0'
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: '全國疫苗覆蓋率分析'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
