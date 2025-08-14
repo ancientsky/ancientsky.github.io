@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>生成式 AI 與感染管制｜100 個可即用應用一頁式教材</title>
+  <style>
+    :root{
+      --bg:#f6f8fb; --fg:#1f2937; --muted:#64748b; --primary:#2563eb; --primary-weak:#e8f0ff;
+      --card:#ffffff; --border:#e5e7eb; --accent:#10b981; --warning:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+    header{background:linear-gradient(135deg,var(--primary),#1e40af);color:#fff;padding:48px 20px}
+    header h1{margin:0 0 8px;font-size:28px}
+    header p{margin:0;opacity:.9}
+    .wrap{max-width:1080px;margin:0 auto;padding:20px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 6px 18px rgba(20, 40, 80, .06);margin:16px 0}
+    .pad{padding:20px}
+    h2{font-size:20px;margin:0 0 12px;color:#0f172a}
+    .muted{color:var(--muted)}
+    .tag{display:inline-block;padding:4px 10px;border-radius:999px;background:var(--primary-weak);color:var(--primary);font-size:12px;margin-right:6px}
+    .section-title{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+    .col-12{grid-column:span 12}
+    .col-6{grid-column:span 6}
+    .col-4{grid-column:span 4}
+    @media(max-width:900px){.col-6,.col-4{grid-column:span 12}}
+    .search{position:sticky;top:16px;z-index:5}
+    input[type="search"]{
+      width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:12px;font-size:16px;outline:none;background:#fff
+    }
+    .app{border-top:1px dashed var(--border);padding:16px 0}
+    .app:first-child{border-top:none}
+    .app h3{margin:0 0 8px;font-size:16px}
+    .row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+    .pill{font-size:12px;background:#eef2ff;color:#3730a3;border:1px solid #e5e7eb;border-radius:999px;padding:2px 8px}
+    .block{background:#f8fafc;border:1px dashed var(--border);border-radius:10px;padding:12px;margin-top:8px}
+    code.prompt{display:block;white-space:pre-wrap;line-height:1.5;background:#0f172a;color:#e2e8f0;border-radius:10px;padding:12px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;font-size:13px;margin-top:8px;position:relative}
+    .copy{position:absolute;top:8px;right:8px;border:none;background:#111827;color:#e5e7eb;border:1px solid #374151;border-radius:8px;padding:4px 8px;font-size:12px;cursor:pointer}
+    .cat{display:inline-block;margin-right:8px;margin-bottom:6px}
+    .toc a{display:inline-block;margin:6px 6px 0 0;padding:6px 10px;border-radius:999px;border:1px solid var(--border);text-decoration:none;color:var(--fg);background:#fff;font-size:13px}
+    footer{padding:20px;text-align:center;color:var(--muted)}
+    .hit{background:#fffbeb;border-color:#fde68a}
+    .kpi{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .kpi .badge{background:#ecfeff;color:#155e75;border:1px solid #cffafe;border-radius:8px;padding:4px 8px;font-size:12px}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>生成式 AI 與感染管制｜100 個可即用應用</h1>
+    <p>為衛福部疾管署「感染管制及生物安全組」設計的一頁式查詢與教學教材（HAIs、AMR、環境與設備、實驗室生物安全、教育訓練、資料治理）</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <div class="col-4">
+      <div class="card pad search">
+        <div class="section-title">
+          <h2 style="margin:0">快速搜尋</h2>
+          <span class="tag">即時過濾</span>
+        </div>
+        <input id="q" type="search" placeholder="輸入關鍵字（例：AMR、CLABSI、手部衛生、SOP、RAG、PPE）" />
+        <div class="card pad" style="margin-top:12px">
+          <div class="section-title"><h2 style="margin:0">索引</h2></div>
+          <div class="toc">
+            <a href="#sec-1">臨床監測 1–25</a>
+            <a href="#sec-2">抗藥性管理 26–50</a>
+            <a href="#sec-3">環境與設備 51–65</a>
+            <a href="#sec-4">實驗室生物安全 66–75</a>
+            <a href="#sec-5">教育訓練 76–90</a>
+            <a href="#sec-6">資料治理與政策 91–100</a>
+          </div>
+          <div class="kpi">
+            <div class="badge">含 100 組可複製 Prompt</div>
+            <div class="badge">支援 GPT / Claude / Gemini</div>
+            <div class="badge">多模態與RAG友善</div>
+          </div>
+        </div>
+        <div class="card pad" style="margin-top:12px">
+          <div class="section-title"><h2 style="margin:0">使用建議</h2></div>
+          <ul class="muted" style="padding-left:18px;margin:0">
+            <li>每個應用含：問題、預期輸出、建議模型、即用 Prompt</li>
+            <li>可直接貼資料（CSV/文字/影像）進 LLM 執行</li>
+            <li>若含內規，建議搭配 RAG 或私有知識庫</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-8">
+      <!-- 臨床監測 1–25 -->
+      <section id="sec-1" class="card pad">
+        <div class="section-title">
+          <h2>臨床監測類（1–25）</h2>
+          <span class="tag">HAIs</span><span class="tag">臨床資料</span><span class="tag">即時監測</span>
+        </div>
+
+        <!-- 1 -->
+        <div class="app" data-tags="手部衛生,遵從率,vision,WHO,五時機,影片摘要">
+          <h3>1. 手部衛生遵從率即時回饋</h3>
+          <div class="row">
+            <span class="pill">要解決：人工觀察耗時、易遺漏</span>
+            <span class="pill">輸出：違規片段＋改善建議</span>
+            <span class="pill">LLM：GPT‑4o Vision + RAG</span>
+          </div>
+          <div class="block">將攝影片段快速萃取為可行動的改善要點，支援班別/地點維度彙整。</div>
+          <code class="prompt">你是院內感染管制師。根據以下 30 秒手部衛生影片（或逐字稿），列出未依 WHO 五時機洗手的畫面時間點、類型與具體改善建議，請以「時間碼｜違規類型｜建議」三欄輸出。</code>
+        </div>
+
+        <!-- 2 -->
+        <div class="app" data-tags="通報,疫情,表單,自動生成,草稿,感染個案">
+          <h3>2. 感染通報自動生成初稿</h3>
+          <div class="row">
+            <span class="pill">要解決：疫調填表繁瑣</span>
+            <span class="pill">輸出：標準化通報初稿</span>
+            <span class="pill">LLM：Claude 3（結構化）</span>
+          </div>
+          <div class="block">將病歷摘要對應通報字段，降低重工；不確定項標示 NA 待補。</div>
+          <code class="prompt">請依下列病歷/檢驗摘要，自動填寫 HAI 通報必填欄位（缺資料者填 NA），最後列「需人工補件清單」。</code>
+        </div>
+
+        <!-- 3 -->
+        <div class="app" data-tags="週報,摘要,趨勢,事件,重點,管理層">
+          <h3>3. HAI 週報要點彙整</h3>
+          <div class="row">
+            <span class="pill">要解決：資料蒐整耗時</span>
+            <span class="pill">輸出：一頁式週報重點</span>
+            <span class="pill">LLM：Gemini 1.5（長上下文）</span>
+          </div>
+          <div class="block">自動產出感染別趨勢、重大事件、警示項與下週重點，利於跨部門溝通。</div>
+          <code class="prompt">將以下 7 日通報與事件記錄濃縮為 300 字內週報重點，附「警示門檻觸發清單」與「下週優先任務」。</code>
+        </div>
+
+        <!-- 4 -->
+        <div class="app" data-tags="ICU,異常警示,即時摘要,高風險,日誌">
+          <h3>4. ICU 感染異常警示摘要</h3>
+          <div class="row">
+            <span class="pill">要解決：多指標監看負擔</span>
+            <span class="pill">輸出：每日需即處理清單</span>
+            <span class="pill">LLM：GPT‑4o（臨床摘要）</span>
+          </div>
+          <div class="block">根據 ICU 日誌自動彙整「立即行動」與「追蹤觀察」項，含建議下一步。</div>
+          <code class="prompt">依下列 ICU 感管日誌，輸出「立即處理 Top 5」與「追蹤觀察 Top 5」，每項含依據與建議下一步。</code>
+        </div>
+
+        <!-- 5 -->
+        <div class="app" data-tags="群聚,疫情,危機處理,SOP,通訊,對外回應">
+          <h3>5. 疑似群聚事件即時應對建議</h3>
+          <div class="row">
+            <span class="pill">要解決：突發決策/人手不足</span>
+            <span class="pill">輸出：行動清單＋對外草稿</span>
+            <span class="pill">LLM：Claude 3（SOP推導）</span>
+          </div>
+          <div class="block">在多案同時出現時，自動產出聯繫對象、分工與對外回應模板。</div>
+          <code class="prompt">假設同病房出現 3 例同菌血症，請生成：1) 立即行動清單 2) 對外回應草稿 3) 72 小時追蹤節點。</code>
+        </div>
+
+        <!-- 6 -->
+        <div class="app" data-tags="summary report,結論,專業口吻,定稿,報告">
+          <h3>6. SR（Summary Report）結論段落自動生成</h3>
+          <div class="row">
+            <span class="pill">要解決：結論撰寫耗時</span>
+            <span class="pill">輸出：流暢專業結語</span>
+            <span class="pill">LLM：GPT‑4o（專業書寫）</span>
+          </div>
+          <div class="block">用統一口吻與結構收斂重點，利於審閱定稿。</div>
+          <code class="prompt">依以下週報素材，撰寫 120–150 字專業結語，分「現況」「風險」「行動」三句。</code>
+        </div>
+
+        <!-- 7 -->
+        <div class="app" data-tags="流行病學,地圖,軌跡,病房,視覺化">
+          <h3>7. Epidemiology Map（爆發圖）自動生成</h3>
+          <div class="row">
+            <span class="pill">要解決：手繪繁瑣不即時</span>
+            <span class="pill">輸出：病房/時序關聯圖</span>
+            <span class="pill">LLM：GPT‑4o Vision（示意圖）</span>
+          </div>
+          <div class="block">快速畫出「人－地點－時間」關聯，協助溯源與現場溝通。</div>
+          <code class="prompt">根據住院日期、轉床紀錄與確診時間，畫出人－病房－時間的關聯示意，標示可能交會點。</code>
+        </div>
+
+        <!-- 8 -->
+        <div class="app" data-tags="週期,事件分析,病房,班次,高風險">
+          <h3>8. 病房感染事件週期分析</h3>
+          <div class="row">
+            <span class="pill">要解決：反覆事件找不到節律</span>
+            <span class="pill">輸出：週期圖＋高風險班次</span>
+            <span class="pill">LLM：Gemini（時序彙整）</span>
+          </div>
+          <div class="block">自動偵測週期/班次/時段的風險堆疊，提供排班與流程改善依據。</div>
+          <code class="prompt">分析以下事件紀錄，找出週期性與高風險班次，列 3 項流程改善建議與預期成效。</code>
+        </div>
+
+        <!-- 9 -->
+        <div class="app" data-tags="CLABSI,插管,風險預測,個案清單,早期警示">
+          <h3>9. CLABSI 事件摘要與預測</h3>
+          <div class="row">
+            <span class="pill">要解決：資料分散難整合</span>
+            <span class="pill">輸出：高風險名單與依據</span>
+            <span class="pill">LLM：Claude 3（時序摘要）</span>
+          </div>
+          <div class="block">合併病史/護理/檢驗生成「下週潛在高危個案」列表與理由。</div>
+          <code class="prompt">彙整以下個案資料，產生下週 CLABSI 高風險名單（前 10），每案附 2 個關鍵依據。</code>
+        </div>
+
+        <!-- 10 -->
+        <div class="app" data-tags="高風險,自動標註,指標,異常,highlight">
+          <h3>10. 感控異常個案自動標註</h3>
+          <div class="row">
+            <span class="pill">要解決：人工標記負擔重</span>
+            <span class="pill">輸出：高危指標自動 highlight</span>
+            <span class="pill">LLM：GPT‑4 Turbo（規則+推理）</span>
+          </div>
+          <div class="block">以規則+推理快速標出需優先處理的異常點。</div>
+          <code class="prompt">將以下感管資料自動標註「重大異常」「中度異常」「觀察」，每項附一句判定理由。</code>
+        </div>
+
+        <!-- 11 -->
+        <div class="app" data-tags="SSI,手術部位感染,預測,分數,建議">
+          <h3>11. SSI 風險即時計分</h3>
+          <div class="row">
+            <span class="pill">要解決：術後預警不即時</span>
+            <span class="pill">輸出：風險分數＋早期措施</span>
+            <span class="pill">LLM：Gemini（風險要素彙整）</span>
+          </div>
+          <div class="block">依術式/ASA/時間/護理紀錄生成風險分數與建議監測點。</div>
+          <code class="prompt">根據術中/術後 7 天資料，估算 SSI 風險分數（0–100），列 3 項可立即採取的預防措施。</code>
+        </div>
+
+        <!-- 12 -->
+        <div class="app" data-tags="MDRO,耐藥,動態圖,警示,ESBL,MRSA">
+          <h3>12. 多重耐藥（MDRO）趨勢動態圖</h3>
+          <div class="row">
+            <span class="pill">要解決：趨勢查閱零散</span>
+            <span class="pill">輸出：動態折線圖＋門檻警示</span>
+            <span class="pill">LLM：GPTs + Python 視覺化</span>
+          </div>
+          <div class="block">自動繪圖與門檻觸發，利於周會即查即用。</div>
+          <code class="prompt">將 CSV 畫成按菌種的月度敏感率折線圖；若超過警戒值請標紅並輸出警示清單。</code>
+        </div>
+
+        <!-- 13 -->
+        <div class="app" data-tags="危急值,實驗,異常摘要,臨床意義">
+          <h3>13. 異常實驗值自動摘要</h3>
+          <div class="row">
+            <span class="pill">要解決：手動篩檢易漏</span>
+            <span class="pill">輸出：異常列表＋臨床可能</span>
+            <span class="pill">LLM：Gemini 1.5（抽取+解釋）</span>
+          </div>
+          <div class="block">快速標注異常與可能臨床背景，提醒追蹤。</div>
+          <code class="prompt">請從以下檢驗報告擷取異常與危急值，並以一句話解釋其臨床可能意涵。</code>
+        </div>
+
+        <!-- 14 -->
+        <div class="app" data-tags="簡報,要點,講稿,會議,一頁式">
+          <h3>14. 會議簡報重點與講稿生成</h3>
+          <div class="row">
+            <span class="pill">要解決：整理耗時</span>
+            <span class="pill">輸出：5 頁投影片要點＋講者札記</span>
+            <span class="pill">LLM：Claude 3（簡報結構）</span>
+          </div>
+          <div class="block">將長篇報表濃縮為可講、可投的重點素材。</div>
+          <code class="prompt">把以下週報濃縮成 5 張投影片標題與要點，每頁附講者備忘 2 句。</code>
+        </div>
+
+        <!-- 15 -->
+        <div class="app" data-tags="推播,摘要,line,email,即時消息">
+          <h3>15. 每日趨勢推播摘要（LINE/Email）</h3>
+          <div class="row">
+            <span class="pill">要解決：讀訊息負擔</span>
+            <span class="pill">輸出：200 字內即時摘要</span>
+            <span class="pill">LLM：GPT‑4（分眾語氣）</span>
+          </div>
+          <div class="block">管理層、第一線分版本，提高閱讀與行動率。</div>
+          <code class="prompt">將今日通報與事件以 200 字內摘要，分「醫護版」與「行政版」兩個口吻輸出。</code>
+        </div>
+
+        <!-- 16 -->
+        <div class="app" data-tags="溯源,問卷,SOP,表單,程序">
+          <h3>16. 爆發事件溯源流程與表單</h3>
+          <div class="row">
+            <span class="pill">要解決：標準流程缺模板</span>
+            <span class="pill">輸出：5 步 SOP + 問卷表單</span>
+            <span class="pill">LLM：Gemini（流程設計）</span>
+          </div>
+          <div class="block">提供結構化的現地調查步驟與表單題目。</div>
+          <code class="prompt">針對院內新型病原爆發，設計 5 步調查 SOP 與問卷，列必要字段與採樣策略。</code>
+        </div>
+
+        <!-- 17 -->
+        <div class="app" data-tags="語音,逐字稿,摘要,任務分派,會議">
+          <h3>17. 口頭討論轉錄與任務摘要</h3>
+          <div class="row">
+            <span class="pill">要解決：未留紀錄/人易忘</span>
+            <span class="pill">輸出：逐字稿＋待辦與責任人</span>
+            <span class="pill">LLM：Whisper + LLM</span>
+          </div>
+          <div class="block">把會議轉成「誰在什麼時間做什麼」的行動清單。</div>
+          <code class="prompt">請將 5 分鐘會議音訊轉文字並產生待辦清單（任務、負責人、期限、風險提示）。</code>
+        </div>
+
+        <!-- 18 -->
+        <div class="app" data-tags="巡檢,監查,缺失,分類,歸納">
+          <h3>18. 監查員巡檢發現自動分類</h3>
+          <div class="row">
+            <span class="pill">要解決：紀錄格式不一</span>
+            <span class="pill">輸出：缺失分類＋修正建議</span>
+            <span class="pill">LLM：Gemini（文本分群）</span>
+          </div>
+          <div class="block">將文字紀錄整理成分類與前 5 項常見缺失。</div>
+          <code class="prompt">依下列巡檢紀錄，自動分群並列出「常見缺失 Top5」與每項 2 條修正步驟。</code>
+        </div>
+
+        <!-- 19 -->
+        <div class="app" data-tags="OOS,超規,highlight,風險分級">
+          <h3>19. OOS（超規）自動分級 highlight</h3>
+          <div class="row">
+            <span class="pill">要解決：高危事件易漏</span>
+            <span class="pill">輸出：重大/中度/輕度列表</span>
+            <span class="pill">LLM：GPT‑4o（規則+判斷）</span>
+          </div>
+          <div class="block">將表格中的超規點位自動分級並標注。</div>
+          <code class="prompt">從下列表格標示 OOS 事件，分三級並說明依據，輸出為「級別｜指標｜時間｜依據」。</code>
+        </div>
+
+        <!-- 20 -->
+        <div class="app" data-tags="長照,監測,風險分布,建議">
+          <h3>20. 長照機構感染監測 AI 建議</h3>
+          <div class="row">
+            <span class="pill">要解決：人力與制度維持</span>
+            <span class="pill">輸出：風險熱點圖＋改善方案</span>
+            <span class="pill">LLM：Claude（綜整建議）</span>
+          </div>
+          <div class="block">整合長照監測資料，提供分區優先策略。</div>
+          <code class="prompt">依下列年度監測資料，生成「風險熱點」「改善清單」「短/中程里程碑」。</code>
+        </div>
+
+        <!-- 21 -->
+        <div class="app" data-tags="多院,合併,統計,格式對齊,彙整">
+          <h3>21. 多院區資料自動合併與統計</h3>
+          <div class="row">
+            <span class="pill">要解決：格式不一難整併</span>
+            <span class="pill">輸出：欄位對映＋統計彙總</span>
+            <span class="pill">LLM：Python + LLM</span>
+          </div>
+          <div class="block">自動欄位對映、去重與最終彙總，產生源數據審計報告。</div>
+          <code class="prompt">合併兩院通報/感控資料，完成欄位對映、去重與統計摘要，附轉換規則表。</code>
+        </div>
+
+        <!-- 22 -->
+        <div class="app" data-tags="長期,週期,time line,追蹤,複發">
+          <h3>22. 慢性照護感染週期追蹤</h3>
+          <div class="row">
+            <span class="pill">要解決：事件重複缺追蹤</span>
+            <span class="pill">輸出：時間線＋循環點</span>
+            <span class="pill">LLM：GPT‑4（時序摘要）</span>
+          </div>
+          <div class="block">凸顯循環與節點，利於系統性修正。</div>
+          <code class="prompt">將下列個案與事件記錄轉為時間線，標出循環模式並列 3 點系統改善。</code>
+        </div>
+
+        <!-- 23 -->
+        <div class="app" data-tags="基因型,群聚,警示,WGS,MLST">
+          <h3>23. 抗藥菌基因型 × 感控事件連結警示</h3>
+          <div class="row">
+            <span class="pill">要解決：基因型資訊未善用</span>
+            <span class="pill">輸出：基因型－事件對映與警示</span>
+            <span class="pill">LLM：BioGPT + LLM</span>
+          </div>
+          <div class="block">將基因型群聚與病房/時間連動，提前警示可能傳播鏈。</div>
+          <code class="prompt">根據 WGS/MLST 與事件資料，配對基因型與事件，輸出群聚名單與建議採檢/隔離策略。</code>
+        </div>
+
+        <!-- 24 -->
+        <div class="app" data-tags="QA,感染科,即時,內部知識,指南">
+          <h3>24. 感染科 QA 即時助手</h3>
+          <div class="row">
+            <span class="pill">要解決：新進人員即時支援</span>
+            <span class="pill">輸出：條列三步法答案</span>
+            <span class="pill">LLM：醫療 LLM + RAG</span>
+          </div>
+          <div class="block">以本院內規與指南回應標準化答案。</div>
+          <code class="prompt">你是感染科 QA 助手。請以 3 步驟回答下列臨床防治問題，若資訊不足列出需補項與內規條號。</code>
+        </div>
+
+        <!-- 25 -->
+        <div class="app" data-tags="衛教,腳本,影片,圖文,PPE">
+          <h3>25. 衛教圖文/影片腳本自動生成</h3>
+          <div class="row">
+            <span class="pill">要解決：素材產出慢</span>
+            <span class="pill">輸出：腳本＋4 張示意圖</span>
+            <span class="pill">LLM：GPT‑4 + DALL·E</span>
+          </div>
+          <div class="block">快速產出易懂、可列印與投放的衛教素材。</div>
+          <code class="prompt">撰寫 2 分鐘衛教影片腳本「正確穿脫 PPE」，並產生 4 張插圖提示詞（中文）。</code>
+        </div>
+      </section>
+
+      <!-- 抗藥性管理 26–50 -->
+      <section id="sec-2" class="card pad">
+        <div class="section-title">
+          <h2>抗生素抗藥性管理（26–50）</h2>
+          <span class="tag">AMR</span><span class="tag">Stewardship</span>
+        </div>
+
+        <!-- 26 -->
+        <div class="app" data-tags="AMR,年報,趨勢,摘要,JSON">
+          <h3>26. 抗藥性趨勢年報自動生成</h3>
+          <div class="row">
+            <span class="pill">要解決：年報耗時/格式不一</span>
+            <span class="pill">輸出：年度摘要＋風險＋行動（JSON）</span>
+            <span class="pill">LLM：Claude 3.5（長文）</span>
+          </div>
+          <code class="prompt">你是抗生素管理藥師。請以 CSV（菌/藥/敏感率/MIC）生成年度 AMR 重點、Top3 風險、Top3 行動，輸出 JSON：summary, top_risks, actions。</code>
+        </div>
+
+        <!-- 27 -->
+        <div class="app" data-tags="DDI,交互作用,用藥,替代,風險分級">
+          <h3>27. 抗生素 DDIs 即時提醒</h3>
+          <div class="row">
+            <span class="pill">要解決：複方用藥忽略交互作用</span>
+            <span class="pill">輸出：DDIs 清單＋替代建議</span>
+            <span class="pill">LLM：GPT‑4 + RAG（內部 DDI 資料）</span>
+          </div>
+          <code class="prompt">以下為病患用藥清單。請列出 DDIs（嚴重度/機轉/監測指標/替代方案），表格輸出。</code>
+        </div>
+
+        <!-- 28 -->
+        <div class="app" data-tags="個案,歷史,藥敏,抗藥史,去加寬">
+          <h3>28. 個案抗藥史年表與去加寬分析</h3>
+          <div class="row">
+            <span class="pill">要解決：歷史培養/敏感分散</span>
+            <span class="pill">輸出：年表＋可能用藥壓力</span>
+            <span class="pill">LLM：Gemini（長上下文）</span>
+          </div>
+          <code class="prompt">彙整下列 3 年個案培養/AST，建立年表，指出抗藥變化與用藥壓力假設，列 3 點去加寬策略。</code>
+        </div>
+
+        <!-- 29 -->
+        <div class="app" data-tags="熱圖,視覺化,多菌多藥,比較,非技術解讀">
+          <h3>29. 感受性熱圖與三重點解讀</h3>
+          <div class="row">
+            <span class="pill">要解決：多維度比較困難</span>
+            <span class="pill">輸出：熱圖＋三重點觀察</span>
+            <span class="pill">LLM：GPT‑4 Code Interpreter</span>
+          </div>
+          <code class="prompt">讀取 CSV（rows=菌、cols=藥、值=敏感率），繪熱圖（紅低綠高），用一般語言寫 3 點觀察。</code>
+        </div>
+
+        <!-- 30 -->
+        <div class="app" data-tags="科別,病房,趨勢,差異,警示">
+          <h3>30. 科別/病房感受性趨勢差異</h3>
+          <div class="row">
+            <span class="pill">要解決：分層趨勢整合困難</span>
+            <span class="pill">輸出：上升/下降 Top3 與原因假設</span>
+            <span class="pill">LLM：Claude（群組分析）</span>
+          </div>
+          <code class="prompt">依科別分組的 AST 統計，列「上升風險 Top3」「改善 Top3」，並寫出分層差異的 2 個原因假設。</code>
+        </div>
+
+        <!-- 31 -->
+        <div class="app" data-tags="時序,異常偵測,門檻,事件,早期">
+          <h3>31. AMR 早期異常偵測</h3>
+          <div class="row">
+            <span class="pill">要解決：小幅異常不易察覺</span>
+            <span class="pill">輸出：異常點＋可能成因</span>
+            <span class="pill">LLM：GPT‑4（時序分析）</span>
+          </div>
+          <code class="prompt">對月度敏感率做異常偵測，標出異常點，並對每點寫一句可能成因與建議檢核。</code>
+        </div>
+
+        <!-- 32 -->
+        <div class="app" data-tags="DDD,DOT,關聯,相關係數,門檻">
+          <h3>32. 抗生素用量 × 抗藥率關聯</h3>
+          <div class="row">
+            <span class="pill">要解決：相關性未量化</span>
+            <span class="pill">輸出：散點＋r 值＋門檻建議</span>
+            <span class="pill">LLM：Gemini（統計解讀）</span>
+          </div>
+          <code class="prompt">合併 DDD/DOT 與抗藥率，畫散點並計算 r；若 r&gt;.5，提出去加寬策略與警示門檻。</code>
+        </div>
+
+        <!-- 33 -->
+        <div class="app" data-tags="全球,新興,AMR,月報,監測重點">
+          <h3>33. 全球新興 AMR 每月精選</h3>
+          <div class="row">
+            <span class="pill">要解決：訊息分散</span>
+            <span class="pill">輸出：Top5 新訊＋院內影響</span>
+            <span class="pill">LLM：GPT‑4（多來源摘要）</span>
+          </div>
+          <code class="prompt">整合以下 AMR 新聞/研究成一頁中文摘要，列對本院影響與下月監測重點。</code>
+        </div>
+
+        <!-- 34 -->
+        <div class="app" data-tags="處方,初始,去加寬,建議,注意事項">
+          <h3>34. 抗生素處方建議（初始＋72hr 去加寬）</h3>
+          <div class="row">
+            <span class="pill">要解決：建議撰寫耗時</span>
+            <span class="pill">輸出：建議草稿＋監測要點</span>
+            <span class="pill">LLM：Claude（臨床寫作）</span>
+          </div>
+          <code class="prompt">依腎功能/培養初步/Local antibiogram，生成初始用藥與 72hr 去加寬計畫，附監測重點。</code>
+        </div>
+
+        <!-- 35 -->
+        <div class="app" data-tags="雙軸圖,簡報,關係,口語講解">
+          <h3>35. 用量–抗藥率雙軸簡報圖</h3>
+          <div class="row">
+            <span class="pill">要解決：關係不直觀</span>
+            <span class="pill">輸出：雙軸圖＋300 字講稿</span>
+            <span class="pill">LLM：Code Interpreter</span>
+          </div>
+          <code class="prompt">讀兩份 CSV（DDD、抗藥率），畫雙軸圖並寫 300 字口語解說與解釋限制。</code>
+        </div>
+
+        <!-- 36 -->
+        <div class="app" data-tags="ESBL,CRE,基因群聚,網絡圖,傳播">
+          <h3>36. 基因型群聚視覺化與解讀</h3>
+          <div class="row">
+            <span class="pill">要解決：型別難以閱讀</span>
+            <span class="pill">輸出：簇圖/網絡圖＋解讀</span>
+            <span class="pill">LLM：Python + LLM</span>
+          </div>
+          <code class="prompt">依型別相似度建立群聚圖，標病房/時間，寫 3 點對傳播風險的解讀。</code>
+        </div>
+
+        <!-- 37 -->
+        <div class="app" data-tags="ADR,不良反應,NER,抽取,JSON">
+          <h3>37. 用藥不良反應（ADR）抽取</h3>
+          <div class="row">
+            <span class="pill">要解決：訊息散在病歷</span>
+            <span class="pill">輸出：事件 JSON（藥/反應/日期/嚴重度）</span>
+            <span class="pill">LLM：GPT‑4（NER）</span>
+          </div>
+          <code class="prompt">從以下臨床紀錄抽取 ADR：drug, reaction, onset_date, severity, action，輸出 JSON。</code>
+        </div>
+
+        <!-- 38 -->
+        <div class="app" data-tags="PBL,案例,教學,情境,延伸閱讀">
+          <h3>38. AMR 教學病例包（PBL）</h3>
+          <div class="row">
+            <span class="pill">要解決：教案製作費時</span>
+            <span class="pill">輸出：情境/問題/答案/延伸</span>
+            <span class="pill">LLM：Claude（教學設計）</span>
+          </div>
+          <code class="prompt">以 ESBL Klebsiella 病例設計 PBL：背景、3 題討論、參考解答、延伸閱讀要點。</code>
+        </div>
+
+        <!-- 39 -->
+        <div class="app" data-tags="簡報,五頁,講者備忘,月會">
+          <h3>39. AMR 簡報手稿（5 張）</h3>
+          <div class="row">
+            <span class="pill">要解決：投影片擬稿</span>
+            <span class="pill">輸出：5 頁標題/要點/備忘</span>
+            <span class="pill">LLM：GPT‑4（簡報結構）</span>
+          </div>
+          <code class="prompt">依本月 AMR 數據，生成 5 張投影片標題與 3 點要點，每頁加講者備忘 2 句。</code>
+        </div>
+
+        <!-- 40 -->
+        <div class="app" data-tags="跨院,流行鏈,轉診,假設,驗證">
+          <h3>40. 地區性 AMR 流行鏈假設</h3>
+          <div class="row">
+            <span class="pill">要解決：跨院關聯不清</span>
+            <span class="pill">輸出：3 個假設＋驗證清單</span>
+            <span class="pill">LLM：Gemini（多來源整合）</span>
+          </div>
+          <code class="prompt">基於三院菌株分布與轉診流向，提出 3 個流行鏈假設與需蒐集的驗證資料清單。</code>
+        </div>
+
+        <!-- 41 -->
+        <div class="app" data-tags="醫囑,去加寬,清單,替代,評估">
+          <h3>41. 住院醫囑去加寬建議清單</h3>
+          <div class="row">
+            <span class="pill">要解決：廣效/重覆用藥偏高</span>
+            <span class="pill">輸出：候選個案＋替代方案</span>
+            <span class="pill">LLM：GPT‑4</span>
+          </div>
+          <code class="prompt">以下為本週抗生素醫囑，請標出可去加寬個案與替代方案及評估理由（腎功能/培養/風險）。</code>
+        </div>
+
+        <!-- 42 -->
+        <div class="app" data-tags="KPI,素養提升,非技術,說明卡">
+          <h3>42. AMR 監測 KPI 解釋卡</h3>
+          <div class="row">
+            <span class="pill">要解決：非專業讀者易誤解</span>
+            <span class="pill">輸出：定義/意義/門檻/比喻</span>
+            <span class="pill">LLM：Claude</span>
+          </div>
+          <code class="prompt">以一般語言解釋以下 AMR KPI（定義/為何重要/警戒值/一個比喻），每卡 120 字內。</code>
+        </div>
+
+        <!-- 43 -->
+        <div class="app" data-tags="AST,異常,通知,文案,臨床">
+          <h3>43. 異常藥敏報告通知文案</h3>
+          <div class="row">
+            <span class="pill">要解決：人工通知延遲</span>
+            <span class="pill">輸出：100 字內通知稿</span>
+            <span class="pill">LLM：GPT‑4</span>
+          </div>
+          <code class="prompt">從 AST 結果找出關鍵異常（如 CRE/MRSA），為每例生成 100 字內臨床通知文，含建議下一步。</code>
+        </div>
+
+        <!-- 44 -->
+        <div class="app" data-tags="難治,會診,關鍵問題,方案比較">
+          <h3>44. 難治個案 AI 會診初稿</h3>
+          <div class="row">
+            <span class="pill">要解決：會診前資料準備</span>
+            <span class="pill">輸出：重點摘要＋3 問題＋方案比較</span>
+            <span class="pill">LLM：Gemini/Claude</span>
+          </div>
+          <code class="prompt">整理個案病史/檢驗/影像重點，擬 3 個會診關鍵問題與 2–3 個方案優缺點比較。</code>
+        </div>
+
+        <!-- 45 -->
+        <div class="app" data-tags="衛教,AMR,分眾,長者,照護者">
+          <h3>45. 病患與家屬 AMR 衛教卡</h3>
+          <div class="row">
+            <span class="pill">要解決：溝通素材不足</span>
+            <span class="pill">輸出：200 字卡片（迷思澄清）</span>
+            <span class="pill">LLM：GPT‑4</span>
+          </div>
+          <code class="prompt">寫給長者與家屬的 AMR 衛教卡（200 字，三段式），含一個常見迷思與澄清。</code>
+        </div>
+
+        <!-- 46 -->
+        <div class="app" data-tags="逐字稿,會議,決議,責任,期限">
+          <h3>46. AS 委員會逐字到決議</h3>
+          <div class="row">
+            <span class="pill">要解決：冗長難抓重點</span>
+            <span class="pill">輸出：決議/負責人/截止日</span>
+            <span class="pill">LLM：Whisper + LLM</span>
+          </div>
+          <code class="prompt">將會議逐字稿轉為一頁決議紀要：決議項次、負責人、截止日、風險提醒。</code>
+        </div>
+
+        <!-- 47 -->
+        <div class="app" data-tags="高危,追蹤名單,規則,風險排序">
+          <h3>47. 高危用藥個案追蹤 Top10</h3>
+          <div class="row">
+            <span class="pill">要解決：資源聚焦</span>
+            <span class="pill">輸出：Top10 名單＋理由</span>
+            <span class="pill">LLM：Claude</span>
+          </div>
+          <code class="prompt">依規則（腎功能下降、廣效&gt;72hr、CRE），從清單挑 Top10 並說明排序理由。</code>
+        </div>
+
+        <!-- 48 -->
+        <div class="app" data-tags="MDRO,週報,自動化,模板,圖表">
+          <h3>48. 多重耐藥株週報自動化</h3>
+          <div class="row">
+            <span class="pill">要解決：固定產出耗時</span>
+            <span class="pill">輸出：固定格式週報（文＋圖）</span>
+            <span class="pill">LLM：GPT‑4（模板化）</span>
+          </div>
+          <code class="prompt">套用既定模板，把本週 MDRO 案例與趨勢圖嵌入，輸出 Markdown。</code>
+        </div>
+
+        <!-- 49 -->
+        <div class="app" data-tags="指南,更新,對照,影響,變更點">
+          <h3>49. 政策/指南更新一頁摘要</h3>
+          <div class="row">
+            <span class="pill">要解決：長文吸收慢</span>
+            <span class="pill">輸出：變更表＋實務影響</span>
+            <span class="pill">LLM：Claude（對照摘要）</span>
+          </div>
+          <code class="prompt">比較新版與舊版指南，列主要變更、對本院流程的 3 項影響與建議修訂。</code>
+        </div>
+
+        <!-- 50 -->
+        <div class="app" data-tags="推播,AMR,即時,分眾,80字">
+          <h3>50. AMR 即時推播訊息生成</h3>
+          <div class="row">
+            <span class="pill">要解決：臨時公告多版本</span>
+            <span class="pill">輸出：給醫師/護理/行政三版</span>
+            <span class="pill">LLM：GPT‑4（語氣調整）</span>
+          </div>
+          <code class="prompt">針對同一事件，分別生成給醫師、護理、行政的 80 字內推播訊息，語氣各自貼切。</code>
+        </div>
+      </section>
+
+      <!-- 環境與設備 51–65 -->
+      <section id="sec-3" class="card pad">
+        <div class="section-title">
+          <h2>環境與設備感控（51–65）</h2>
+          <span class="tag">環境監測</span><span class="tag">清潔消毒</span><span class="tag">設備維護</span>
+        </div>
+
+        <!-- 51 -->
+        <div class="app" data-tags="表面採樣,摘要,圖解,風險排名,平面圖">
+          <h3>51. 表面採樣結果摘要與圖解</h3>
+          <div class="row">
+            <span class="pill">要解決：多點採樣難解讀</span>
+            <span class="pill">輸出：部位風險排名＋平面圖標註</span>
+            <span class="pill">LLM：GPT‑4 + 視覺化</span>
+          </div>
+          <code class="prompt">將採樣結果製成風險排名與平面圖標註，並寫 3 項優先改善重點。</code>
+        </div>
+
+        <!-- 52 -->
+        <div class="app" data-tags="消毒,巡檢,動線,頻率,排程">
+          <h3>52. 消毒巡檢動線與頻率建議</h3>
+          <div class="row">
+            <span class="pill">要解決：路線/頻率未最佳化</span>
+            <span class="pill">輸出：動線建議＋頻率表（尖離峰）</span>
+            <span class="pill">LLM：Claude（流程）</span>
+          </div>
+          <code class="prompt">依科別流量與高接觸面清單，生成最佳消毒動線與尖/離峰頻率表。</code>
+        </div>
+
+        <!-- 53 -->
+        <div class="app" data-tags="器械,追溯,關聯,交叉污染,節點">
+          <h3>53. 器械追溯關聯警示</h3>
+          <div class="row">
+            <span class="pill">要解決：器械使用紀錄難串接</span>
+            <span class="pill">輸出：器械-病房-個案關聯圖＋節點</span>
+            <span class="pill">LLM：Graph + LLM</span>
+          </div>
+          <code class="prompt">以追溯紀錄建立關聯圖，標出可能交叉污染節點與 3 項改善建議。</code>
+        </div>
+
+        <!-- 54 -->
+        <div class="app" data-tags="清潔,排程,人力,避免重疊,高風險區">
+          <h3>54. 清潔排程自動生成</h3>
+          <div class="row">
+            <span class="pill">要解決：人力有限需最適化</span>
+            <span class="pill">輸出：人員/時段排程與衝突提醒</span>
+            <span class="pill">LLM：GPT‑4（排程規則）</span>
+          </div>
+          <code class="prompt">基於人員可用時段與區域優先級，排定本週清潔排程，避免重疊並覆蓋高風險區。</code>
+        </div>
+
+        <!-- 55 -->
+        <div class="app" data-tags="清潔,衛教,腳本,檢核,入職">
+          <h3>55. 清潔人員衛教 5 分鐘腳本</h3>
+          <div class="row">
+            <span class="pill">要解決：人員流動/標準化</span>
+            <span class="pill">輸出：口語腳本＋3 題檢核</span>
+            <span class="pill">LLM：Claude</span>
+          </div>
+          <code class="prompt">撰寫 5 分鐘口語衛教：高接觸面清潔三步驟，並附 3 題口頭檢核題。</code>
+        </div>
+
+        <!-- 56 -->
+        <div class="app" data-tags="醫療廢棄物,異常,分類,RCA,措施">
+          <h3>56. 醫療廢棄物異常事件摘要</h3>
+          <div class="row">
+            <span class="pill">要解決：事件分散</span>
+            <span class="pill">輸出：分類＋初步根因＋措施</span>
+            <span class="pill">LLM：GPT‑4（RCA 初稿）</span>
+          </div>
+          <code class="prompt">彙整近期廢棄物處理異常，分類並列出可能根因與短/中/長期措施。</code>
+        </div>
+
+        <!-- 57 -->
+        <div class="app" data-tags="廚房,飲水,消毒,分級,處置">
+          <h3>57. 廚房/飲水消毒結果分級解讀</h3>
+          <div class="row">
+            <span class="pill">要解決：數據難傳達</span>
+            <span class="pill">輸出：綠/黃/紅分級＋處置</span>
+            <span class="pill">LLM：Claude（分級規則）</span>
+          </div>
+          <code class="prompt">將以下檢驗結果分級（綠/黃/紅），列現場處置與複檢時程。</code>
+        </div>
+
+        <!-- 58 -->
+        <div class="app" data-tags="污染路徑,人員,器械,設施,有向圖">
+          <h3>58. 施設污染路徑預測</h3>
+          <div class="row">
+            <span class="pill">要解決：路徑複雜難想像</span>
+            <span class="pill">輸出：最可能 3 路徑＋介入點</span>
+            <span class="pill">LLM：圖模型 + 解讀</span>
+          </div>
+          <code class="prompt">以人員/病房/器械/流程建立有向圖，找出 3 條最可能污染路徑與切斷建議。</code>
+        </div>
+
+        <!-- 59 -->
+        <div class="app" data-tags="化學消毒,溫控,合規,偏差,報告">
+          <h3>59. 化學消毒/溫控合規報告</h3>
+          <div class="row">
+            <span class="pill">要解決：紀錄繁瑣</span>
+            <span class="pill">輸出：合規率＋偏差說明</span>
+            <span class="pill">LLM：GPT‑4（格式化報告）</span>
+          </div>
+          <code class="prompt">彙整濃度/溫控紀錄，計算合規率並說明偏差原因，輸出報告要點。</code>
+        </div>
+
+        <!-- 60 -->
+        <div class="app" data-tags="維護,週期,提醒,CMMS,優先順序">
+          <h3>60. 設備維護週期推算與提醒</h3>
+          <div class="row">
+            <span class="pill">要解決：延誤增風險</span>
+            <span class="pill">輸出：下次維護預估＋高優先清單</span>
+            <span class="pill">LLM：Claude（規則推算）</span>
+          </div>
+          <code class="prompt">依序號/使用量/上次維護日期，推算下次維護，列高優先順序清單與原因。</code>
+        </div>
+
+        <!-- 61 -->
+        <div class="app" data-tags="空調,HVAC,手術室,PM,風速,濾網">
+          <h3>61. 空調污染指標摘要與建議</h3>
+          <div class="row">
+            <span class="pill">要解決：HVAC 影響 SSI</span>
+            <span class="pill">輸出：手術室/一般病房分流建議</span>
+            <span class="pill">LLM：GPT‑4</span>
+          </div>
+          <code class="prompt">把空調檢點數據轉成 3 個風險重點，分手術室/一般病房提供不同建議。</code>
+        </div>
+
+        <!-- 62 -->
+        <div class="app" data-tags="環境審查,walkthrough,一頁,必檢,照片">
+          <h3>62. 環境審查清單（一頁版）</h3>
+          <div class="row">
+            <span class="pill">要解決：清單太長</span>
+            <span class="pill">輸出：必檢/抽檢/照片佐證</span>
+            <span class="pill">LLM：Claude（精煉）</span>
+          </div>
+          <code class="prompt">將多頁審查表濃縮為一頁，保留必檢、抽檢與需拍照佐證項。</code>
+        </div>
+
+        <!-- 63 -->
+        <div class="app" data-tags="照片,AI判讀,異常,框選,PPE,清潔">
+          <h3>63. 巡查照片 AI 異常標註</h3>
+          <div class="row">
+            <span class="pill">要解決：大量照片難檢視</span>
+            <span class="pill">輸出：異常框選與說明</span>
+            <span class="pill">LLM：GPT‑4o Vision</span>
+          </div>
+          <code class="prompt">檢視以下巡查照片，框選清潔不到位/器械放錯/ PPE 不當之處並文字說明。</code>
+        </div>
+
+        <!-- 64 -->
+        <div class="app" data-tags="清潔,週報,合規,缺失,下週重點">
+          <h3>64. 日常清潔資料週報</h3>
+          <div class="row">
+            <span class="pill">要解決：零碎難整合</span>
+            <span class="pill">輸出：合規率/缺失 Top3/下週重點</span>
+            <span class="pill">LLM：GPT‑4（模板）</span>
+          </div>
+          <code class="prompt">以模板生成本週清潔績效週報：合規率、缺失 Top3、下週重點。</code>
+        </div>
+
+        <!-- 65 -->
+        <div class="app" data-tags="教學,圖文,高接觸面,步驟,印刷">
+          <h3>65. 環境管理教學圖文</h3>
+          <div class="row">
+            <span class="pill">要解決：教材產出慢</span>
+            <span class="pill">輸出：四步驟圖文、A4 友善</span>
+            <span class="pill">LLM：GPT‑4 + 圖像生成</span>
+          </div>
+          <code class="prompt">製作「高接觸面清潔」四步驟圖文（每步一句），風格友善可印製 A4。</code>
+        </div>
+      </section>
+
+      <!-- 實驗室生物安全 66–75 -->
+      <section id="sec-4" class="card pad">
+        <div class="section-title">
+          <h2>實驗室生物安全（66–75）</h2>
+          <span class="tag">BSL</span><span class="tag">SOP</span><span class="tag">合規</span>
+        </div>
+
+        <!-- 66 -->
+        <div class="app" data-tags="SOP,BSL2,BSL3,對照,差異">
+          <h3>66. BSL2/3 SOP 自動產出與比對優化</h3>
+          <div class="row">
+            <span class="pill">要解決：SOP 撰寫/比對冗長</span>
+            <span class="pill">輸出：SOP 草案＋差異清單</span>
+            <span class="pill">LLM：Claude（長文結構）</span>
+          </div>
+          <code class="prompt">依指引撰寫 BSL‑2 操作 SOP 草案，並與現行 SOP 比對差異，列需改善之處。</code>
+        </div>
+
+        <!-- 67 -->
+        <div class="app" data-tags="事故,通報,調查表,RCA,表單">
+          <h3>67. 生物安全事件調查表自動生成</h3>
+          <div class="row">
+            <span class="pill">要解決：事故表單手工</span>
+            <span class="pill">輸出：調查表＋RCA 提綱</span>
+            <span class="pill">LLM：GPT‑4（表單）</span>
+          </div>
+          <code class="prompt">基於事件描述，產生調查表（人/機/料/法/環）與初步根因假設清單。</code>
+        </div>
+
+        <!-- 68 -->
+        <div class="app" data-tags="風險,分級,規則,補件,合規">
+          <h3>68. 危害分級自動判讀</h3>
+          <div class="row">
+            <span class="pill">要解決：分級不一致</span>
+            <span class="pill">輸出：等級＋理由＋需補項</span>
+            <span class="pill">LLM：Claude（規則推理）</span>
+          </div>
+          <code class="prompt">依操作與樣本資訊，判定風險等級與理由；不足之處列出需補資訊清單。</code>
+        </div>
+
+        <!-- 69 -->
+        <div class="app" data-tags="MSDS,摘要,關鍵欄位,PPE,處置">
+          <h3>69. MSDS 摘要與重點抽取</h3>
+          <div class="row">
+            <span class="pill">要解決：長文件難用</span>
+            <span class="pill">輸出：危害/急救/洩漏/PPE 清單</span>
+            <span class="pill">LLM：GPT‑4（欄位抽取）</span>
+          </div>
+          <code class="prompt">從 MSDS 擷取：危害分類、急救處置、洩漏處置、PPE，輸出清單。</code>
+        </div>
+
+        <!-- 70 -->
+        <div class="app" data-tags="運送,儲存,規範,Q&A,RAG">
+          <h3>70. 生物樣本運送/儲存規範 Q&A</h3>
+          <div class="row">
+            <span class="pill">要解決：查規範不即時</span>
+            <span class="pill">輸出：互動 Q&A（附條號）</span>
+            <span class="pill">LLM：RAG + LLM</span>
+          </div>
+          <code class="prompt">根據上傳之運送/儲存規範 PDF，回答實務問題並標註條號來源。</code>
+        </div>
+
+        <!-- 71 -->
+        <div class="app" data-tags="教育,測驗,出題,解析,難度">
+          <h3>71. 生物安全教育測驗出題</h3>
+          <div class="row">
+            <span class="pill">要解決：命題耗時</span>
+            <span class="pill">輸出：單選/情境題＋解析＋難度</span>
+            <span class="pill">LLM：Claude（教學設計）</span>
+          </div>
+          <code class="prompt">針對 BSL‑2 PPE 與鋪面消毒出 10 題單選、3 題情境題，附解析與難度。</code>
+        </div>
+
+        <!-- 72 -->
+        <div class="app" data-tags="違規,回饋,同理性,矯正,語氣">
+          <h3>72. 違規紀錄同理性回饋</h3>
+          <div class="row">
+            <span class="pill">要解決：語氣拿捏</span>
+            <span class="pill">輸出：正向回饋＋矯正步驟</span>
+            <span class="pill">LLM：GPT‑4（語氣調整）</span>
+          </div>
+          <code class="prompt">將違規紀錄改寫為同理、具體、可執行的改進建議（避免責備語氣）。</code>
+        </div>
+
+        <!-- 73 -->
+        <div class="app" data-tags="樣本,流向,流程圖,控制點,審核點">
+          <h3>73. 樣本流向追蹤圖</h3>
+          <div class="row">
+            <span class="pill">要解決：流向不透明</span>
+            <span class="pill">輸出：流程圖＋控制/審核點</span>
+            <span class="pill">LLM：Mermaid + LLM</span>
+          </div>
+          <code class="prompt">以 Mermaid 語法生成樣本流向圖，標註控制點與審核點。</code>
+        </div>
+
+        <!-- 74 -->
+        <div class="app" data-tags="protocol,審視,差距,修訂,文字">
+          <h3>74. Protocol 自動審視與修訂建議</h3>
+          <div class="row">
+            <span class="pill">要解決：文件冗長難審</span>
+            <span class="pill">輸出：符合/缺漏/風險/修訂文字</span>
+            <span class="pill">LLM：Claude（條目評審）</span>
+          </div>
+          <code class="prompt">審閱此 protocol，列符合/缺漏/風險與具體修訂文字，依條款分段。</code>
+        </div>
+
+        <!-- 75 -->
+        <div class="app" data-tags="培訓,到期,提醒,推播,名單">
+          <h3>75. 培訓提醒與合規追蹤推播</h3>
+          <div class="row">
+            <span class="pill">要解決：證照/訓練到期忽略</span>
+            <span class="pill">輸出：名單＋到期日＋訊息模板</span>
+            <span class="pill">LLM：GPT‑4（名單合併）</span>
+          </div>
+          <code class="prompt">從名單與到期日產出提醒清單，生成主管版與當事人版訊息各一。</code>
+        </div>
+      </section>
+
+      <!-- 教育訓練 76–90 -->
+      <section id="sec-5" class="card pad">
+        <div class="section-title">
+          <h2>教育訓練推廣（76–90）</h2>
+          <span class="tag">教材</span><span class="tag">演練</span><span class="tag">多語</span>
+        </div>
+
+        <!-- 76 -->
+        <div class="app" data-tags="新人,課綱,講義,測驗,四小時">
+          <h3>76. 新人訓練教材自動產生</h3>
+          <div class="row">
+            <span class="pill">要解決：課程準備繁重</span>
+            <span class="pill">輸出：學習目標/大綱/案例/測驗</span>
+            <span class="pill">LLM：Claude（課程設計）</span>
+          </div>
+          <code class="prompt">為新進護理師設計 4 小時感控入門課：目標、單元大綱、案例與 10 題測驗。</code>
+        </div>
+
+        <!-- 77 -->
+        <div class="app" data-tags="漫畫,腳本,圖片,PPE,衛教">
+          <h3>77. 衛教漫畫腳本與圖片</h3>
+          <div class="row">
+            <span class="pill">要解決：素材不足</span>
+            <span class="pill">輸出：四格腳本＋圖像提示詞</span>
+            <span class="pill">LLM：GPT‑4 + DALL·E</span>
+          </div>
+          <code class="prompt">寫四格漫畫腳本「正確洗手五時機」，每格一句台詞＋圖像說明（中文）。</code>
+        </div>
+
+        <!-- 78 -->
+        <div class="app" data-tags="題庫,單選,解析,接觸,飛沫,空氣隔離">
+          <h3>78. 感控知識題庫生成</h3>
+          <div class="row">
+            <span class="pill">要解決：題庫維護</span>
+            <span class="pill">輸出：初級/進階各 15 題＋解析</span>
+            <span class="pill">LLM：Claude</span>
+          </div>
+          <code class="prompt">產生初級/進階各 15 題（含答案與解析），主題：接觸/飛沫/空氣隔離。</code>
+        </div>
+
+        <!-- 79 -->
+        <div class="app" data-tags="演練,情境,角色,流程,里程碑">
+          <h3>79. 演練腳本設計 AI 助手</h3>
+          <div class="row">
+            <span class="pill">要解決：跨部門腳本繁瑣</span>
+            <span class="pill">輸出：情境/角色/流程/里程碑</span>
+            <span class="pill">LLM：GPT‑4</span>
+          </div>
+          <code class="prompt">設計 2 小時演練：疑似 Norovirus 爆發，含救護、急診、住院、清潔、通訊節點。</code>
+        </div>
+
+        <!-- 80 -->
+        <div class="app" data-tags="法規,摘要,情境案例,新制,更新">
+          <h3>80. 新制法規摘要與案例講解</h3>
+          <div class="row">
+            <span class="pill">要解決：更新吸收慢</span>
+            <span class="pill">輸出：三段摘要＋一個情境案例</span>
+            <span class="pill">LLM：Claude（對照摘要）</span>
+          </div>
+          <code class="prompt">將此法規文件轉為三段摘要，並設計一個院內應用案例與常見錯誤。</code>
+        </div>
+
+        <!-- 81 -->
+        <div class="app" data-tags="公告,分眾,LINE,email,80字">
+          <h3>81. 分眾即時分享文（LINE/Email）</h3>
+          <div class="row">
+            <span class="pill">要解決：同訊息多版本</span>
+            <span class="pill">輸出：醫師/護理/行政三版</span>
+            <span class="pill">LLM：GPT‑4（語氣轉換）</span>
+          </div>
+          <code class="prompt">同一主題「新增隔離規範」各寫 80 字內訊息：醫師/護理/行政三版。</code>
+        </div>
+
+        <!-- 82 -->
+        <div class="app" data-tags="多語,翻譯,英文,越南文,衛教">
+          <h3>82. 多語版衛教自動翻譯</h3>
+          <div class="row">
+            <span class="pill">要解決：外籍患者溝通</span>
+            <span class="pill">輸出：中/英/越等版本</span>
+            <span class="pill">LLM：多語 LLM</span>
+          </div>
+          <code class="prompt">將此中文衛教翻譯為英文與越南文，保持醫學名詞正確且自然。</code>
+        </div>
+
+        <!-- 83 -->
+        <div class="app" data-tags="互動,QA,訓練,即時回饋,PPE">
+          <h3>83. 互動式 QA 訓練 Prompt 設計</h3>
+          <div class="row">
+            <span class="pill">要解決：學習動機不足</span>
+            <span class="pill">輸出：五回合問答＋即時回饋</span>
+            <span class="pill">LLM：GPT‑4（教練模式）</span>
+          </div>
+          <code class="prompt">扮演考官，連續問 5 題關於 PPE 穿脫，對我的回答給即時回饋與提示。</code>
+        </div>
+
+        <!-- 84 -->
+        <div class="app" data-tags="演練,角色卡,任務,權限,決策">
+          <h3>84. 大型演習角色卡</h3>
+          <div class="row">
+            <span class="pill">要解決：任務邊界不清</span>
+            <span class="pill">輸出：角色卡（任務/權限/關鍵決策）</span>
+            <span class="pill">LLM：Claude</span>
+          </div>
+          <code class="prompt">為急診護理長/清潔組長/檢驗室主任/發言人生成角色卡：任務、權限、關鍵決策。</code>
+        </div>
+
+        <!-- 85 -->
+        <div class="app" data-tags="影片,動畫,腳本,分鏡,旁白">
+          <h3>85. 教學影片/動畫腳本</h3>
+          <div class="row">
+            <span class="pill">要解決：前期腳本耗時</span>
+            <span class="pill">輸出：3 分鐘腳本/10 分鏡/旁白</span>
+            <span class="pill">LLM：GPT‑4</span>
+          </div>
+          <code class="prompt">撰寫 3 分鐘動畫腳本「正確配戴 N95 與護目鏡」，10 段分鏡與口語旁白。</code>
+        </div>
+
+        <!-- 86 -->
+        <div class="app" data-tags="分層,分眾,衛教,初學,進階,管理">
+          <h3>86. 分層分眾衛教素材</h3>
+          <div class="row">
+            <span class="pill">要解決：程度差異</span>
+            <span class="pill">輸出：初學/進階/管理層三版</span>
+            <span class="pill">LLM：Claude（層級化寫作）</span>
+          </div>
+          <code class="prompt">把此衛教文改寫成初學者版（200 字）、進階版（400 字）、管理層摘要（150 字）。</code>
+        </div>
+
+        <!-- 87 -->
+        <div class="app" data-tags="問卷,Likert,成效,自我效能,實用性">
+          <h3>87. 培訓成效評估問卷</h3>
+          <div class="row">
+            <span class="pill">要解決：量化學習成效</span>
+            <span class="pill">輸出：10 題 Likert + 2 題開放題</span>
+            <span class="pill">LLM：GPT‑4（量表設計）</span>
+          </div>
+          <code class="prompt">為本課設計 10 題 Likert（1-5）與 2 題開放題，聚焦實用性與自我效能。</code>
+        </div>
+
+        <!-- 88 -->
+        <div class="app" data-tags="個案,再現,時間線,反思,改善">
+          <h3>88. 個案再現模擬（Case Replay）</h3>
+          <div class="row">
+            <span class="pill">要解決：複盤缺結構</span>
+            <span class="pill">輸出：時間線＋反思提問＋改善</span>
+            <span class="pill">LLM：Claude（教學引導）</span>
+          </div>
+          <code class="prompt">把事件檔轉為時間線，提供 5 個反思提問與 3 個系統改善建議。</code>
+        </div>
+
+        <!-- 89 -->
+        <div class="app" data-tags="助教,教材,推薦,難度,對象">
+          <h3>89. AI 助教推薦教材/案例</h3>
+          <div class="row">
+            <span class="pill">要解決：找教材花時間</span>
+            <span class="pill">輸出：10 個教材主題（難度/對象/成果）</span>
+            <span class="pill">LLM：GPT‑4（排序）</span>
+          </div>
+          <code class="prompt">根據課綱，推薦 10 個教材主題（含難度、適用對象、預期成果），條列輸出。</code>
+        </div>
+
+        <!-- 90 -->
+        <div class="app" data-tags="FAQ,RAG,標準答案,口吻一致,短答">
+          <h3>90. 教育訓練 Q&A 自動回覆器</h3>
+          <div class="row">
+            <span class="pill">要解決：重複提問多</span>
+            <span class="pill">輸出：整理成主題化 FAQ 短答</span>
+            <span class="pill">LLM：RAG + LLM</span>
+          </div>
+          <code class="prompt">請將 FAQ 草稿優化為一致口吻、分主題，並提供可複製的標準短答。</code>
+        </div>
+      </section>
+
+      <!-- 資料治理與政策 91–100 -->
+      <section id="sec-6" class="card pad">
+        <div class="section-title">
+          <h2>資料治理與政策決策（91–100）</h2>
+          <span class="tag">政策</span><span class="tag">KPI</span><span class="tag">治理</span>
+        </div>
+
+        <!-- 91 -->
+        <div class="app" data-tags="法規,條文,摘要,條號,對照">
+          <h3>91. 政策法規條文摘要與重點條列</h3>
+          <div class="row">
+            <span class="pill">要解決：長條文難記</span>
+            <span class="pill">輸出：逐條一句重點＋條號索引</span>
+            <span class="pill">LLM：Claude（法規摘要）</span>
+          </div>
+          <code class="prompt">把此法規逐條摘要為一句重點，保留條號並標出與現行 SOP 不一致處。</code>
+        </div>
+
+        <!-- 92 -->
+        <div class="app" data-tags="KPI,解釋卡,定義,公式,警戒值">
+          <h3>92. 感控 KPI 儀表板解釋卡</h3>
+          <div class="row">
+            <span class="pill">要解決：管理層快速理解</span>
+            <span class="pill">輸出：定義/公式/警戒/誤解/建議</span>
+            <span class="pill">LLM：GPT‑4（說明卡）</span>
+          </div>
+          <code class="prompt">為以下 KPI 生成解釋卡：定義、公式、警戒值、常見誤解、決策建議（每卡 ≤120 字）。</code>
+        </div>
+
+        <!-- 93 -->
+        <div class="app" data-tags="跨單位,公文,公告,口吻,格式">
+          <h3>93. 跨單位政策溝通草稿</h3>
+          <div class="row">
+            <span class="pill">要解決：正式文書耗時</span>
+            <span class="pill">輸出：對內公告＋正式公文雙版本</span>
+            <span class="pill">LLM：Claude（文書格式）</span>
+          </div>
+          <code class="prompt">針對隔離規範更新，產生對內公告與正式公文草稿，注意語氣與格式差異。</code>
+        </div>
+
+        <!-- 94 -->
+        <div class="app" data-tags="變更,風險,影響矩陣,緩解,管理">
+          <h3>94. 政策變更風險評估</h3>
+          <div class="row">
+            <span class="pill">要解決：變更未評估</span>
+            <span class="pill">輸出：影響矩陣＋三項緩解措施</span>
+            <span class="pill">LLM：GPT‑4（風險矩陣）</span>
+          </div>
+          <code class="prompt">分析「新增訪客流量限制」之影響（人力/流程/滿意度/風險），生成風險矩陣與三項緩解。</code>
+        </div>
+
+        <!-- 95 -->
+        <div class="app" data-tags="隱私,匿名化,去識別化,清單,殘餘風險">
+          <h3>95. 隱私與匿名化檢查清單</h3>
+          <div class="row">
+            <span class="pill">要解決：資料共享前檢核</span>
+            <span class="pill">輸出：匿名化步驟/清單/殘餘風險</span>
+            <span class="pill">LLM：Claude（資料治理）</span>
+          </div>
+          <code class="prompt">為共享之感染資料集生成匿名化清單：直接/間接識別項、替代策略、殘餘風險描述。</code>
+        </div>
+
+        <!-- 96 -->
+        <div class="app" data-tags="會議,紀錄,摘要,決策,爭議,待辦">
+          <h3>96. 政策會議文本一頁摘要</h3>
+          <div class="row">
+            <span class="pill">要解決：長文難吸收</span>
+            <span class="pill">輸出：決策點/爭議點/待辦</span>
+            <span class="pill">LLM：GPT‑4（會議摘要）</span>
+          </div>
+          <code class="prompt">將 10 頁會議紀錄濃縮為一頁，列決策點、爭議點與待辦項。</code>
+        </div>
+
+        <!-- 97 -->
+        <div class="app" data-tags="資料品質,缺值,異常,重複,時間戳,修正建議">
+          <h3>97. 異常數據治理警示</h3>
+          <div class="row">
+            <span class="pill">要解決：數據品質影響判讀</span>
+            <span class="pill">輸出：異常類型/影響/修正建議</span>
+            <span class="pill">LLM：Gemini（資料檢查）</span>
+          </div>
+          <code class="prompt">對此 CSV 做資料品質檢查（缺值/異常值/重複/時間戳），列出修正建議與影響。</code>
+        </div>
+
+        <!-- 98 -->
+        <div class="app" data-tags="跨部門,協作,RACI,SLA,接口">
+          <h3>98. 跨部門協作橋接文件</h3>
+          <div class="row">
+            <span class="pill">要解決：任務邊界模糊</span>
+            <span class="pill">輸出：RACI/接口定義/SLA</span>
+            <span class="pill">LLM：Claude（組織設計）</span>
+          </div>
+          <code class="prompt">為感控/檢驗/資訊/總務設計 RACI 與接口 SLA，附升級處理路徑。</code>
+        </div>
+
+        <!-- 99 -->
+        <div class="app" data-tags="去敏,敏感詞,標註,替代,對照">
+          <h3>99. 敏感詞標註與文件去識別化</h3>
+          <div class="row">
+            <span class="pill">要解決：外發文件風險</span>
+            <span class="pill">輸出：敏感詞標註＋替代表述對照</span>
+            <span class="pill">LLM：GPT‑4（文字處理）</span>
+          </div>
+          <code class="prompt">在此報告中標註可能識別個資的段落與敏感詞，提出替代表述並輸出對照表。</code>
+        </div>
+
+        <!-- 100 -->
+        <div class="app" data-tags="專案,周報,里程碑,風險,需求">
+          <h3>100. 資料治理專案進度週報</h3>
+          <div class="row">
+            <span class="pill">要解決：跨組專案更新</span>
+            <span class="pill">輸出：完成/進行/下週/風險/需求</span>
+            <span class="pill">LLM：Claude（PM 溝通）</span>
+          </div>
+          <code class="prompt">依專案資訊，產生週報：已完成、進行中、下週計畫、風險、需求（≤400 字）。</code>
+        </div>
+      </section>
+
+      <div class="muted" style="margin-top:8px">版本：2025‑08‑14｜提示：可直接複製各應用的 Prompt 到你慣用的 LLM 平台；若需對接院內規範，建議結合私有 RAG 知識庫。</div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  由 Comet Assistant 產生的一頁式教材（僅提供內容與前端樣式，未含資料上傳或模型調用程式）
+</footer>
+
+<script>
+  // 搜尋過濾
+  const q = document.getElementById('q');
+  const apps = [...document.querySelectorAll('.app')];
+  q.addEventListener('input', () => {
+    const term = q.value.trim().toLowerCase();
+    apps.forEach(el => {
+      const text = el.innerText.toLowerCase();
+      const tags = (el.getAttribute('data-tags')||'').toLowerCase();
+      const hit = term === '' || text.includes(term) || tags.includes(term);
+      el.style.display = hit ? '' : 'none';
+      el.classList.toggle('hit', hit && term!=='' );
+    });
+  });
+
+  // 點擊複製 Prompt（動態加上按鈕）
+  document.querySelectorAll('code.prompt').forEach((code) => {
+    const btn = document.createElement('button');
+    btn.className = 'copy';
+    btn.textContent = '複製';
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(code.textContent);
+        btn.textContent = '已複製';
+        setTimeout(()=>btn.textContent='複製',1200);
+      } catch { btn.textContent='失敗'; setTimeout(()=>btn.textContent='複製',1200); }
+    });
+    code.appendChild(btn);
+  });
+</script>
+</body>
+</html>
