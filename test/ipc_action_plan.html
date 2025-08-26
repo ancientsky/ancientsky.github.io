@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WHO IPC 國家行動計畫指南</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- 全域變數與基本設定 --- */
+        :root {
+            --color-bg: #F8F9FA;
+            --color-header-bg: #0A4C7A;
+            --color-section-bg-alt: #E9ECEF;
+            --color-primary: #0077B6;
+            --color-accent: #FFC107;
+            --color-text-dark: #212529;
+            --color-text-light: #FFFFFF;
+            --color-text-muted: #6C757D;
+            --font-family: 'Noto Sans TC', sans-serif;
+            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        /* --- 頁面基本樣式 --- */
+        body {
+            margin: 0;
+            font-family: var(--font-family);
+            background-color: var(--color-bg);
+            color: var(--color-text-dark);
+            line-height: 1.7;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 4rem 1.5rem;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--color-text-dark);
+        }
+
+        /* --- 頁首 / 英雄區塊 --- */
+        .hero {
+            background: linear-gradient(rgba(10, 76, 122, 0.8), rgba(10, 76, 122, 0.8)), url(https://placehold.co/1920x1080/0A4C7A/FFFFFF?text=Safe+Healthcare) no-repeat center center/cover;
+            color: var(--color-text-light);
+            text-align: center;
+            padding: 6rem 1.5rem;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 0;
+            line-height: 1.2;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            margin-top: 1rem;
+        }
+
+        /* --- 願景區塊 --- */
+        .vision {
+            text-align: center;
+        }
+        .vision-box {
+            background-color: var(--color-primary);
+            color: var(--color-text-light);
+            padding: 2.5rem;
+            border-radius: 12px;
+            font-size: 1.4rem;
+            font-style: italic;
+            box-shadow: var(--shadow-sm);
+            display: inline-block;
+        }
+
+        /* --- 八大策略區塊 --- */
+        .strategies-section {
+            background-color: var(--color-section-bg-alt);
+        }
+        .strategies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 2rem;
+        }
+        .strategy-card {
+            background-color: #fff;
+            padding: 2rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-top: 4px solid var(--color-accent);
+        }
+        .strategy-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-md);
+        }
+        .strategy-card .icon {
+            font-size: 3.5rem;
+            line-height: 1;
+        }
+        .strategy-card h3 {
+            font-size: 1.25rem;
+            margin: 1rem 0 0.5rem 0;
+            color: var(--color-primary);
+        }
+        .strategy-card p {
+            font-size: 1rem;
+            color: var(--color-text-muted);
+            margin: 0;
+        }
+
+        /* --- 五步驟週期 (時間軸) --- */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--color-primary);
+            opacity: 0.2;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+            border-radius: 2px;
+        }
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+        .timeline-item::after {
+            content: attr(data-step);
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            right: -22px;
+            background-color: var(--color-accent);
+            color: var(--color-text-dark);
+            font-weight: 700;
+            font-size: 1.2rem;
+            border: 4px solid var(--color-bg);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .timeline-item.left { left: 0; }
+        .timeline-item.right { left: 50%; }
+        .timeline-item.right::after { left: -22px; }
+        
+        .timeline-content {
+            padding: 1.5rem;
+            background-color: white;
+            position: relative;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+        .timeline-item.left .timeline-content { text-align: right; }
+        .timeline-item.right .timeline-content { text-align: left; }
+        
+        .timeline-content h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+        .timeline-content ul {
+            padding-left: 20px;
+            text-align: left;
+            margin: 0;
+            list-style-type: '✓ ';
+        }
+        .timeline-item.left ul {
+            list-style-position: inside;
+            padding-left: 0;
+        }
+        .timeline-content ul li {
+            font-size: 1rem;
+            color: var(--color-text-muted);
+            margin-bottom: 0.5rem;
+        }
+        
+        /* --- 頁尾 --- */
+        .footer {
+            background-color: var(--color-header-bg);
+            color: var(--color-text-light);
+            text-align: center;
+            padding: 3rem 1.5rem;
+        }
+        .footer p {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+        .footer .source {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* --- 響應式設計 --- */
+        @media screen and (max-width: 768px) {
+            h2 { font-size: 2rem; }
+            .hero h1 { font-size: 2.2rem; }
+            .timeline::after { left: 31px; }
+            .timeline-item { width: 100%; padding-left: 70px; padding-right: 25px; }
+            .timeline-item.left::after, .timeline-item.right::after { left: 10px; }
+            .timeline-item.right { left: 0%; }
+            .timeline-item.left .timeline-content, .timeline-item.right .timeline-content { text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="container">
+            <h1>WHO 感染預防與控制 (IPC) 國家行動計畫指南</h1>
+            <p>打造更安全的醫療環境：一頁式實施藍圖</p>
+        </div>
+    </header>
+
+    <main>
+        <section class="vision container">
+            <h2>我們的願景 (Vision 2030)</h2>
+            <div class="vision-box">
+                <p>"到了2030年，每個接受或提供醫療照護的人都能免於相關感染的危害。"</p>
+            </div>
+        </section>
+
+        <section class="strategies-section">
+            <div class="container">
+                <h2>核心框架：八大策略方向</h2>
+                <div class="strategies-grid">
+                    <div class="strategy-card">
+                        <div class="icon">🏛️</div>
+                        <h3>政治承諾與政策</h3>
+                        <p>建立法規框架與爭取高層支持及資源。</p>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="icon">📋</div>
+                        <h3>積極的IPC計畫</h3>
+                        <p>確保IPC計畫具備明確目標、人力與預算。</p>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="icon">🔗</div>
+                        <h3>IPC整合與協調</h3>
+                        <p>與AMR、WASH等其他衛生計畫協同作戰。</p>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="icon">🎓</div>
+                        <h3>知識與職涯發展</h3>
+                        <p>培育專業人才，建立醫護人員的IPC知識體系。</p>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="icon">📊</div>
+                        <h3>數據驅動行動</h3>
+                        <p>透過監測與監控數據，指導並改進IPC措施。</p>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="icon">📢</div>
+                        <h3>倡議與溝通</h3>
+                        <p>向各界宣導IPC的重要性，提升公眾意識。</p>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="icon">🔬</div>
+                        <h3>研究與發展</h3>
+                        <p>鼓勵創新研究，填補現有IPC知識的空白。</p>
+                    </div>
+                    <div class="strategy-card">
+                        <div class="icon">🤝</div>
+                        <h3>合作與支持</h3>
+                        <p>建立國內外的夥伴關係，共同推動IPC計畫。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cycle-section container">
+            <h2>實施方法：五步驟週期</h2>
+            <div class="timeline">
+                <div class="timeline-item left" data-step="1">
+                    <div class="timeline-content">
+                        <h3>準備行動</h3>
+                        <ul>
+                            <li>確立領導團隊與治理架構</li>
+                            <li>繪製利害關係人地圖</li>
+                            <li>初步規劃預算與資源</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item right" data-step="2">
+                    <div class="timeline-content">
+                        <h3>基準評估</h3>
+                        <ul>
+                            <li>使用WHO標準工具評估現況</li>
+                            <li>進行SWOT分析找出差距</li>
+                            <li>向決策者回饋結果</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item left" data-step="3">
+                    <div class="timeline-content">
+                        <h3>制定與執行</h3>
+                        <ul>
+                            <li>確立優先行動領域</li>
+                            <li>制定SMART行動計畫(NAP)</li>
+                            <li>確保計畫獲批准並執行</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item right" data-step="4">
+                    <div class="timeline-content">
+                        <h3>評估影響</h3>
+                        <ul>
+                            <li>定期進行後續評估</li>
+                            <li>分析成功與失敗經驗</li>
+                            <li>根據結果更新計畫</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item left" data-step="5">
+                    <div class="timeline-content">
+                        <h3>維持計畫</h3>
+                        <ul>
+                            <li>確保長期資金與政策支持</li>
+                            <li>分享成功案例，保持動力</li>
+                            <li>建立持續改進的文化</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>從計畫到行動，共同邁向零感染的未來。</p>
+            <p class="source">資料來源：WHO 《感染預防與控制國家行動計畫的制定與實施：實用指南》</p>
+        </div>
+    </footer>
+
+</body>
+</html>
