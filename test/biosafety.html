@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動式實驗室生物安全意外事故及災害應變計畫指引</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+        }
+        .section-card {
+            transition: all 0.3s ease;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .accordion-button[aria-expanded="true"] + .accordion-content {
+            max-height: 1000px; /* Adjust as needed */
+        }
+        .accordion-button .arrow {
+            transition: transform 0.3s ease;
+        }
+        .accordion-button[aria-expanded="true"] .arrow {
+            transform: rotate(180deg);
+        }
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header Section -->
+    <header class="bg-slate-800 text-white shadow-lg">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold">實驗室生物安全意外事故及災害應變計畫指引</h1>
+            <p class="mt-2 text-slate-300">互動式網頁版 | 文件訂定日期: 2012.10.25</p>
+        </div>
+    </header>
+
+    <!-- Sticky Navigation -->
+    <nav class="sticky-nav bg-white/80 backdrop-blur-md shadow-md">
+        <div class="container mx-auto px-4">
+            <ul class="flex flex-wrap justify-center items-center py-2 text-sm md:text-base">
+                <li><a href="#plan" class="px-3 py-2 text-slate-600 hover:text-blue-600 font-medium transition-colors">應變計畫</a></li>
+                <li><a href="#procedures" class="px-3 py-2 text-slate-600 hover:text-blue-600 font-medium transition-colors">緊急處理程序</a></li>
+                <li><a href="#disaster" class="px-3 py-2 text-slate-600 hover:text-blue-600 font-medium transition-colors">災害應變</a></li>
+                <li><a href="#contacts" class="px-3 py-2 text-slate-600 hover:text-blue-600 font-medium transition-colors">緊急聯繫</a></li>
+                <li><a href="#equipment" class="px-3 py-2 text-slate-600 hover:text-blue-600 font-medium transition-colors">急救裝備</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4 md:p-8">
+
+        <!-- Introduction Section -->
+        <section id="introduction" class="section-card bg-white p-6 rounded-xl shadow-md mb-8">
+            <h2 class="text-2xl font-bold text-slate-700 border-l-4 border-blue-500 pl-4 mb-4">前言</h2>
+            <p class="text-gray-600">凡是從事感染性生物材料工作之實驗室，都應訂定所操作病原微生物及實驗動物可能危害之安全防護措施。特別是涉及操作或儲存第三級以上感染性生物材料之實驗室（例如生物安全第三等級及第四等級實驗室），應建立一份處理實驗室意外事故及災害之應變計畫。</p>
+        </section>
+
+        <!-- Plan Section -->
+        <section id="plan" class="section-card bg-white p-6 rounded-xl shadow-md mb-8">
+            <h2 class="text-2xl font-bold text-slate-700 border-l-4 border-blue-500 pl-4 mb-4">應變計畫</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">應變程序內容</h3>
+                    <ul class="list-disc list-inside space-y-1 text-gray-700">
+                        <li>預防災害（火災、水災、地震、爆炸）</li>
+                        <li>生物危害之風險評估</li>
+                        <li>人員意外暴露之處理及除污</li>
+                        <li>人員及實驗動物之緊急疏散及撤離</li>
+                        <li>人員暴露及受傷之緊急醫療處置</li>
+                        <li>暴露人員之醫療監視與臨床管理</li>
+                        <li>流行病學調查與事故後復原處理</li>
+                    </ul>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-green-800 mb-2">計畫考量事項</h3>
+                    <ul class="list-disc list-inside space-y-1 text-gray-700">
+                        <li>高度危害性病原微生物之鑑別</li>
+                        <li>高度危害性區域之位置（實驗區、儲藏區）</li>
+                        <li>有感染風險的工作人員及民眾之鑑別</li>
+                        <li>負責人員及其責任之鑑別</li>
+                        <li>安置、隔離及運送設施之規劃</li>
+                        <li>免疫血清、疫苗、藥品等物資清單</li>
+                        <li>緊急裝備之供應（防護衣、消毒劑等）</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Procedures Section -->
+        <section id="procedures" class="section-card bg-white p-6 rounded-xl shadow-md mb-8">
+            <h2 class="text-2xl font-bold text-slate-700 border-l-4 border-blue-500 pl-4 mb-6">微生物實驗室緊急處理程序</h2>
+            <div class="space-y-4" id="accordion-container">
+                <!-- Accordion items will be injected here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Disaster Section -->
+        <section id="disaster" class="section-card bg-white p-6 rounded-xl shadow-md mb-8">
+            <h2 class="text-2xl font-bold text-slate-700 border-l-4 border-blue-500 pl-4 mb-4">火災及天然災害</h2>
+            <ul class="list-decimal list-inside space-y-2 text-gray-600">
+                <li>建立應變計畫時應納入消防及其他應變部門。</li>
+                <li>應事先告知消防及應變部門潛在感染性物質區域，並安排其熟悉環境。</li>
+                <li>發生天然災害時，應向當地或國家緊急應變部門通報潛在危害。</li>
+                <li>救災人員需在經訓練之實驗室工作人員陪同下才能進入該區域。</li>
+                <li>感染性物質應收集在防滲漏之箱子或厚實之拋棄式袋子中。</li>
+            </ul>
+        </section>
+        
+        <!-- Contacts Section -->
+        <section id="contacts" class="section-card bg-white p-6 rounded-xl shadow-md mb-8">
+            <h2 class="text-2xl font-bold text-slate-700 border-l-4 border-blue-500 pl-4 mb-4">緊急服務聯繫對象</h2>
+            <p class="text-gray-600 mb-4">應在設施內明顯處張貼以下電話號碼及地址：</p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <!-- Contact items will be injected here by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Equipment Section -->
+        <section id="equipment" class="section-card bg-white p-6 rounded-xl shadow-md mb-8">
+            <h2 class="text-2xl font-bold text-slate-700 border-l-4 border-blue-500 pl-4 mb-4">急救裝備</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-yellow-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-yellow-800 mb-2">必須配備項目</h3>
+                    <ul class="list-disc list-inside space-y-1 text-gray-700">
+                        <li>急救箱（含常用及特殊解毒劑）</li>
+                        <li>合適之滅火器及滅火毯</li>
+                    </ul>
+                </div>
+                <div class="bg-red-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-semibold text-red-800 mb-2">建議配備項目 (依狀況而定)</h3>
+                    <ul class="list-disc list-inside space-y-1 text-gray-700">
+                        <li>全套防護衣</li>
+                        <li>全罩式防毒面具搭配有效濾毒罐</li>
+                        <li>房間消毒設備（噴霧器、燻蒸器）</li>
+                        <li>擔架、工具、繩索等</li>
+                        <li>區隔危險區域之器材及標示</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-400 text-center py-4 mt-8">
+        <p class="text-sm">此網頁內容根據《實驗室生物安全意外事故及災害應變計畫指引》(2012.10.25訂定) 製作。</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // --- Data for dynamic content ---
+            const accordionData = [
+                { title: '刺傷、割傷及擦傷', content: '<ol class="list-decimal list-inside space-y-2 p-4"><li>受傷人員應脫除防護衣，清洗雙手及受傷部位。</li><li>使用適當之皮膚消毒劑。</li><li>必要時，應尋求醫療照護。</li><li>報告受傷原因與涉及操作可能之病原微生物，並適當保存完整之醫療紀錄。</li></ol>' },
+                { title: '潛在感染性物質之食入', content: '<ol class="list-decimal list-inside space-y-2 p-4"><li>脫除當事人防護衣並尋求醫療照護。</li><li>報告可能食入物質之鑑別，以及事故發生過程。</li></ol>' },
+                { title: '潛在感染性氣膠之釋放 (生物安全櫃之外)', content: '<ol class="list-decimal list-inside space-y-2 p-4"><li>實驗室所有人員必須立即撤離受影響區域。</li><li>任何已暴露人員都應接受醫學諮詢。</li><li>應立即通知實驗室主管及生物安全官。</li><li>為使氣膠排出及微粒沉降，於一定時間內（例如1小時）嚴禁人員進入。無中央排氣系統則延長管制時間（例如24小時後）。</li><li>應張貼「禁止進入」之標示。</li><li>在生物安全官指導下，由除污人員穿著適當防護裝備進行除污。</li></ol>' },
+                { title: '容器破裂及感染性物質溢出', content: '<ol class="list-decimal list-inside space-y-2 p-4"><li>立即用抹布或紙巾覆蓋溢出物。</li><li>在覆蓋物上倒上消毒劑，並使其作用適當時間。</li><li>清除覆蓋物及破碎物品（玻璃碎片用鑷子清理）。</li><li>使用消毒劑再次擦拭污染區域。</li><li>所有清理用品應丟棄到感染性廢棄物專用收集筒內。</li><li>處理過程應全程穿戴手套。</li></ol>' },
+                { title: '離心管在未封閉式離心機內破裂', content: '<ol class="list-decimal list-inside space-y-2 p-4"><li>若離心機運行中，立即關閉電源，靜置30分鐘使氣膠沉降，勿開蓋。</li><li>若離心後發現，立即蓋上蓋子並靜置30分鐘。</li><li>通知生物安全官。</li><li>穿戴厚實手套，使用鑷子清除玻璃碎片。</li><li>所有破碎物及離心機部件應浸泡在消毒劑內。</li><li>離心機內腔應使用消毒劑擦拭兩次，再用清水沖洗晾乾。</li></ol>' },
+                { title: '離心管在封閉式離心桶(安全杯)內破裂', content: '<ol class="list-decimal list-inside space-y-2 p-4"><li>所有封閉式離心桶都應在生物安全櫃內進行裝卸。</li><li>如懷疑離心管破損，應鬆開安全杯蓋子並將整個離心桶進行高溫高壓滅菌，或採用化學消毒法。</li></ol>' }
+            ];
+
+            const contactData = [
+                "設置單位或實驗室地址", "設置單位或實驗室之首長", "實驗室主管", "生物安全官",
+                "消防隊", "醫院急救部門/醫療人員", "警察", "醫療主管", "技術負責人員", "供水、瓦斯及電氣服務部門"
+            ];
+
+            // --- Function to create accordion items ---
+            const accordionContainer = document.getElementById('accordion-container');
+            accordionData.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'border border-gray-200 rounded-lg';
+                div.innerHTML = `
+                    <button class="accordion-button w-full flex justify-between items-center p-4 bg-gray-50 hover:bg-gray-100 focus:outline-none" aria-expanded="false">
+                        <span class="font-semibold text-blue-700">${item.title}</span>
+                        <svg class="arrow w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="accordion-content bg-white text-gray-600">
+                        ${item.content}
+                    </div>
+                `;
+                accordionContainer.appendChild(div);
+            });
+
+            // --- Function to create contact items ---
+            const contactContainer = document.querySelector('#contacts .grid');
+            contactData.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'bg-slate-100 p-3 rounded-md text-center shadow-sm';
+                div.innerHTML = `<span class="font-medium text-slate-700">${index + 1}. ${item}</span>`;
+                contactContainer.appendChild(div);
+            });
+
+            // --- Accordion functionality ---
+            accordionContainer.addEventListener('click', function(event) {
+                const button = event.target.closest('.accordion-button');
+                if (button) {
+                    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+                    // Close all accordions first
+                    this.querySelectorAll('.accordion-button').forEach(btn => {
+                        if (btn !== button) {
+                            btn.setAttribute('aria-expanded', 'false');
+                        }
+                    });
+                    // Toggle the clicked one
+                    button.setAttribute('aria-expanded', !isExpanded);
+                }
+            });
+
+            // --- Smooth scrolling for nav links ---
+            document.querySelectorAll('nav a').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        const headerOffset = 80; // Adjust for sticky nav height
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+            
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: "smooth"
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
