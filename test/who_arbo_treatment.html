@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WHO 蟲媒病毒疾病臨床管理指引視覺化摘要</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F2F2F2;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .flowchart-node {
+            border: 2px solid #0077C0;
+            background-color: #ffffff;
+            color: #231F20;
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .flowchart-node:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .flowchart-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #0077C0;
+            padding: 0 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-[#231F20]">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#005082] mb-2">WHO 蟲媒病毒疾病臨床管理指引</h1>
+            <p class="text-lg text-[#0077C0]">全球實證觀點與臨床實踐精華</p>
+        </header>
+
+        <main class="space-y-12">
+            
+            <section id="challenge" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-[#005082] mb-4 text-center">核心挑戰：相似的初期症狀</h2>
+                <p class="text-center text-gray-600 mb-6 max-w-3xl mx-auto">登革熱、屈公病、茲卡與黃熱病在發病初期常表現出相似的非特異性症狀，如發燒、肌肉痠痛與皮疹，使得僅憑臨床表現進行準確鑑別診斷極具挑戰性。這也催生了「症候群管理」模式的重要性。</p>
+                <div class="flex justify-center items-center space-x-4 md:space-x-8 text-2xl md:text-3xl text-center">
+                    <div class="flex flex-col items-center">
+                        <span class="text-5xl mb-2">🌡️</span>
+                        <span class="text-lg font-medium">發燒</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-5xl mb-2">🤕</span>
+                        <span class="text-lg font-medium">頭痛/肌痛</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-5xl mb-2">🔴</span>
+                        <span class="text-lg font-medium">皮疹</span>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <span class="text-5xl mb-2">🦟</span>
+                        <span class="text-lg font-medium">蚊媒傳播</span>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="symptoms">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold text-[#005082] mb-4">鑑別診斷：解讀關鍵症狀差異</h2>
+                        <p class="text-gray-600 mb-4">雖然初期症狀重疊，但部分臨床表徵仍具有鑑別價值。此圖表比較了登革熱、屈公病與茲卡病毒中最具指標性的症狀，以協助臨床判斷。</p>
+                        <div class="chart-container h-80 md:h-96">
+                            <canvas id="symptomComparisonChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h2 class="text-2xl font-bold text-[#005082] mb-4">登革熱悖論：退燒後才是危險期</h2>
+                        <p class="text-gray-600 mb-4">登革熱最關鍵的臨床特徵是其三期病程。最危險的「危險期」通常在體溫下降時開始，此時可能發生血漿滲漏、休克與出血。監測退燒時的警示徵象至關重要。</p>
+                        <div class="chart-container h-80 md:h-96">
+                            <canvas id="dengueLifecycleChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="management-non-severe" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-[#005082] mb-6 text-center">非重症患者管理原則：門診照護要點</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg">
+                        <h3 class="text-xl font-bold text-green-800 mb-2 flex items-center"><span class="text-2xl mr-2">✅</span> 執行事項 (Do's)</h3>
+                        <ul class="list-disc list-inside space-y-2 text-green-700">
+                            <li><strong>標準化口服補液：</strong> 使用量杯記錄飲水量，每日排尿至少4-6次。</li>
+                            <li><strong>首選止痛退燒藥：</strong> 使用乙醯胺酚 (Paracetamol) 控制症狀。</li>
+                            <li><strong>監測警示徵象：</strong> 教育患者識別腹痛、持續嘔吐、黏膜出血等重症前兆。</li>
+                        </ul>
+                    </div>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                        <h3 class="text-xl font-bold text-red-800 mb-2 flex items-center"><span class="text-2xl mr-2">❌</span> 禁止事項 (Don'ts)</h3>
+                        <ul class="list-disc list-inside space-y-2 text-red-700">
+                            <li><strong>避免使用 NSAIDs：</strong> 強烈建議反對使用布洛芬 (Ibuprofen)、阿斯匹靈 (Aspirin) 等藥物，因其可能增加出血風險。</li>
+                            <li><strong>避免使用皮質類固醇：</strong> 缺乏效益證據且可能有害。</li>
+                            <li><strong>避免含糖飲料：</strong> 高糖分可能加劇生理壓力下的高血糖狀態。</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="management-severe">
+                <h2 class="text-2xl font-bold text-[#005082] mb-6 text-center">重症患者管理：從傳統監測到動態評估</h2>
+                <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">對於重症休克患者，WHO指引強調使用動態工具評估組織灌流與輸液反應性，以實現更精準的體液復甦，超越僅依賴傳統生命徵象與血容比的模式。</p>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
+                        <h3 class="text-xl font-bold text-[#0077C0] mb-4">輸液復甦監測工具演進</h3>
+                        <p class="text-gray-600 mb-4">WHO 強烈建議使用標準化微血管填充時間 (CRT) 與乳酸濃度監測，並建議在適當時機使用被動抬腿試驗 (PLR)，以更精準地指導輸液治療並避免輸液過量。</p>
+                        <div class="chart-container h-80 md:h-96">
+                            <canvas id="monitoringRadarChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6 space-y-4">
+                        <h3 class="text-xl font-bold text-[#0077C0] mb-2">重症照護的「去執行化」</h3>
+                        <p class="text-gray-600">WHO 建議反對過去一些缺乏實證的常規做法，旨在減少無效醫療。</p>
+                        <div class="bg-blue-50 border-l-4 border-[#00A1E4] p-4 rounded-r-lg">
+                            <h4 class="font-bold text-[#005082]">反對預防性血小板輸注</h4>
+                            <p class="text-sm text-gray-700">對於血小板低下但無活動性出血的患者，預防性輸注並不能預防嚴重出血。</p>
+                        </div>
+                        <div class="bg-blue-50 border-l-4 border-[#00A1E4] p-4 rounded-r-lg">
+                            <h4 class="font-bold text-[#005082]">反對常規使用皮質類固醇</h4>
+                            <p class="text-sm text-gray-700">缺乏明確的益處證據，且存在潛在危害。</p>
+                        </div>
+                         <div class="bg-blue-50 border-l-4 border-[#00A1E4] p-4 rounded-r-lg">
+                            <h4 class="font-bold text-[#005082]">反對使用免疫球蛋白</h4>
+                            <p class="text-sm text-gray-700">缺乏療效證據，且成本高昂，應保留給有實證的適應症。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="yellow-fever" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-[#005082] mb-6 text-center">黃熱病專題：支持性療法與研究前沿</h2>
+                <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">黃熱病尚無特效藥，重症死亡率高。WHO指引在支持性療法的基礎上，首次對潛在療法提出條件性或研究性建議，為高死亡率疾病開創治療路徑。</p>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="flowchart-node">重症黃熱病</div>
+                    <div class="flowchart-arrow">➡️</div>
+                    <div class="flowchart-node">支持性療法</div>
+                    <div class="flowchart-arrow">➡️</div>
+                    <div class="flex flex-col items-center space-y-2">
+                        <div class="flowchart-node w-full">肝衰竭時<br><strong>條件性建議使用 NAC</strong></div>
+                        <div class="flowchart-node w-full"><strong>僅限研究環境使用：</strong><br>單株抗體、Sofosbuvir</div>
+                    </div>
+                </div>
+            </section>
+            
+        </main>
+
+        <footer class="text-center mt-12 pt-8 border-t border-gray-300">
+            <p class="text-sm text-gray-500">此資訊圖表內容根據世界衛生組織 (WHO) 2025年《臨床管理蟲媒病毒疾病指引》編制，僅供專業參考。</p>
+            <p class="text-xs text-gray-400 mt-1">設計與開發：Canvas Infographics</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const wrapLabel = (label, maxLength = 16) => {
+                if (typeof label !== 'string' || label.length <= maxLength) {
+                    return label;
+                }
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length > maxLength) {
+                        lines.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                });
+                if (currentLine) {
+                    lines.push(currentLine.trim());
+                }
+                return lines;
+            };
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                if (!item) return '';
+                let label = item.chart.data.labels[item.dataIndex];
+                return Array.isArray(label) ? label.join(' ') : label;
+            };
+            
+            const commonChartOptions = {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#231F20',
+                            font: {
+                                family: "'Noto Sans TC', sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        },
+                        bodyFont: {
+                           family: "'Noto Sans TC', sans-serif"
+                        },
+                        titleFont: {
+                           family: "'Noto Sans TC', sans-serif"
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#231F20' },
+                        grid: { display: false }
+                    },
+                    y: {
+                        ticks: { color: '#231F20' },
+                        grid: { color: '#e0e0e0' }
+                    }
+                }
+            };
+
+            const createSymptomComparisonChart = () => {
+                const ctx = document.getElementById('symptomComparisonChart')?.getContext('2d');
+                if (!ctx) return;
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['劇烈關節痛', '搔癢', '結膜炎', '出血傾向', '血小板低下'],
+                        datasets: [
+                            {
+                                label: '登革熱',
+                                data: [6, 2, 5, 8, 9],
+                                backgroundColor: '#00A1E4',
+                            },
+                            {
+                                label: '屈公病',
+                                data: [9, 3, 6, 4, 2],
+                                backgroundColor: '#0077C0',
+                            },
+                            {
+                                label: '茲卡病毒',
+                                data: [4, 8, 7, 1, 1],
+                                backgroundColor: '#005082',
+                            }
+                        ]
+                    },
+                    options: {
+                        ...commonChartOptions,
+                        indexAxis: 'y',
+                        scales: {
+                            x: { ...commonChartOptions.scales.x, title: { display: true, text: '症狀關聯性強度 (相對值)' } },
+                            y: { ...commonChartOptions.scales.y }
+                        }
+                    }
+                });
+            };
+
+            const createDengueLifecycleChart = () => {
+                const ctx = document.getElementById('dengueLifecycleChart')?.getContext('2d');
+                if (!ctx) return;
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['第1天', '第2天', '第3天', '第4天', '第5天', '第6天', '第7天', '第8天'],
+                        datasets: [
+                            {
+                                label: '體溫',
+                                data: [40, 40, 39.5, 37, 36.8, 37, 37.2, 37],
+                                borderColor: '#00A1E4',
+                                yAxisID: 'y_temp',
+                                tension: 0.1
+                            },
+                            {
+                                label: '血小板 (x10³)',
+                                data: [180, 150, 120, 80, 50, 90, 150, 200],
+                                borderColor: '#0077C0',
+                                yAxisID: 'y_platelet',
+                                tension: 0.1
+                            },
+                            {
+                                label: '血比容 (%)',
+                                data: [40, 41, 42, 48, 50, 45, 42, 41],
+                                borderColor: '#005082',
+                                yAxisID: 'y_hct',
+                                tension: 0.1
+                            }
+                        ]
+                    },
+                    options: {
+                        ...commonChartOptions,
+                         plugins: {
+                            ...commonChartOptions.plugins,
+                            annotation: {
+                                annotations: {
+                                    box1: {
+                                        type: 'box',
+                                        xMin: 2.5,
+                                        xMax: 4.5,
+                                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                                        borderColor: 'rgba(255, 99, 132, 0.3)',
+                                        borderWidth: 1,
+                                        label: {
+                                            content: '危險期',
+                                            display: true,
+                                            position: 'start'
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { ...commonChartOptions.scales.x, title: { display: true, text: '病程天數' } },
+                            y_temp: { type: 'linear', position: 'left', title: { display: true, text: '體溫 (°C)' }, min: 36, max: 41 },
+                            y_platelet: { type: 'linear', position: 'right', title: { display: true, text: '血小板' }, grid: { drawOnChartArea: false } },
+                            y_hct: { type: 'linear', position: 'right', title: { display: true, text: '血比容' }, grid: { drawOnChartArea: false } }
+                        }
+                    }
+                });
+            };
+
+            const createMonitoringRadarChart = () => {
+                const ctx = document.getElementById('monitoringRadarChart')?.getContext('2d');
+                if (!ctx) return;
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: [
+                            '組織灌流評估', 
+                            '輸液反應性', 
+                            '動態評估', 
+                            '血漿滲漏監測', 
+                            '靜態參數',
+                            wrapLabel('避免輸液過量')
+                        ],
+                        datasets: [
+                            {
+                                label: 'WHO 動態監測',
+                                data: [9, 8, 9, 6, 4, 8],
+                                fill: true,
+                                backgroundColor: 'rgba(0, 122, 192, 0.2)',
+                                borderColor: '#007AC0',
+                                pointBackgroundColor: '#007AC0',
+                            },
+                            {
+                                label: '傳統監測',
+                                data: [5, 3, 3, 9, 8, 3],
+                                fill: true,
+                                backgroundColor: 'rgba(35, 31, 32, 0.2)',
+                                borderColor: '#231F20',
+                                pointBackgroundColor: '#231F20',
+                            }
+                        ]
+                    },
+                    options: {
+                        ...commonChartOptions,
+                        scales: {
+                            r: {
+                                angleLines: { color: '#cccccc' },
+                                grid: { color: '#dddddd' },
+                                pointLabels: { 
+                                    font: { size: 12, family: "'Noto Sans TC', sans-serif" },
+                                    color: '#231F20'
+                                },
+                                ticks: {
+                                    backdropColor: 'transparent',
+                                    color: '#666666'
+                                }
+                            }
+                        }
+                    }
+                });
+            };
+
+            createSymptomComparisonChart();
+            createDengueLifecycleChart();
+            createMonitoringRadarChart();
+        });
+    </script>
+</body>
+</html>
