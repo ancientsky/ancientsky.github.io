@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WHO vs. 臺灣疾管署 蟲媒病毒指引視覺化比較</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F2F2F2;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .flow-card {
+            background-color: white;
+            border: 2px solid #0077C0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: #0077C0;
+            align-self: center;
+        }
+    </style>
+</head>
+<body class="text-[#231F20]">
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#005082] mb-2">全球視野 vs. 在地實踐</h1>
+            <p class="text-lg text-[#0077C0]">WHO 與臺灣疾管署蟲媒病毒指引視覺化比較分析</p>
+        </header>
+
+        <main class="space-y-12">
+            
+            <section id="philosophy" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-[#005082] mb-6 text-center">核心差異：指引的哲學與方法論</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-center">
+                    <div class="border-2 border-[#0077C0] rounded-lg p-6">
+                        <div class="text-6xl mb-4">🌍</div>
+                        <h3 class="text-xl font-bold text-[#005082] mb-2">WHO：全球性實證導向</h3>
+                        <p class="text-gray-600">採用嚴謹的 GRADE 方法學，系統性回顧全球科學證據，提供具透明度與確定性評級的「強烈」或「條件性」建議，旨在建立全球適用的標準。</p>
+                    </div>
+                    <div class="border-2 border-gray-400 rounded-lg p-6">
+                        <div class="text-6xl mb-4">🇹🇼</div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">臺灣疾管署：國家級實務導向</h3>
+                        <p class="text-gray-600">基於專家共識與本地臨床經驗，針對臺灣主要流行病學威脅（登革熱）提供清晰、直接的臨床指令，反映已建立的標準作業流程。</p>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="classification">
+                 <h2 class="text-2xl font-bold text-[#005082] mb-6 text-center">病患分類：功能性定義 vs. 結構化分級</h2>
+                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-bold text-[#0077C0] mb-4">WHO 的功能性分類</h3>
+                        <p class="text-gray-600 mb-4">為橫跨四種疾病，採用簡化的二元分類，主要依據照護場域區分，作為指引的實用框架。</p>
+                        <div class="flex justify-around items-center h-40">
+                            <div class="text-center">
+                                <p class="text-4xl">🏥</p>
+                                <p class="font-bold text-lg">重症 (Severe)</p>
+                                <p class="text-sm text-gray-500">需住院治療者</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-4xl">🏠</p>
+                                <p class="font-bold text-lg">非重症 (Non-severe)</p>
+                                <p class="text-sm text-gray-500">可在門診處理者</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <h3 class="text-xl font-bold text-[#0077C0] mb-4">臺灣疾管署的登革熱 A/B/C 系統</h3>
+                        <p class="text-gray-600 mb-4">針對登革熱，提供更精細的風險分層，直接與臨床處置路徑掛鉤，指導第一線決策。</p>
+                        <div class="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-2">
+                             <div class="flow-card">A群<br><span class="text-sm">居家照護</span></div>
+                             <div class="flow-arrow">➡️</div>
+                             <div class="flow-card">B群<br><span class="text-sm">住院治療</span></div>
+                             <div class="flow-arrow">➡️</div>
+                             <div class="flow-card">C群<br><span class="text-sm">緊急處置</span></div>
+                        </div>
+                    </div>
+                 </div>
+            </section>
+
+            <section id="symptom-control" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-[#005082] mb-4 text-center">非重症管理：症狀控制藥物的關鍵分歧</h2>
+                <p class="text-center text-gray-600 mb-6 max-w-3xl mx-auto">在退燒止痛藥物的選擇上，兩種指引對 Paracetamol 與 NSAIDs 有高度共識，但在 Metamizole 的立場上出現顯著差異，反映了全球視野與在地用藥習慣的不同。</p>
+                <div class="chart-container">
+                    <canvas id="drugComparisonChart"></canvas>
+                </div>
+            </section>
+
+            <section id="severe-monitoring" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-[#005082] mb-4 text-center">重症監測的演進：靜態參數 vs. 動態評估</h2>
+                <p class="text-center text-gray-600 mb-6 max-w-3xl mx-auto">重症休克管理是最大的分歧點。WHO 引入了源自重症監護領域的動態評估工具，強調評估組織灌流與輸液反應性；而臺灣疾管署則沿用以監測血容比為核心的傳統登革熱管理模式。</p>
+                <div class="chart-container">
+                    <canvas id="monitoringComparisonChart"></canvas>
+                </div>
+            </section>
+
+            <section id="yellow-fever" class="bg-white rounded-lg shadow-md p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-[#005082] mb-6 text-center">治療前沿：黃熱病療法的立場差異</h2>
+                <p class="text-center text-gray-600 mb-8 max-w-3xl mx-auto">對於尚無特效藥的黃熱病，WHO 首次提出條件性與研究性治療建議，旨在為高死亡率疾病開創治療路徑；臺灣指引則維持純支持性療法的立場，反映當前已獲批准的標準治療現實。</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-blue-50 border-l-4 border-[#00A1E4] p-6 rounded-r-lg">
+                        <h3 class="text-xl font-bold text-[#005082] mb-3">WHO：開創未來實踐</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong class="text-[#0077C0]">條件性建議使用：</strong>肝衰竭時使用 N-acetylcysteine (NAC)。</li>
+                            <li><strong class="text-[#0077C0]">僅限研究環境使用：</strong>單株抗體 TY014、Sofosbuvir。</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-100 border-l-4 border-gray-400 p-6 rounded-r-lg">
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">臺灣疾管署：標準化當前實踐</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong class="text-gray-600">無特效藥物：</strong>治療以支持性療法為主。</li>
+                            <li><strong class="text-gray-600">未提及</strong> NAC 或其他潛在治療藥物。</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center mt-12 pt-8 border-t border-gray-300">
+            <p class="text-sm text-gray-500">此資訊圖表內容根據公開文件編制，旨在視覺化呈現 WHO 與臺灣疾管署指引的差異，僅供專業參考。</p>
+            <p class="text-xs text-gray-400 mt-1">設計與開發：Canvas Infographics</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const wrapLabel = (label, maxLength = 16) => {
+                if (typeof label !== 'string' || label.length <= maxLength) {
+                    return label;
+                }
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = '';
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).trim().length > maxLength) {
+                        lines.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine = (currentLine + ' ' + word).trim();
+                    }
+                });
+                if (currentLine) {
+                    lines.push(currentLine.trim());
+                }
+                return lines;
+            };
+
+            const tooltipTitleCallback = (tooltipItems) => {
+                const item = tooltipItems[0];
+                if (!item) return '';
+                let label = item.chart.data.labels[item.dataIndex];
+                return Array.isArray(label) ? label.join(' ') : label;
+            };
+            
+            const commonChartOptions = {
+                maintainAspectRatio: false,
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#231F20',
+                            font: {
+                                family: "'Noto Sans TC', sans-serif"
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback
+                        },
+                        bodyFont: {
+                           family: "'Noto Sans TC', sans-serif"
+                        },
+                        titleFont: {
+                           family: "'Noto Sans TC', sans-serif"
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: '#231F20' },
+                        grid: { display: false }
+                    },
+                    y: {
+                        ticks: { color: '#231F20', stepSize: 1, callback: (value) => ['不建議', '建議', '強烈反對'][value + 1] },
+                        grid: { color: '#e0e0e0' },
+                        min: -1,
+                        max: 1
+                    }
+                }
+            };
+
+            const createDrugComparisonChart = () => {
+                const ctx = document.getElementById('drugComparisonChart')?.getContext('2d');
+                if (!ctx) return;
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Paracetamol', 'NSAIDs', 'Metamizole', '皮質類固醇'],
+                        datasets: [
+                            {
+                                label: 'WHO',
+                                data: [1, -1, 1, -1],
+                                backgroundColor: '#00A1E4',
+                                borderColor: '#00A1E4',
+                                borderWidth: 1
+                            },
+                            {
+                                label: '臺灣疾管署',
+                                data: [1, -1, 0, -1],
+                                backgroundColor: '#231F20',
+                                borderColor: '#231F20',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                       ...commonChartOptions,
+                       plugins: {
+                           ...commonChartOptions.plugins,
+                           tooltip: {
+                               ...commonChartOptions.plugins.tooltip,
+                               callbacks: {
+                                   ...commonChartOptions.plugins.tooltip.callbacks,
+                                   label: function(context) {
+                                       let label = context.dataset.label || '';
+                                       if (label) {
+                                           label += ': ';
+                                       }
+                                       const value = context.raw;
+                                       if (value === 1) label += '建議使用';
+                                       else if (value === -1) label += '反對使用';
+                                       else if (value === 0) label += '未提及';
+                                       return label;
+                                   }
+                               }
+                           }
+                       },
+                       scales: {
+                           ...commonChartOptions.scales,
+                           y: {
+                               ...commonChartOptions.scales.y,
+                               ticks: {
+                                   ...commonChartOptions.scales.y.ticks,
+                                   callback: (value) => {
+                                       if (value === 1) return '建議';
+                                       if (value === 0) return '中立/未提及';
+                                       if (value === -1) return '反對';
+                                       return '';
+                                   }
+                               }
+                           }
+                       }
+                    }
+                });
+            };
+
+            const createMonitoringComparisonChart = () => {
+                const ctx = document.getElementById('monitoringComparisonChart')?.getContext('2d');
+                if (!ctx) return;
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: [
+                            wrapLabel('動態評估 (PLR)'), 
+                            wrapLabel('組織灌流監測 (CRT, Lactate)'), 
+                            '輸液反應性', 
+                            wrapLabel('血漿滲漏監測 (Hct)'), 
+                            '傳統生命徵象',
+                            '尿量監測'
+                        ],
+                        datasets: [
+                            {
+                                label: 'WHO',
+                                data: [8, 9, 9, 6, 7, 7],
+                                fill: true,
+                                backgroundColor: 'rgba(0, 161, 228, 0.2)',
+                                borderColor: '#00A1E4',
+                                pointBackgroundColor: '#00A1E4',
+                            },
+                            {
+                                label: '臺灣疾管署',
+                                data: [2, 3, 3, 9, 9, 9],
+                                fill: true,
+                                backgroundColor: 'rgba(35, 31, 32, 0.2)',
+                                borderColor: '#231F20',
+                                pointBackgroundColor: '#231F20',
+                            }
+                        ]
+                    },
+                    options: {
+                        ...commonChartOptions,
+                        scales: {
+                            r: {
+                                angleLines: { color: '#cccccc' },
+                                grid: { color: '#dddddd' },
+                                pointLabels: { 
+                                    font: { size: 12, family: "'Noto Sans TC', sans-serif" },
+                                    color: '#231F20'
+                                },
+                                ticks: {
+                                    backdropColor: 'transparent',
+                                    color: '#666666',
+                                    stepSize: 2
+                                },
+                                suggestedMin: 0,
+                                suggestedMax: 10
+                            }
+                        }
+                    }
+                });
+            };
+
+            createDrugComparisonChart();
+            createMonitoringComparisonChart();
+        });
+    </script>
+</body>
+</html>
