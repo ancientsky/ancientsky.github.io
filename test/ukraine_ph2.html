@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>烏克蘭戰時公共衛生現況分析簡報</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            background-color: #f0f2f5;
+        }
+       .slide {
+            display: none;
+            min-height: calc(100vh - 120px);
+        }
+       .slide.active {
+            display: flex;
+        }
+       .slide-content {
+            max-height: calc(100vh - 160px);
+            overflow-y: auto;
+        }
+         /* Custom scrollbar for better aesthetics */
+       .slide-content::-webkit-scrollbar {
+            width: 8px;
+        }
+       .slide-content::-webkit-scrollbar-track {
+            background: #e0e0e0;
+            border-radius: 10px;
+        }
+       .slide-content::-webkit-scrollbar-thumb {
+            background-color: #4A5568;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <div id="presentation-container" class="bg-white rounded-2xl shadow-2xl p-6 md:p-10 transition-all duration-500 w-full">
+
+            <div class="slide active flex-col justify-center items-center text-center">
+                <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-4">烏克蘭戰時公共衛生現況分析</h1>
+                <p class="text-xl md:text-2xl text-gray-600">重點整理簡報</p>
+                <p class="mt-8 text-sm text-gray-500">資料來源：WHO & 烏克蘭衛生集群 (Health Cluster Ukraine) | 2025年8月報告</p>
+                <svg width="100%" viewBox="0 0 1050 400" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <title>烏克蘭緊急情況類型、主要健康威脅及應對級別</title>
+  <desc>
+    此SVG表格概述了烏克蘭面臨的緊急情況類型及其對應的主要健康威脅、聯合國應對級別、世衛組織分級、安全級別和INFORM風險評分。
+  </desc>
+
+  <style>
+    .header-bg { fill: #27BFE6; }
+    .header-text { fill: white; font-size: 16px; font-weight: bold; text-anchor: middle; }
+    .body-text { font-size: 16px; fill: #333; }
+    .icon-text { font-size: 14px; text-anchor: middle; }
+    .inform-link { fill: #007bff; text-decoration: underline; }
+  </style>
+
+  <!-- 表頭背景 -->
+  <rect x="0" y="0" width="1050" height="50" class="header-bg" />
+
+  <!-- 表頭文字 -->
+  <g class="header-text">
+    <text x="110" y="32">Typologies of emergency</text>
+    <text x="350" y="32">Main health threats</text>
+    <text x="580" y="32">UN response level</text>
+    <text x="700" y="32">WHO grade</text>
+    <text x="820" y="32">Security level</text>
+    <text x="940" y="32">INFORM RISK</text>
+  </g>
+
+  <!-- 資料內容 -->
+  <g class="body-text">
+    <!-- 第一行: Conflict -->
+    <g id="row-conflict">
+      <!-- 圖示 -->
+      <g transform="translate(110, 100)">
+        <path d="M0-15 L5-5 L15 0 L5 5 L0 15 L-5 5 L-15 0 L-5-5 Z" fill="none" stroke="#27BFE6" stroke-width="2"/>
+        <path d="M0-8 L2.5-2.5 L8 0 L2.5 2.5 L0 8 L-2.5 2.5 L-8 0 L-2.5-2.5 Z" fill="#27BFE6"/>
+      </g>
+      <text x="110" y="135" class="icon-text">Conflict</text>
+      
+      <!-- 主要健康威脅 -->
+      <text x="230" y="90">Trauma and injury</text>
+      <text x="230" y="115">Non-communicable diseases (NCD)</text>
+      
+      <!-- UN response level -->
+      <text x="540" y="90">System-wide</text>
+      
+      <!-- WHO grade -->
+      <text x="660" y="90">Grade 3</text>
+      <text x="660" y="115">Protracted</text>
+      
+      <!-- Security level -->
+      <text x="820" y="90" text-anchor="middle">5</text>
+      <text x="820" y="115" text-anchor="middle">High</text>
+      
+      <!-- INFORM RISK -->
+      <a href="#" class="inform-link">
+        <text x="900" y="90">2025 NFORM</text>
+      </a>
+      <text x="900" y="115">Risk Score:</text>
+      <text x="900" y="135">5.6/10</text>
+      <text x="900" y="155">(High)¹</text>
+    </g>
+
+    <!-- 第二行: Population displacement -->
+     <g id="row-displacement" transform="translate(0, 150)">
+      <!-- 圖示 -->
+      <g transform="translate(110, 100)">
+          <path d="M-12 0 l24 0" stroke="#27BFE6" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 0 l-5 -5 m 5 5 l-5 5" stroke="#27BFE6" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="-5" cy="-10" r="4" fill="#27BFE6"/>
+          <path d="M-5 -6 v10 l-5 5 m5 -5 l5 5" stroke="#27BFE6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <text x="110" y="135" class="icon-text">Population</text>
+      <text x="110" y="150" class="icon-text">displacement</text>
+      
+      <!-- 主要健康威脅 (接續) -->
+      <text x="230" y="90">Mental health conditions</text>
+      <text x="230" y="115">Maternal and neo-natal health</text>
+      <text x="230" y="140">Outbreaks</text>
+      <text x="230" y="165">Winter seasonal changes</text>
+      <text x="230" y="190">Protection (including gen-</text>
+      <text x="230" y="215">der-based violence)</text>
+    </g>
+  </g>
+</svg>
+
+
+            </div>
+
+            <div class="slide flex-col justify-center">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">引言：目的與核心主題</h2>
+                <div class="text-lg space-y-4">
+                    <p><strong class="text-blue-600">目的：</strong>為公共衛生專業人士，詳細解析烏克蘭在戰爭下的公衛系統現況，綜合分析關鍵數據、流行病學趨勢、系統性挑戰與人道應對措施。</p>
+                    <p><strong class="text-red-600">核心主題：</strong>烏克蘭的醫療系統在展現非凡韌性的同時，正瀕臨<strong class="underline decoration-wavy">系統性崩潰的臨界點</strong>。這是一個由外部攻擊、內部資源枯竭、以及急慢性健康危機交織而成的多層次困境。</p>
+                    <p class="mt-4 p-4 bg-amber-100 border-l-4 border-amber-500 text-amber-800 rounded-r-lg">系統的運作在很大程度上依賴於醫護人員的個人犧牲，而這種模式在長期消耗下是不可持續的。</p>
+                </div>
+            </div>
+
+            <div class="slide flex-col">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第一部分：危機總覽 (1/3)</h2>
+                <h3 class="text-2xl font-semibold mb-4 text-gray-700">戰爭對平民的直接衝擊</h3>
+                <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <div class="space-y-4 text-lg">
+                        <p>截至2025年7月1日，聯合國已記錄高達 <strong class="text-red-600 text-2xl">47,695</strong> 名平民傷亡 (13,580死, 34,115傷)。</p>
+                        <p>傷亡趨勢在2025年不減反增，顯示敵對行動依然嚴峻。</p>
+                        <p>主要由爆炸性武器造成，對急診、外科、復健服務構成巨大且持續的需求。</p>
+                        <div class="mt-4 p-4 bg-gray-100 rounded-lg">
+                            <p class="font-bold">總攻擊事件 (2022/2 - 2025/8):</p>
+                            <p class="text-2xl font-bold text-blue-700">193,364 起</p>
+                            <p class="text-sm">其中砲擊 (94,726) 和空襲/無人機 (42,540) 佔絕大多數。</p>
+                        </div>
+                    </div>
+                    <div class="p-6 bg-blue-50 rounded-lg flex flex-col justify-center items-center text-center">
+ 					<img width="100%" src="./fig1.png">
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide flex-col">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第一部分：危機總覽 (2/3)</h2>
+                <h3 class="text-2xl font-semibold mb-4 text-red-700">針對醫療系統的蓄意攻擊</h3>
+                 <div class="space-y-4 text-lg">
+                    <p>WHO已核實超過 <strong class="text-red-600 text-2xl">2,176次</strong> 對醫療設施的攻擊。</p>
+                    <p><strong class="text-red-800">308處</strong> 設施被完全摧毀，<strong class="text-orange-600">2,076處</strong> 受損。</p>
+                    <p>僅2025年前三季就記錄了382起攻擊，呈驚人增長。</p>
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <div class="p-4 bg-red-100 border-l-4 border-red-500 rounded-r-lg">
+                            <p class="font-bold">直接損失估計：</p>
+                            <p class="text-2xl font-bold text-red-700">> 15.6億美元</p>
+                        </div>
+                        <div class="p-4 bg-orange-100 border-l-4 border-orange-500 rounded-r-lg">
+                            <p class="font-bold">未來十年重建需求：</p>
+                            <p class="text-2xl font-bold text-orange-700">~ 196億美元</p>
+                        </div>
+                    </div>
+                    <p class="italic text-gray-600 mt-2">每一次攻擊都是對醫療中立性的侵犯，並將醫療服務「武器化」。</p>
+                </div>
+            </div>
+
+            <div class="slide flex-col">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第一部分：危機總覽 (3/3)</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold mb-4 text-gray-700">資金困境與人口流動</h3>
+                        <div class="space-y-4 text-lg">
+                            <p><strong class="text-orange-600">資金緊縮：</strong>全球「人道重置」導致對烏克蘭的財政支持萎縮，嚴重限制關鍵干預措施。</p>
+                            <p>2025年目標援助人口從300萬下修至 <strong class="text-orange-700">220萬</strong>，加劇健康不平等。</p>
+                             <p><strong class="text-blue-600">人口流動：</strong></p>
+                             <ul class="list-disc list-inside space-y-2">
+                                <li><strong class="text-blue-700">560萬</strong> 難民逃往國外。</li>
+                                <li><strong class="text-blue-700">376萬</strong> 國內流離失所者 (IDPs)。</li>
+                             </ul>
+                             <p class="mt-2">對流出地（留守的脆弱群體）和接收地（醫療系統超載）構成雙重挑戰。</p>
+                        </div>
+                    </div>
+                    <div class="p-6 bg-blue-50 rounded-lg flex flex-col justify-center items-center text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-blue-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
+                        <h4 class="text-xl font-bold text-blue-800">惡性循環</h4>
+                        <p class="text-blue-700 mt-2">資金缺口 → 服務縮減 → 最脆弱群體被遺棄 → 可預防疾病惡化 → 死亡率上升</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide flex-col">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第二部分：整體健康狀況 (1/5)</h2>
+                <h3 class="text-2xl font-semibold mb-4 text-gray-700">人口動態與死亡率</h3>
+                <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <div class="p-6 bg-blue-50 rounded-lg flex flex-col justify-center items-center text-center">
+                        <svg width="100%" viewBox="0 0 850 500" xmlns="http://www.w3.org/2000/svg" font-family="'Inter', 'Noto Sans TC', sans-serif">
+    <!-- 
+      圖表重製自：烏克蘭公共衛生現況分析報告 (2025年8月版)
+      原始圖表：第10頁，圖2：2020-2024年登記的死亡與出生人數
+      SVG by Gemini
+    -->
+    <title>圖表：2020-2024年烏克蘭登記的死亡與出生人數</title>
+    <desc>此長條圖顯示從2020年至2024年烏克蘭登記的出生與死亡人數。圖表清晰地呈現出死亡人數持續高於出生人數，且差距在2022年戰爭全面爆發後依然顯著。</desc>
+
+    <!-- 定義樣式 -->
+    <style>
+        .chart-title { font-size: 24px; font-weight: bold; text-anchor: middle; fill: #333; }
+        .axis-label { font-size: 14px; font-weight: 500; text-anchor: middle; fill: #555; }
+        .axis-line { stroke: #888; stroke-width: 1; }
+        .grid-line { stroke: #e0e0e0; stroke-width: 1; }
+        .bar-label { font-size: 12px; text-anchor: middle; fill: #111; font-weight: 500;}
+        .year-label { font-size: 14px; text-anchor: middle; fill: #333; }
+        .legend-text { font-size: 14px; fill: #333; }
+        .annotation-text { font-size: 12px; fill: #e53e3e; text-anchor: middle; }
+    </style>
+
+    <!-- 圖表標題 -->
+    <text x="425" y="40" class="chart-title">2020-2024年登記的死亡與出生人數</text>
+
+    <!-- Y軸 (人數) -->
+    <g class="y-axis">
+        <text transform="translate(20, 275) rotate(-90)" class="axis-label">人數</text>
+        <line x1="80" y1="80" x2="80" y2="420" class="axis-line" />
+        <!-- Y軸刻度與網格線 -->
+        <g font-size="12" text-anchor="end" fill="#555">
+            <text x="70" y="425">0</text>
+            <line x1="80" y1="420" x2="800" y2="420" class="grid-line" />
+            
+            <text x="70" y="335">200,000</text>
+            <line x1="80" y1="335" x2="800" y2="335" class="grid-line" />
+
+            <text x="70" y="250">400,000</text>
+            <line x1="80" y1="250" x2="800" y2="250" class="grid-line" />
+
+            <text x="70" y="165">600,000</text>
+            <line x1="80" y1="165" x2="800" y2="165" class="grid-line" />
+
+            <text x="70" y="85">800,000</text>
+            <line x1="80" y1="80" x2="800" y2="80" class="axis-line" />
+        </g>
+    </g>
+
+    <!-- X軸 (年份) -->
+    <g class="x-axis" transform="translate(0, 420)">
+        <line x1="80" y1="0" x2="800" y2="0" class="axis-line" />
+         <!-- 年份標籤 -->
+        <text x="155" y="25" class="year-label">2020</text>
+        <text x="295" y="25" class="year-label">2021</text>
+        <text x="435" y="25" class="year-label">2022</text>
+        <text x="575" y="25" class="year-label">2023</text>
+        <text x="715" y="25" class="year-label">2024</text>
+        <text x="715" y="45" class="annotation-text">* (1-7月)</text>
+    </g>
+    
+    <!-- 圖例 -->
+    <g class="legend" transform="translate(550, 60)">
+        <rect x="0" y="0" width="16" height="16" fill="#4A5568" rx="3"></rect>
+        <text x="25" y="13" class="legend-text">登記死亡人數</text>
+        <rect x="150" y="0" width="16" height="16" fill="#F6AD55" rx="3"></rect>
+        <text x="175" y="13" class="legend-text">登記出生人數</text>
+    </g>
+
+    <!-- 資料繪製區 -->
+    <g class="chart-bars">
+        <!-- 數據 (Y軸最大值為 800,000) -->
+        <!-- 高度計算: (value / 800000) * 340 (圖表高度) -->
+
+        <!-- 2020 -->
+        <g transform="translate(110, 0)">
+            <!-- 死亡: 617,000 -->
+            <rect x="0" y="156.325" width="40" height="263.675" fill="#4A5568" rx="2"></rect>
+            <text x="20" y="151.325" class="bar-label">617k</text>
+            <!-- 出生: 293,000 -->
+            <rect x="50" y="295.475" width="40" height="124.525" fill="#F6AD55" rx="2"></rect>
+            <text x="70" y="290.475" class="bar-label">293k</text>
+        </g>
+        
+        <!-- 2021 -->
+        <g transform="translate(250, 0)">
+            <!-- 死亡: 717,000 -->
+            <rect x="0" y="117.275" width="40" height="302.725" fill="#4A5568" rx="2"></rect>
+            <text x="20" y="112.275" class="bar-label">717k</text>
+            <!-- 出生: 272,000 -->
+            <rect x="50" y="304.5" width="40" height="115.5" fill="#F6AD55" rx="2"></rect>
+            <text x="70" y="299.5" class="bar-label">272k</text>
+        </g>
+
+        <!-- 2022 -->
+        <g transform="translate(390, 0)">
+            <!-- 死亡: 542,000 -->
+            <rect x="0" y="194.65" width="40" height="225.35" fill="#4A5568" rx="2"></rect>
+            <text x="20" y="189.65" class="bar-label">542k</text>
+            <!-- 出生: 196,000 -->
+            <rect x="50" y="336.7" width="40" height="83.3" fill="#F6AD55" rx="2"></rect>
+            <text x="70" y="331.7" class="bar-label">196k</text>
+        </g>
+
+        <!-- 2023 -->
+        <g transform="translate(530, 0)">
+            <!-- 死亡: 496,000 -->
+            <rect x="0" y="214.2" width="40" height="205.8" fill="#4A5568" rx="2"></rect>
+            <text x="20" y="209.2" class="bar-label">496k</text>
+            <!-- 出生: 177,000 -->
+            <rect x="50" y="344.775" width="40" height="75.225" fill="#F6AD55" rx="2"></rect>
+            <text x="70" y="339.775" class="bar-label">177k</text>
+        </g>
+
+        <!-- 2024 (Jan-Jul) -->
+        <g transform="translate(670, 0)">
+            <!-- 死亡: 269,000 -->
+            <rect x="0" y="306.175" width="40" height="113.825" fill="#4A5568" rx="2"></rect>
+            <text x="20" y="301.175" class="bar-label">269k</text>
+            <!-- 出生: 96,000 -->
+            <rect x="50" y="379.2" width="40" height="40.8" fill="#F6AD55" rx="2"></rect>
+            <text x="70" y="374.2" class="bar-label">96k</text>
+        </g>
+    </g>
+</svg>
+
+                        
+                    </div>
+                     <div class="space-y-4 text-lg">
+                        <p>2024年，死亡人數 (495,090) 約為出生人數 (176,679) 的 <strong class="text-red-600 text-2xl">2.8倍</strong>。</p>
+                        <p>與2023年相比，出生率下降了 <strong class="text-red-600">5.7%</strong>。</p>
+                        <p>戰爭正極大地加速烏克蘭本已嚴峻的人口結構轉變，形成一個規模更小、年齡更大、病患更多的勞動力人口結構。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide flex-col">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第二部分：整體健康狀況 (2/5)</h2>
+                 <h3 class="text-2xl font-semibold mb-4 text-gray-700">地區差異與主要死因</h3>
+                <div class="grid md:grid-cols-2 gap-6 items-start">
+                    <div class="p-4 bg-blue-50 rounded-lg text-center">
+                    <svg width="100%" viewBox="0 0 620 400" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <title>2024年烏克蘭各州死亡/出生比率</title>
+  <desc>
+    此水平長條圖顯示2024年烏克蘭各州的死亡與出生比率。
+    Y軸顯示州別，X軸顯示從0到12的比率。
+    數據點如下：
+    Total Ukraine: 2.82
+    Kharkivska: 4.54
+    Sumska: 4.73
+    Zaporizhska: 4.74
+    Donetska: 8.47
+    Khersonska: 11
+  </desc>
+  
+  <style>
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+      text-anchor: middle;
+      font-family: Arial, sans-serif;
+    }
+    .axis-label {
+      font-size: 12px;
+      font-family: Arial, sans-serif;
+    }
+    .y-label {
+      text-anchor: end;
+    }
+    .x-label {
+      text-anchor: middle;
+    }
+    .axis-line {
+      stroke: #333;
+      stroke-width: 1;
+    }
+    .data-label {
+      font-size: 12px;
+      font-weight: bold;
+      dominant-baseline: middle;
+      text-anchor: end;
+    }
+    .label-light {
+      fill: white;
+    }
+    .label-dark {
+      fill: black;
+    }
+  </style>
+
+  <!-- 標題 -->
+  <text x="330" y="30" class="title">The death-to-birth ratios across Ukraine's oblasts, 2024</text>
+
+  <!-- 圖表區域 (left: 130, top: 60) - 增加左邊距以顯示完整標籤 -->
+  <g transform="translate(130, 60)">
+    <!-- 軸線 -->
+    <line x1="0" x2="450" y1="280" y2="280" class="axis-line" /> <!-- X-axis -->
+    <line x1="0" x2="0" y1="0" y2="280" class="axis-line" /> <!-- Y-axis -->
+
+    <!-- X 軸刻度 (0-12) (Max 12, Width 450 -> 1 unit = 37.5px) -->
+    <g class="axis-label x-label">
+      <text x="0" y="300">0</text>
+      <line x1="0" x2="0" y1="280" y2="285" class="axis-line" />
+      <text x="75" y="300">2</text>
+      <line x1="75" x2="75" y1="280" y2="285" class="axis-line" />
+      <text x="150" y="300">4</text>
+      <line x1="150" x2="150" y1="280" y2="285" class="axis-line" />
+      <text x="225" y="300">6</text>
+      <line x1="225" x2="225" y1="280" y2="285" class="axis-line" />
+      <text x="300" y="300">8</text>
+      <line x1="300" x2="300" y1="280" y2="285" class="axis-line" />
+      <text x="375" y="300">10</text>
+      <line x1="375" x2="375" y1="280" y2="285" class="axis-line" />
+      <text x="450" y="300">12</text>
+      <line x1="450" x2="450" y1="280" y2="285" class="axis-line" />
+    </g>
+
+    <!-- Y 軸 & 長條圖 (Bar height 30, padding 10) -->
+    <g class="axis-label y-label">
+      <!-- Total Ukraine: 2.82 -->
+      <text x="-10" y="25" dominant-baseline="middle">Total Ukraine</text>
+      <rect x="0" y="10" width="105.75" height="30" fill="#4A90E2" />
+      <text x="100.75" y="25" class="data-label label-light">2.82</text>
+  
+      <!-- Kharkivska: 4.54 -->
+      <text x="-10" y="65" dominant-baseline="middle">Kharkivska</text>
+      <rect x="0" y="50" width="170.25" height="30" fill="#90C3D4" />
+      <text x="165.25" y="65" class="data-label label-dark">4.54</text>
+  
+      <!-- Sumska: 4.73 -->
+      <text x="-10" y="105" dominant-baseline="middle">Sumska</text>
+      <rect x="0" y="90" width="177.375" height="30" fill="#86B6C9" />
+      <text x="172.375" y="105" class="data-label label-dark">4.73</text>
+  
+      <!-- Zaporizhska: 4.74 -->
+      <text x="-10" y="145" dominant-baseline="middle">Zaporizhska</text>
+      <rect x="0" y="130" width="177.75" height="30" fill="#7CA9BE" />
+      <text x="172.75" y="145" class="data-label label-dark">4.74</text>
+  
+      <!-- Donetska: 8.47 -->
+      <text x="-10" y="185" dominant-baseline="middle">Donetska</text>
+      <rect x="0" y="170" width="317.625" height="30" fill="#729CB3" />
+      <text x="312.625" y="185" class="data-label label-light">8.47</text>
+  
+      <!-- Khersonska: 11 -->
+      <text x="-10" y="225" dominant-baseline="middle">Khersonska</text>
+      <rect x="0" y="210" width="412.5" height="30" fill="#688FA8" />
+      <text x="407.5" y="225" class="data-label label-light">11</text>
+    </g>
+  </g>
+</svg>
+
+                        <p class="text-lg mt-2">前線州份人口危機尤為嚴重，例如 Donetska 州的比率高達 <strong class="text-red-700">11.04</strong>。</p>
+                    </div>
+                    <div class="p-4 bg-purple-50 rounded-lg text-center">
+<svg width="100%" viewBox="0 0 750 400" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <title>2021年烏克蘭主要死因</title>
+  <desc>
+    此水平長條圖顯示2021年烏克蘭的主要死因及其絕對數量。
+    Y軸顯示死因類別，X軸顯示死亡人數。
+    數據點如下：
+    Ischemic heart disease: 300,406
+    COVID-19: 85,975
+    Cerebrovascular diseases: 82,560
+    Malignant neoplasms: 73,715
+    Other cerebrovascular conditions and consequences: 45,795
+  </desc>
+  
+  <style>
+    .title {
+      font-size: 16px;
+      font-weight: bold;
+      text-anchor: middle;
+      font-family: Arial, sans-serif;
+    }
+    .axis-label {
+      font-size: 12px;
+      font-family: Arial, sans-serif;
+    }
+    .y-label {
+      text-anchor: end;
+    }
+    .x-label {
+      text-anchor: middle;
+    }
+    .axis-line {
+      stroke: #333;
+      stroke-width: 1;
+    }
+    .data-label {
+      font-size: 12px;
+      dominant-baseline: middle;
+      text-anchor: start;
+    }
+  </style>
+
+  <!-- 標題 -->
+  <text x="375" y="30" class="title">Leading Causes of Death in Ukraine (2021): Absolute Number of Deaths</text>
+
+  <!-- 圖表區域 (left: 250, top: 60) -->
+  <g transform="translate(250, 60)">
+    <!-- 軸線 -->
+    <line x1="0" x2="450" y1="280" y2="280" class="axis-line" /> <!-- X-axis -->
+    
+    <!-- X 軸刻度 (0-300,000) (Max 300k, Width 450 -> 100k = 150px) -->
+    <g class="axis-label x-label">
+      <text x="0" y="300">0</text>
+      <line x1="0" x2="0" y1="280" y2="285" class="axis-line" />
+      <text x="150" y="300">100,000</text>
+      <line x1="150" x2="150" y1="280" y2="285" class="axis-line" />
+      <text x="300" y="300">200,000</text>
+      <line x1="300" x2="300" y1="280" y2="285" class="axis-line" />
+      <text x="450" y="300">300,000</text>
+      <line x1="450" x2="450" y1="280" y2="285" class="axis-line" />
+    </g>
+
+    <!-- Y 軸 & 長條圖 (Bar height 30, padding 20) -->
+    <g>
+      <!-- Ischemic heart disease: 300,406 -->
+      <text x="-10" y="25" dominant-baseline="middle" class="axis-label y-label">Ischemic heart disease</text>
+      <rect x="0" y="10" width="450.6" height="30" fill="#2E86C1" />
+      <text x="455.6" y="25" class="data-label">300,406</text>
+  
+      <!-- COVID-19: 85,975 -->
+      <text x="-10" y="75" dominant-baseline="middle" class="axis-label y-label">COVID-19</text>
+      <rect x="0" y="60" width="128.96" height="30" fill="#2E86C1" />
+      <text x="133.96" y="75" class="data-label">85,975</text>
+  
+      <!-- Cerebrovascular diseases: 82,560 -->
+      <text x="-10" y="125" dominant-baseline="middle" class="axis-label y-label">Cerebrovascular diseases</text>
+      <rect x="0" y="110" width="123.84" height="30" fill="#2E86C1" />
+      <text x="128.84" y="125" class="data-label">82,560</text>
+  
+      <!-- Malignant neoplasms: 73,715 -->
+      <text x="-10" y="175" dominant-baseline="middle" class="axis-label y-label">Malignant neoplasms</text>
+      <rect x="0" y="160" width="110.57" height="30" fill="#2E86C1" />
+      <text x="115.57" y="175" class="data-label">73,715</text>
+  
+      <!-- Other cerebrovascular conditions and consequences: 45,795 -->
+      <text x="-10" y="225" dominant-baseline="middle" class="axis-label y-label">
+        <tspan x="-10" dy="-0.6em">Other cerebrovascular conditions</tspan>
+        <tspan x="-10" dy="1.2em">and consequences</tspan>
+      </text>
+      <rect x="0" y="210" width="68.69" height="30" fill="#2E86C1" />
+      <text x="73.69" y="225" class="data-label">45,795</text>
+    </g>
+  </g>
+</svg>
+
+                         <p class="text-lg mt-2">戰前主要死因是非傳染性疾病 (NCDs)，其中<strong class="text-purple-700">心血管疾病佔65%</strong>，為分析戰爭影響提供了關鍵基線。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide flex-col">
+                 <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第二部分：整體健康狀況 (3/5)</h2>
+                 <h3 class="text-2xl font-semibold mb-4 text-red-700">疫苗可預防疾病的警訊：麻疹</h3>
+                <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <div class="space-y-4 text-lg">
+                        <p>2025年前七個月，麻疹病例數 (<strong class="text-red-600">1,377例</strong>) 較去年同期激增近<strong class="text-red-600">九倍</strong>。</p>
+                        <p>17歲以下兒童佔 <strong class="text-orange-600">73.7%</strong>，顯示兒童群體免疫缺口嚴重。</p>
+                        <p class="p-4 bg-red-100 border-l-4 border-red-500 text-red-800 rounded-r-lg">麻疹的爆發是系統性崩潰的「領先指標」，暗示其他疫苗可預防疾病的防線也同樣脆弱。</p>
+                    </div>
+                    <div class="p-6 bg-blue-50 rounded-lg flex flex-col justify-center items-center text-center">
+<svg width="100%" viewBox="0 0 1220 600" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <title>全國疫苗接種時程覆蓋率 (%) (2025/1-4)</title>
+  <desc>
+    此圖表顯示了根據烏克蘭國家疫苗接種時程，各年齡組在不同疫苗上的接種覆蓋率。數據為2025年1月至4月的累積數據。
+  </desc>
+
+  <style>
+    .header { font-size: 14px; font-weight: bold; text-anchor: middle; }
+    .age-group { font-size: 14px; font-weight: bold; text-anchor: start; }
+    .percentage-text {
+      font-size: 16px;
+      font-weight: bold;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      fill: #333;
+    }
+  </style>
+
+  <!-- 圖表標題 -->
+  <text x="610" y="40" class="header" style="font-size: 18px;">Immunization Coverage (%) in Ukraine According to the National Vaccination Schedule, Jan-Apr 2025</text>
+
+  <!-- Grid and Data -->
+  <g transform="translate(20, 80)">
+    <!-- Column Headers -->
+    <g class="header">
+      <text x="75" y="20">AGE GROUP</text>
+      <text x="250" y="20">TUBERCULOSIS</text>
+      <text x="400" y="20">HEPATITIS B</text>
+      <text x="550" y="20">MMR</text>
+      <text x="700" y="20">DIPHTHERIA-TETANUS</text>
+      <text x="850" y="20">PERTUSSIS</text>
+      <text x="1000" y="20">POLIO</text>
+      <text x="1150" y="20">HIB INFECTION</text>
+    </g>
+
+    <!-- Data Rows -->
+    <g id="data-grid" transform="translate(0, 50)">
+
+      <!-- Row: Under 1 Year -->
+      <g transform="translate(0, 40)">
+        <text x="75" y="0" class="age-group" dominant-baseline="middle">Under 1 Year</text>
+        <text x="250" y="0" class="percentage-text">29.1%</text>
+        <text x="400" y="0" class="percentage-text">30.3%</text>
+        <text x="700" y="0" class="percentage-text">31.7%</text>
+        <text x="850" y="0" class="percentage-text">31.7%</text>
+        <text x="1000" y="0" class="percentage-text">31.4%</text>
+        <text x="1150" y="0" class="percentage-text">27.2%</text>
+      </g>
+
+      <!-- Row: 1 Year -->
+      <g transform="translate(0, 120)">
+        <text x="75" y="0" class="age-group" dominant-baseline="middle">1 Year</text>
+        <text x="550" y="0" class="percentage-text">31%</text>
+        <text x="1150" y="0" class="percentage-text">29.6%</text>
+      </g>
+
+      <!-- Row: 18 Months -->
+      <g transform="translate(0, 200)">
+        <text x="75" y="0" class="age-group" dominant-baseline="middle">18 Months</text>
+        <text x="700" y="0" class="percentage-text">29.1%</text>
+        <text x="850" y="0" class="percentage-text">29.1%</text>
+        <text x="1000" y="0" class="percentage-text">29.3%</text>
+      </g>
+      
+      <!-- Row: 6 Years -->
+      <g transform="translate(0, 280)">
+        <text x="75" y="0" class="age-group" dominant-baseline="middle">6 Years</text>
+        <text x="550" y="0" class="percentage-text">28.3%</text>
+        <text x="700" y="0" class="percentage-text">23.8%</text>
+        <text x="1150" y="0" class="percentage-text">19.3%</text>
+      </g>
+      
+      <!-- Row: 14 Years -->
+      <g transform="translate(0, 360)">
+        <text x="75" y="0" class="age-group" dominant-baseline="middle">14 Years</text>
+        <text x="1000" y="0" class="percentage-text">28%</text>
+      </g>
+      
+      <!-- Row: 16 Years -->
+      <g transform="translate(0, 440)">
+        <text x="75" y="0" class="age-group" dominant-baseline="middle">16 Years</text>
+        <text x="700" y="0" class="percentage-text">25.8%</text>
+      </g>
+    </g>
+  </g>
+</svg>
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide flex-col">
+                 <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第二部分：整體健康狀況 (4/5)</h2>
+                 <h3 class="text-2xl font-semibold mb-4 text-gray-700">疫苗接種覆蓋率的地區差異</h3>
+                <div class="p-6 bg-blue-50 rounded-lg flex flex-col justify-center items-center text-center w-full">
+<svg width="100%" viewBox="0 0 1040 650" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <title>2024年烏克蘭各區域疫苗接種覆蓋率 (%)</title>
+  <desc>
+    此表格顯示2024年烏克蘭各區域針對不同疫苗的接種覆蓋率百分比。
+    數據來源：烏克蘭公共衛生狀況分析報告。
+    顏色標示：綠色表示覆蓋率達到或超過95%的目標，黃色表示接近目標，紅色表示較低，灰色表示無數據。
+  </desc>
+
+  <style>
+    <![CDATA[
+    .title { font-size: 20px; font-weight: bold; text-anchor: middle; }
+    .header { font-size: 14px; font-weight: bold; text-anchor: middle; }
+    .cell-text { font-size: 14px; text-anchor: middle; dominant-baseline: middle; }
+    .region-text { font-size: 14px; text-anchor: start; dominant-baseline: middle; }
+    .footer-text { font-size: 11px; font-family: 'Courier New', Courier, monospace; }
+    .total-row .region-text, .total-row .cell-text { font-weight: bold; }
+    
+    .bg-high { fill: #d4edda; } /* Green for >= 95% */
+    .bg-medium { fill: #fff3cd; } /* Yellow for 80-94.9% */
+    .bg-low { fill: #f8d7da; } /* Red for < 80% */
+    .bg-zero { fill: #e9ecef; } /* Grey for 0% */
+    .bg-header { fill: #f2f2f2; }
+    .bg-total { fill: #e2e6ea; }
+    .bg-row-light { fill: #ffffff; }
+    .bg-row-dark { fill: #fafafa; }
+    ]]>
+  </style>
+
+  <!-- 圖表標題 -->
+  <text x="520" y="40" class="title">Immunization Coverage (%) by Regions in Ukraine, Jan-Dec 2024</text>
+
+  <!-- 表格主體 -->
+  <g transform="translate(30, 80)">
+    <!-- 表頭 -->
+    <rect x="0" y="0" width="980" height="40" class="bg-header"></rect>
+    <text x="90" y="20" class="header">Region</text>
+    <text x="230" y="20" class="header">BCG</text>
+    <text x="330" y="20" class="header">DTP3</text>
+    <text x="430" y="20" class="header">DT</text>
+    <text x="530" y="20" class="header">Pol3</text>
+    <text x="630" y="20" class="header">MMR1</text>
+    <text x="730" y="20" class="header">MMR2</text>
+    <text x="830" y="20" class="header">HepB3</text>
+    <text x="930" y="20" class="header">Hib3</text>
+    
+    <!-- 資料行 -->
+    <g id="table-data">
+      <!-- Chernihivska -->
+      <g transform="translate(0, 40)">
+        <rect x="0" y="0" width="980" height="30" class="bg-row-light"></rect>
+        <text x="10" y="15" class="region-text">Chernihivska</text>
+        <rect x="180" y="0" width="100" height="30" class="bg-low"></rect><text x="230" y="15" class="cell-text">79.9</text>
+        <rect x="280" y="0" width="100" height="30" class="bg-high"></rect><text x="330" y="15" class="cell-text">94.8</text>
+        <rect x="380" y="0" width="100" height="30" class="bg-low"></rect><text x="430" y="15" class="cell-text">78.3</text>
+        <rect x="480" y="0" width="100" height="30" class="bg-high"></rect><text x="530" y="15" class="cell-text">96.0</text>
+        <rect x="580" y="0" width="100" height="30" class="bg-medium"></rect><text x="630" y="15" class="cell-text">94.5</text>
+        <rect x="680" y="0" width="100" height="30" class="bg-medium"></rect><text x="730" y="15" class="cell-text">85.8</text>
+        <rect x="780" y="0" width="100" height="30" class="bg-high"></rect><text x="830" y="15" class="cell-text">96.4</text>
+        <rect x="880" y="0" width="100" height="30" class="bg-high"></rect><text x="930" y="15" class="cell-text">100.0</text>
+      </g>
+      <!-- Dnipropetrovska -->
+      <g transform="translate(0, 70)">
+        <rect x="0" y="0" width="980" height="30" class="bg-row-dark"></rect>
+        <text x="10" y="15" class="region-text">Dnipropetrovska</text>
+        <rect x="180" y="0" width="100" height="30" class="bg-medium"></rect><text x="230" y="15" class="cell-text">94.0</text>
+        <rect x="280" y="0" width="100" height="30" class="bg-medium"></rect><text x="330" y="15" class="cell-text">92.9</text>
+        <rect x="380" y="0" width="100" height="30" class="bg-medium"></rect><text x="430" y="15" class="cell-text">84.3</text>
+        <rect x="480" y="0" width="100" height="30" class="bg-medium"></rect><text x="530" y="15" class="cell-text">91.8</text>
+        <rect x="580" y="0" width="100" height="30" class="bg-medium"></rect><text x="630" y="15" class="cell-text">93.4</text>
+        <rect x="680" y="0" width="100" height="30" class="bg-medium"></rect><text x="730" y="15" class="cell-text">87.1</text>
+        <rect x="780" y="0" width="100" height="30" class="bg-medium"></rect><text x="830" y="15" class="cell-text">90.9</text>
+        <rect x="880" y="0" width="100" height="30" class="bg-high"></rect><text x="930" y="15" class="cell-text">99.5</text>
+      </g>
+      <!-- Donetska -->
+      <g transform="translate(0, 100)">
+        <rect x="0" y="0" width="980" height="30" class="bg-row-light"></rect>
+        <text x="10" y="15" class="region-text">Donetska</text>
+        <rect x="180" y="0" width="100" height="30" class="bg-low"></rect><text x="230" y="15" class="cell-text">76.8</text>
+        <rect x="280" y="0" width="100" height="30" class="bg-high"></rect><text x="330" y="15" class="cell-text">97.4</text>
+        <rect x="380" y="0" width="100" height="30" class="bg-medium"></rect><text x="430" y="15" class="cell-text">87.3</text>
+        <rect x="480" y="0" width="100" height="30" class="bg-medium"></rect><text x="530" y="15" class="cell-text">92.1</text>
+        <rect x="580" y="0" width="100" height="30" class="bg-medium"></rect><text x="630" y="15" class="cell-text">86.1</text>
+        <rect x="680" y="0" width="100" height="30" class="bg-high"></rect><text x="730" y="15" class="cell-text">99.4</text>
+        <rect x="780" y="0" width="100" height="30" class="bg-high"></rect><text x="830" y="15" class="cell-text">99.9</text>
+        <rect x="880" y="0" width="100" height="30" class="bg-high"></rect><text x="930" y="15" class="cell-text">99.4</text>
+      </g>
+      <!-- Kharkivska -->
+       <g transform="translate(0, 130)">
+        <rect x="0" y="0" width="980" height="30" class="bg-row-dark"></rect>
+        <text x="10" y="15" class="region-text">Kharkivska</text>
+        <rect x="180" y="0" width="100" height="30" class="bg-medium"></rect><text x="230" y="15" class="cell-text">93.2</text>
+        <rect x="280" y="0" width="100" height="30" class="bg-medium"></rect><text x="330" y="15" class="cell-text">87.1</text>
+        <rect x="380" y="0" width="100" height="30" class="bg-medium"></rect><text x="430" y="15" class="cell-text">82.3</text>
+        <rect x="480" y="0" width="100" height="30" class="bg-medium"></rect><text x="530" y="15" class="cell-text">84.0</text>
+        <rect x="580" y="0" width="100" height="30" class="bg-medium"></rect><text x="630" y="15" class="cell-text">88.0</text>
+        <rect x="680" y="0" width="100" height="30" class="bg-medium"></rect><text x="730" y="15" class="cell-text">92.2</text>
+        <rect x="780" y="0" width="100" height="30" class="bg-medium"></rect><text x="830" y="15" class="cell-text">88.9</text>
+        <rect x="880" y="0" width="100" height="30" class="bg-high"></rect><text x="930" y="15" class="cell-text">96.1</text>
+      </g>
+      <!-- Khersonska -->
+      <g transform="translate(0, 160)">
+        <rect x="0" y="0" width="980" height="30" class="bg-row-light"></rect>
+        <text x="10" y="15" class="region-text">Khersonska</text>
+        <rect x="180" y="0" width="100" height="30" class="bg-high"></rect><text x="230" y="15" class="cell-text">99.6</text>
+        <rect x="280" y="0" width="100" height="30" class="bg-high"></rect><text x="330" y="15" class="cell-text">98.0</text>
+        <rect x="380" y="0" width="100" height="30" class="bg-high"></rect><text x="430" y="15" class="cell-text">99.4</text>
+        <rect x="480" y="0" width="100" height="30" class="bg-high"></rect><text x="530" y="15" class="cell-text">99.3</text>
+        <rect x="580" y="0" width="100" height="30" class="bg-high"></rect><text x="630" y="15" class="cell-text">98.1</text>
+        <rect x="680" y="0" width="100" height="30" class="bg-high"></rect><text x="730" y="15" class="cell-text">100.0</text>
+        <rect x="780" y="0" width="100" height="30" class="bg-high"></rect><text x="830" y="15" class="cell-text">95.6</text>
+        <rect x="880" y="0" width="100" height="30" class="bg-high"></rect><text x="930" y="15" class="cell-text">98.3</text>
+      </g>
+      <!-- Luhanska -->
+      <g transform="translate(0, 190)">
+        <rect x="0" y="0" width="980" height="30" class="bg-row-dark"></rect>
+        <text x="10" y="15" class="region-text">Luhanska</text>
+        <rect x="180" y="0" width="100" height="30" class="bg-zero"></rect><text x="230" y="15" class="cell-text">0.0</text>
+        <rect x="280" y="0" width="100" height="30" class="bg-zero"></rect><text x="330" y="15" class="cell-text">0.0</text>
+        <rect x="380" y="0" width="100" height="30" class="bg-zero"></rect><text x="430" y="15" class="cell-text">0.0</text>
+        <rect x="480" y="0" width="100" height="30" class="bg-zero"></rect><text x="530" y="15" class="cell-text">0.0</text>
+        <rect x="580" y="0" width="100" height="30" class="bg-zero"></rect><text x="630" y="15" class="cell-text">0.0</text>
+        <rect x="680" y="0" width="100" height="30" class="bg-zero"></rect><text x="730" y="15" class="cell-text">0.0</text>
+        <rect x="780" y="0" width="100" height="30" class="bg-zero"></rect><text x="830" y="15" class="cell-text">0.0</text>
+        <rect x="880" y="0" width="100" height="30" class="bg-zero"></rect><text x="930" y="15" class="cell-text">0.0</text>
+      </g>
+      <!-- Mykolaivska -->
+      <g transform="translate(0, 220)">
+        <rect x="0" y="0" width="980" height="30" class="bg-row-light"></rect>
+        <text x="10" y="15" class="region-text">Mykolaivska</text>
+        <rect x="180" y="0" width="100" height="30" class="bg-high"></rect><text x="230" y="15" class="cell-text">95.8</text>
+        <rect x="280" y="0" width="100" height="30" class="bg-high"></rect><text x="330" y="15" class="cell-text">95.2</text>
+        <rect x="380" y="0" width="100" height="30" class="bg-medium"></rect><text x="430" y="15" class="cell-text">84.3</text>
+        <rect x="480" y="0" width="100" height="30" class="bg-medium"></rect><text x="530" y="15" class="cell-text">93.9</text>
+        <rect x="580" y="0" width="100" height="30" class="bg-medium"></rect><text x="630" y="15" class="cell-text">91.6</text>
+        <rect x="680" y="0" width="100" height="30" class="bg-medium"></rect><text x="730" y="15" class="cell-text">85.1</text>
+        <rect x="780" y="0" width="100" height="30" class="bg-high"></rect><text x="830" y="15" class="cell-text">97.5</text>
+        <rect x="880" y="0" width="100" height="30" class="bg-high"></rect><text x="930" y="15" class="cell-text">100.0</text>
+      </g>
+      <!-- Odeska -->
+      <g transform="translate(0, 250)">
+        <rect x="0" y="0" width="980" height="30" class="bg-row-dark"></rect>
+        <text x="10" y="15" class="region-text">Odeska</text>
+        <rect x="180" y="0" width="100" height="30" class="bg-medium"></rect><text x="230" y="15" class="cell-text">93.1</text>
+        <rect x="280" y="0" width="100" height="30" class="bg-low"></rect><text x="330" y="15" class="cell-text">78.5</text>
+        <rect x="380" y="0" width="100" height="30" class="bg-low"></rect><text x="430" y="15" class="cell-text">71.3</text>
+        <rect x="480" y="0" width="100" height="30" class="bg-low"></rect><text x="530" y="15" class="cell-text">74.2</text>
+        <rect x="580" y="0" width="100" height="30" class="bg-medium"></rect><text x="630" y="15" class="cell-text">84.4</text>
+        <rect x="680" y="0" width="100" height="30" class="bg-low"></rect><text x="730" y="15" class="cell-text">73.4</text>
+        <rect x="780" y="0" width="100" height="30" class="bg-low"></rect><text x="830" y="15" class="cell-text">77.9</text>
+        <rect x="880" y="0" width="100" height="30" class="bg-medium"></rect><text x="930" y="15" class="cell-text">88.1</text>
+      </g>
+      <!-- Sumska -->
+      <g transform="translate(0, 280)">
+        <rect x="0" y="0" width="980" height="30" class="bg-row-light"></rect>
+        <text x="10" y="15" class="region-text">Sumska</text>
+        <rect x="180" y="0" width="100" height="30" class="bg-medium"></rect><text x="230" y="15" class="cell-text">89.3</text>
+        <rect x="280" y="0" width="100" height="30" class="bg-medium"></rect><text x="330" y="15" class="cell-text">93.0</text>
+        <rect x="380" y="0" width="100" height="30" class="bg-medium"></rect><text x="430" y="15" class="cell-text">91.9</text>
+        <rect x="480" y="0" width="100" height="30" class="bg-medium"></rect><text x="530" y="15" class="cell-text">91.2</text>
+        <rect x="580" y="0" width="100" height="30" class="bg-medium"></rect><text x="630" y="15" class="cell-text">93.3</text>
+        <rect x="680" y="0" width="100" height="30" class="bg-medium"></rect><text x="730" y="15" class="cell-text">90.6</text>
+        <rect x="780" y="0" width="100" height="30" class="bg-medium"></rect><text x="830" y="15" class="cell-text">94.3</text>
+        <rect x="880" y="0" width="100" height="30" class="bg-medium"></rect><text x="930" y="15" class="cell-text">94.6</text>
+      </g>
+      <!-- Zaporizka -->
+      <g transform="translate(0, 310)">
+        <rect x="0" y="0" width="980" height="30" class="bg-row-dark"></rect>
+        <text x="10" y="15" class="region-text">Zaporizka</text>
+        <rect x="180" y="0" width="100" height="30" class="bg-high"></rect><text x="230" y="15" class="cell-text">96.3</text>
+        <rect x="280" y="0" width="100" height="30" class="bg-medium"></rect><text x="330" y="15" class="cell-text">91.7</text>
+        <rect x="380" y="0" width="100" height="30" class="bg-medium"></rect><text x="430" y="15" class="cell-text">91.6</text>
+        <rect x="480" y="0" width="100" height="30" class="bg-medium"></rect><text x="530" y="15" class="cell-text">91.6</text>
+        <rect x="580" y="0" width="100" height="30" class="bg-high"></rect><text x="630" y="15" class="cell-text">98.0</text>
+        <rect x="680" y="0" width="100" height="30" class="bg-high"></rect><text x="730" y="15" class="cell-text">99.7</text>
+        <rect x="780" y="0" width="100" height="30" class="bg-high"></rect><text x="830" y="15" class="cell-text">98.0</text>
+        <rect x="880" y="0" width="100" height="30" class="bg-high"></rect><text x="930" y="15" class="cell-text">99.4</text>
+      </g>
+      <!-- All oblasts -->
+      <g transform="translate(0, 340)" class="total-row">
+        <rect x="0" y="0" width="980" height="30" class="bg-total"></rect>
+        <text x="10" y="15" class="region-text">All oblasts</text>
+        <rect x="180" y="0" width="100" height="30" class="bg-medium"></rect><text x="230" y="15" class="cell-text">92.8</text>
+        <rect x="280" y="0" width="100" height="30" class="bg-medium"></rect><text x="330" y="15" class="cell-text">88.3</text>
+        <rect x="380" y="0" width="100" height="30" class="bg-low"></rect><text x="430" y="15" class="cell-text">77.0</text>
+        <rect x="480" y="0" width="100" height="30" class="bg-medium"></rect><text x="530" y="15" class="cell-text">87.8</text>
+        <rect x="580" y="0" width="100" height="30" class="bg-medium"></rect><text x="630" y="15" class="cell-text">91.4</text>
+        <rect x="680" y="0" width="100" height="30" class="bg-medium"></rect><text x="730" y="15" class="cell-text">83.4</text>
+        <rect x="780" y="0" width="100" height="30" class="bg-medium"></rect><text x="830" y="15" class="cell-text">88.0</text>
+        <rect x="880" y="0" width="100" height="30" class="bg-medium"></rect><text x="930" y="15" class="cell-text">92.7</text>
+      </g>
+    </g>
+    
+    <!-- 註腳 -->
+    <g id="footnote" transform="translate(0, 480)">
+      <text y="0" class="footer-text">BCG - Tuberculosis; DTP3 - Diphtheria, Tetanus, Pertussis 3rd dose (children up to one year old); DT - Diphtheria, Tetanus (children 6 years old);</text>
+      <text y="15" class="footer-text">Pol3 - Polio 3rd dose (children up to one year old); MMR1 - Measles, mumps, rubella 1st dose (children 1 year old);</text>
+      <text y="30" class="footer-text">MMR2 - Measles, mumps, rubella 2nd dose (children 6 years old); HepB3 - Hepatitis B-3rd dose (children up to one year old);</text>
+      <text y="45" class="footer-text">Hib3 - Hemophilus influenzae type B 3rd dose (children one year old).</text>
+    </g>
+  </g>
+</svg>
+
+                    <p class="text-lg text-gray-700">此表格詳細揭示了地區間的巨大不平等。例如，2024年全國MMR第二劑的平均覆蓋率僅為83.4%，其中Odeska州低至73.4%。Luhanska州的數據為0，反映數據報告系統在該被佔領區完全崩潰。</p>
+                </div>
+            </div>
+
+            <div class="slide flex-col slide-content">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第二部分：整體健康狀況 (5/5)</h2>
+                <h3 class="text-2xl font-semibold mb-4 text-gray-700">預期健康風險評估</h3>
+                 <p class="mb-4 text-lg">前瞻性風險評估顯示，烏克蘭必須同時準備應對<strong class="text-red-600">創傷、傳染病爆發和慢性病惡化</strong>的三重打擊。</p>
+                <div class="p-6 bg-blue-50 rounded-lg flex flex-col justify-center items-center text-center w-full">
+<svg width="100%" viewBox="0 0 1200 1000" xmlns="http://www.w3.org/2000/svg" font-family="Arial, sans-serif">
+  <title>預期身體健康威脅的嚴重程度及時間演變</title>
+  <desc>
+    此熱圖表格顯示了烏克蘭在不同時間段內（全國性與前線地區）各種健康威脅的風險等級。
+    風險等級由顏色表示：紅色為非常高，橘色為高，黃色為中等，綠色為低。
+  </desc>
+  
+  <style>
+    .title { font-size: 22px; font-weight: bold; text-anchor: middle; }
+    .header { font-size: 14px; font-weight: bold; text-anchor: middle; }
+    .sub-header { font-size: 12px; font-weight: bold; text-anchor: middle; }
+    .row-label { font-size: 14px; text-anchor: start; dominant-baseline: middle; }
+    .legend-text { font-size: 12px; }
+    .footer-text { font-size: 11px; font-style: italic; }
+    
+    .risk-very-high { fill: #dc3545; } /* Red */
+    .risk-high { fill: #fd7e14; } /* Orange */
+    .risk-moderate { fill: #ffc107; } /* Yellow */
+    .risk-low { fill: #28a745; } /* Green */
+  </style>
+
+  <!-- 標題 -->
+  <text x="600" y="40" class="title">Magnitude of expected physical health threats and their expected evolution over time</text>
+
+  <!-- 表格主體 -->
+  <g transform="translate(50, 80)">
+    <!-- 表頭 -->
+    <g class="header">
+      <text x="475" y="15">National risk level</text>
+      <text x="875" y="15">Front-line regions risk level</text>
+    </g>
+    <g class="sub-header">
+      <text x="375" y="40">Sep-Oct</text>
+      <text x="475" y="40">Nov-Dec</text>
+      <text x="575" y="40">Jan-Feb</text>
+      <text x="775" y="40">Sep-Oct</text>
+      <text x="875" y="40">Nov-Dec</text>
+      <text x="975" y="40">Jan-Feb</text>
+    </g>
+    <line x1="0" y1="55" x2="1100" y2="55" stroke="#ccc" />
+    <line x1="675" y1="0" x2="675" y2="780" stroke="#ccc" stroke-dasharray="4"/>
+
+    <!-- 資料行 (y-step: 40, starting at y=60) -->
+    <g id="table-body">
+      <g transform="translate(0, 80)">
+        <text x="10" y="0" class="row-label">Sexual and reproductive health</text>
+        <circle cx="375" cy="0" r="12" class="risk-high" />
+        <circle cx="475" cy="0" r="12" class="risk-high" />
+        <circle cx="575" cy="0" r="12" class="risk-high" />
+        <circle cx="775" cy="0" r="12" class="risk-very-high" />
+        <circle cx="875" cy="0" r="12" class="risk-very-high" />
+        <circle cx="975" cy="0" r="12" class="risk-very-high" />
+      </g>
+      <g transform="translate(0, 120)">
+        <text x="10" y="0" class="row-label">Gender-based violence</text>
+        <circle cx="375" cy="0" r="12" class="risk-high" />
+        <circle cx="475" cy="0" r="12" class="risk-high" />
+        <circle cx="575" cy="0" r="12" class="risk-high" />
+        <circle cx="775" cy="0" r="12" class="risk-very-high" />
+        <circle cx="875" cy="0" r="12" class="risk-very-high" />
+        <circle cx="975" cy="0" r="12" class="risk-very-high" />
+      </g>
+      <g transform="translate(0, 160)">
+        <text x="10" y="0" class="row-label">Conflict-Related Sexual Violence</text>
+        <circle cx="375" cy="0" r="12" class="risk-high" />
+        <circle cx="475" cy="0" r="12" class="risk-high" />
+        <circle cx="575" cy="0" r="12" class="risk-high" />
+        <circle cx="775" cy="0" r="12" class="risk-very-high" />
+        <circle cx="875" cy="0" r="12" class="risk-very-high" />
+        <circle cx="975" cy="0" r="12" class="risk-very-high" />
+      </g>
+       <g transform="translate(0, 200)">
+        <text x="10" y="0" class="row-label">Child health</text>
+        <circle cx="375" cy="0" r="12" class="risk-high" />
+        <circle cx="475" cy="0" r="12" class="risk-high" />
+        <circle cx="575" cy="0" r="12" class="risk-high" />
+        <circle cx="775" cy="0" r="12" class="risk-very-high" />
+        <circle cx="875" cy="0" r="12" class="risk-very-high" />
+        <circle cx="975" cy="0" r="12" class="risk-very-high" />
+      </g>
+       <g transform="translate(0, 240)">
+        <text x="10" y="0" class="row-label">Tetanus</text>
+        <circle cx="375" cy="0" r="12" class="risk-moderate" />
+        <circle cx="475" cy="0" r="12" class="risk-moderate" />
+        <circle cx="575" cy="0" r="12" class="risk-moderate" />
+        <circle cx="775" cy="0" r="12" class="risk-moderate" />
+        <circle cx="875" cy="0" r="12" class="risk-moderate" />
+        <circle cx="975" cy="0" r="12" class="risk-moderate" />
+      </g>
+       <g transform="translate(0, 280)">
+        <text x="10" y="0" class="row-label">Diphtheria</text>
+        <circle cx="375" cy="0" r="12" class="risk-moderate" />
+        <circle cx="475" cy="0" r="12" class="risk-moderate" />
+        <circle cx="575" cy="0" r="12" class="risk-moderate" />
+        <circle cx="775" cy="0" r="12" class="risk-moderate" />
+        <circle cx="875" cy="0" r="12" class="risk-moderate" />
+        <circle cx="975" cy="0" r="12" class="risk-moderate" />
+      </g>
+       <g transform="translate(0, 320)">
+        <text x="10" y="0" class="row-label">Hepatitis B</text>
+        <circle cx="375" cy="0" r="12" class="risk-moderate" />
+        <circle cx="475" cy="0" r="12" class="risk-moderate" />
+        <circle cx="575" cy="0" r="12" class="risk-moderate" />
+        <circle cx="775" cy="0" r="12" class="risk-moderate" />
+        <circle cx="875" cy="0" r="12" class="risk-moderate" />
+        <circle cx="975" cy="0" r="12" class="risk-moderate" />
+      </g>
+       <g transform="translate(0, 360)">
+        <text x="10" y="0" class="row-label">Hepatitis C</text>
+        <circle cx="375" cy="0" r="12" class="risk-moderate" />
+        <circle cx="475" cy="0" r="12" class="risk-moderate" />
+        <circle cx="575" cy="0" r="12" class="risk-moderate" />
+        <circle cx="775" cy="0" r="12" class="risk-moderate" />
+        <circle cx="875" cy="0" r="12" class="risk-moderate" />
+        <circle cx="975" cy="0" r="12" class="risk-moderate" />
+      </g>
+       <g transform="translate(0, 400)">
+        <text x="10" y="0" class="row-label">Measles</text>
+        <circle cx="375" cy="0" r="12" class="risk-high" />
+        <circle cx="475" cy="0" r="12" class="risk-high" />
+        <circle cx="575" cy="0" r="12" class="risk-high" />
+        <circle cx="775" cy="0" r="12" class="risk-high" />
+        <circle cx="875" cy="0" r="12" class="risk-high" />
+        <circle cx="975" cy="0" r="12" class="risk-high" />
+      </g>
+       <g transform="translate(0, 440)">
+        <text x="10" y="0" class="row-label">Influenza, COVID-19, and other ARI epidemics in winter</text>
+        <circle cx="375" cy="0" r="12" class="risk-high" />
+        <circle cx="475" cy="0" r="12" class="risk-very-high" />
+        <circle cx="575" cy="0" r="12" class="risk-very-high" />
+        <circle cx="775" cy="0" r="12" class="risk-high" />
+        <circle cx="875" cy="0" r="12" class="risk-very-high" />
+        <circle cx="975" cy="0" r="12" class="risk-very-high" />
+      </g>
+       <g transform="translate(0, 480)">
+        <text x="10" y="0" class="row-label">Cholera/Acute watery diarrhoea</text>
+        <circle cx="375" cy="0" r="12" class="risk-high" />
+        <circle cx="475" cy="0" r="12" class="risk-moderate" />
+        <circle cx="575" cy="0" r="12" class="risk-low" />
+        <circle cx="775" cy="0" r="12" class="risk-high" />
+        <circle cx="875" cy="0" r="12" class="risk-moderate" />
+        <circle cx="975" cy="0" r="12" class="risk-low" />
+      </g>
+       <g transform="translate(0, 520)">
+        <text x="10" y="0" class="row-label">Hepatitis A</text>
+        <circle cx="375" cy="0" r="12" class="risk-moderate" />
+        <circle cx="475" cy="0" r="12" class="risk-moderate" />
+        <circle cx="575" cy="0" r="12" class="risk-moderate" />
+        <circle cx="775" cy="0" r="12" class="risk-moderate" />
+        <circle cx="875" cy="0" r="12" class="risk-moderate" />
+        <circle cx="975" cy="0" r="12" class="risk-moderate" />
+      </g>
+       <g transform="translate(0, 560)">
+        <text x="10" y="0" class="row-label">HIV</text>
+        <circle cx="375" cy="0" r="12" class="risk-high" />
+        <circle cx="475" cy="0" r="12" class="risk-high" />
+        <circle cx="575" cy="0" r="12" class="risk-high" />
+        <circle cx="775" cy="0" r="12" class="risk-high" />
+        <circle cx="875" cy="0" r="12" class="risk-high" />
+        <circle cx="975" cy="0" r="12" class="risk-high" />
+      </g>
+      <g transform="translate(0, 600)">
+        <text x="10" y="0" class="row-label">TB</text>
+        <circle cx="375" cy="0" r="12" class="risk-high" />
+        <circle cx="475" cy="0" r="12" class="risk-high" />
+        <circle cx="575" cy="0" r="12" class="risk-high" />
+        <circle cx="775" cy="0" r="12" class="risk-high" />
+        <circle cx="875" cy="0" r="12" class="risk-high" />
+        <circle cx="975" cy="0" r="12" class="risk-high" />
+      </g>
+      <g transform="translate(0, 640)">
+        <text x="10" y="0" class="row-label">NCDs</text>
+        <circle cx="375" cy="0" r="12" class="risk-very-high" />
+        <circle cx="475" cy="0" r="12" class="risk-very-high" />
+        <circle cx="575" cy="0" r="12" class="risk-very-high" />
+        <circle cx="775" cy="0" r="12" class="risk-very-high" />
+        <circle cx="875" cy="0" r="12" class="risk-very-high" />
+        <circle cx="975" cy="0" r="12" class="risk-very-high" />
+      </g>
+      <g transform="translate(0, 680)">
+        <text x="10" y="0" class="row-label">Technological and environmental health risks</text>
+        <circle cx="375" cy="0" r="12" class="risk-high" />
+        <circle cx="475" cy="0" r="12" class="risk-high" />
+        <circle cx="575" cy="0" r="12" class="risk-high" />
+        <circle cx="775" cy="0" r="12" class="risk-high" />
+        <circle cx="875" cy="0" r="12" class="risk-high" />
+        <circle cx="975" cy="0" r="12" class="risk-high" />
+      </g>
+      <g transform="translate(0, 720)">
+        <text x="10" y="0" class="row-label">Conflict-attributable injuries</text>
+        <circle cx="375" cy="0" r="12" class="risk-very-high" />
+        <circle cx="475" cy="0" r="12" class="risk-very-high" />
+        <circle cx="575" cy="0" r="12" class="risk-very-high" />
+        <circle cx="775" cy="0" r="12" class="risk-very-high" />
+        <circle cx="875" cy="0" r="12" class="risk-very-high" />
+        <circle cx="975" cy="0" r="12" class="risk-very-high" />
+      </g>
+       <g transform="translate(0, 760)">
+        <text x="10" y="0" class="row-label">Mental Health</text>
+        <circle cx="375" cy="0" r="12" class="risk-very-high" />
+        <circle cx="475" cy="0" r="12" class="risk-very-high" />
+        <circle cx="575" cy="0" r="12" class="risk-very-high" />
+        <circle cx="775" cy="0" r="12" class="risk-very-high" />
+        <circle cx="875" cy="0" r="12" class="risk-very-high" />
+        <circle cx="975" cy="0" r="12" class="risk-very-high" />
+      </g>
+    </g>
+    
+    <!-- 圖例 -->
+    <g id="legend" transform="translate(10, 820)" class="legend-text">
+      <rect x="0" y="0" width="15" height="15" class="risk-very-high" />
+      <text x="20" y="12">Very High Risk: Could result in high levels of excess mortality/morbidity.</text>
+      <rect x="0" y="20" width="15" height="15" class="risk-high" />
+      <text x="20" y="32">High Risk: Could result in considerable levels of excess mortality/morbidity.</text>
+      <rect x="0" y="40" width="15" height="15" class="risk-moderate" />
+      <text x="20" y="52">Moderate Risk: Could make a minor contribution to excess mortality/morbidity.</text>
+      <rect x="0" y="60" width="15" height="15" class="risk-low" />
+      <text x="20" y="72">Low Risk: Will very probably not result in any excess mortality/morbidity.</text>
+    </g>
+    
+    <!-- 註腳 -->
+    <g id="footnote" transform="translate(10, 910)" class="footer-text">
+       <text y="0">Changes in risk over time shows the expected progression after an acute onset emergency, or predicable seasonality of morbidity.</text>
+       <text y="15">The winter months are typically a low-risk season for cholera and acute watery diarrhea.</text>
+       <text y="30">The high risk is comparable in both national and front-line regions due to low vaccination coverage, a high number of Internally Displaced Person (IDPs), and challenges with access to essential services.</text>
+    </g>
+  </g>
+</svg>
+
+                </div>
+                 <div class="mt-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 rounded-r-lg text-yellow-800">
+                    <p><strong class="font-bold">全國及前線的共同極高風險：</strong>與衝突相關的創傷、心理健康問題、非傳染性疾病 (NCDs) 以及冬季相關疾病。</p>
+                </div>
+            </div>
+            
+            <div class="slide flex-col">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第三部分：主要疾病風險 (1/3)</h2>
+                <h3 class="text-2xl font-semibold mb-4 text-gray-700">傳染病趨勢：隱藏的危機</h3>
+                <div class="space-y-6 text-lg">
+                    <div>
+                        <h4 class="text-xl font-bold text-blue-700">結核病 (TB) 與 HIV</h4>
+                        <p>表面上，2025年新發病例數下降。然而，這很可能是<strong class="text-red-600">檢測率急劇下降</strong>導致的「報告偽影」。</p>
+                        <p class="text-base text-gray-600 italic">例如，性工作者HIV檢測率降幅高達85.3%。</p>
+                        <p class="mt-2">這意味著更多未診斷的感染者在社區傳播，可能預示著未來病例數的<strong class="text-red-700">報復性反彈</strong>。</p>
+                    </div>
+                    <div class="p-4 bg-red-100 border-l-4 border-red-500 rounded-r-lg">
+                        <h4 class="text-xl font-bold text-red-800">抗生素抗藥性 (AMR)</h4>
+                        <p class="text-red-900">戰爭環境為AMR的產生和傳播創造了<strong class="font-semibold">理想的溫床</strong>。</p>
+                         <p class="text-red-900 mt-2">例如，肺炎克雷伯菌對「最後一道防線」的碳青黴烯類抗生素感受性僅有59%。烏克蘭可能成為抗藥性「超級細菌」的孵化器和輸出地，對全球構成威脅。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide flex-col">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第三部分：主要疾病風險 (2/3)</h2>
+                <h3 class="text-2xl font-semibold mb-4 text-purple-700">非傳染性疾病 (NCDs) 負擔加劇</h3>
+                <p class="text-lg mb-4">戰爭對慢性病管理的影響是災難性的，導致病情普遍惡化。</p>
+                <div class="space-y-4 text-base">
+                    <div class="p-3 bg-purple-50 rounded-lg">
+                        <p><strong class="text-purple-800">心血管疾病：</strong>與戰前相比，高血壓住院率<strong class="text-red-600">↑59%</strong>，腦梗塞<strong class="text-red-600">↑78%</strong>。</p>
+                    </div>
+                     <div class="p-3 bg-purple-50 rounded-lg">
+                        <p><strong class="text-purple-800">糖尿病：</strong>血糖控制極差 (HbA1c >10%) 的患者比例<strong class="text-red-600">增加了一倍以上</strong>。</p>
+                    </div>
+                     <div class="p-3 bg-purple-50 rounded-lg">
+                        <p><strong class="text-purple-800">癌症：</strong>服務可及性已降至冰點。全國僅<strong class="text-red-600">不到1%</strong>的設施能提供化療或放療。在前線州份，服務可及性僅為20-25%。</p>
+                    </div>
+                </div>
+                <p class="mt-6 text-center text-xl font-semibold text-red-800 p-4 bg-red-100 rounded-lg">由NCDs管理失效導致的超額死亡，其規模可能遠遠超過戰爭的直接傷亡。</p>
+            </div>
+
+            <div class="slide flex-col">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第三部分：主要疾病風險 (3/3)</h2>
+                <h3 class="text-2xl font-semibold mb-4 text-gray-700">戰爭下的特殊健康需求</h3>
+                <div class="space-y-4 text-lg">
+                    <p><strong class="text-blue-600">心理健康 (MHPSS):</strong> 83%成年人經歷壓力，但僅13%設施提供門診服務。81%醫護人員職業倦怠。</p>
+                    <p><strong class="text-orange-600">創傷與復健:</strong> 估計已進行約 <strong class="text-red-700">10萬例</strong> 截肢手術。但全國僅4%醫院提供住院急性復健，<1%提供義肢服務。</p>
+                    <p><strong class="text-pink-600">婦幼與生殖健康:</strong> 孕產婦死亡率顯著惡化。性別暴力(GBV)與衝突相關性暴力(CRSV)風險升高。</p>
+                </div>
+                 <div class="mt-6 p-4 bg-gray-800 text-white rounded-lg text-center">
+                    <p class="text-2xl font-bold">一個嚴峻的現實：</p>
+                    <p class="mt-2 text-lg">烏克蘭正醞釀一場將持續數十年的<strong class="text-amber-300">全國性殘疾與創傷危機</strong>，這將是定義戰後烏克蘭社會面貌的核心挑戰。</p>
+                </div>
+            </div>
+
+            <div class="slide flex-col">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第四部分：醫療系統的韌性與崩潰點 (1/2)</h2>
+                <h3 class="text-2xl font-semibold mb-4 text-gray-700">服務可及性的多重障礙</h3>
+                 <p class="text-lg mb-4">儘管97%的初級保健設施名義上仍在運營，但「名義可及」與「實際可及」之間存在巨大鴻溝。</p>
+                <div class="space-y-4">
+                    <div class="p-4 bg-red-100 rounded-lg">
+                        <p class="font-bold text-red-800 text-xl">經濟障礙 (41%)</p>
+                        <p class="text-red-700">藥品費用過高是首要障礙。74%的家庭表示醫療費用已無法負擔。</p>
+                    </div>
+                     <div class="p-4 bg-blue-100 rounded-lg">
+                        <p class="font-bold text-blue-800 text-xl">物理障礙</p>
+                        <p class="text-blue-700">交通問題、設施損毀、持續砲擊和安全威脅。</p>
+                    </div>
+                     <div class="p-4 bg-yellow-100 rounded-lg">
+                        <p class="font-bold text-yellow-800 text-xl">服務障礙 (16%)</p>
+                        <p class="text-yellow-700">服務不可用、被拒絕護理、預約困難和排隊時間過長。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="slide flex-col">
+                 <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第四部分：醫療系統的韌性與崩潰點 (2/2)</h2>
+                 <h3 class="text-2xl font-semibold mb-4 text-red-700">系統性中斷與新興風險</h3>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <h4 class="text-xl font-bold">內部結構侵蝕</h4>
+                        <ul class="list-disc list-inside space-y-2 text-lg">
+                            <li><strong class="text-red-600">人力危機:</strong> 護理師和物理治療師嚴重短缺，醫護人員高齡化且因徵兵流失。</li>
+                            <li><strong class="text-orange-600">供應鏈中斷:</strong> 藥品和醫療物資頻繁斷貨。</li>
+                            <li><strong class="text-yellow-600">資金嚴重不足:</strong> 公共衛生支出下降21.3%，預算佔比從11%驟降至4.9%。</li>
+                        </ul>
+                         <div class="mt-4 p-4 bg-gray-100 rounded-lg">
+                            <p class="font-bold text-gray-800">脆弱的韌性</p>
+                            <p class="text-gray-700">系統的運作幾乎完全依賴留守醫護人員的非凡奉獻和個人犧牲，但這種模式不可持續。</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="text-xl font-bold">新興風險</h4>
+                         <ul class="list-disc list-inside space-y-2 text-lg">
+                            <li><strong class="text-green-600">核安全與環境污染:</strong> 核電站不穩定，軍事活動造成嚴重污染。</li>
+                             <li class="p-3 bg-blue-100 rounded-lg"><strong class="text-blue-800">冬季風險 (冬季武器化):</strong> 能源設施被攻擊導致大規模停電和供暖中斷，對脆弱人群殺傷力巨大。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide flex-col">
+                <h2 class="text-3xl font-bold mb-6 border-b-4 border-blue-500 pb-2">第五部分：結論與啟示</h2>
+                 <h3 class="text-2xl font-semibold mb-4 text-gray-700">核心發現總結</h3>
+                 <div class="grid md:grid-cols-2 gap-4 text-base">
+                    <div class="p-3 bg-blue-50 rounded-lg"><strong>雙重危機疊加:</strong> 急性創傷疊加於慢性NCDs負擔之上。</div>
+                    <div class="p-3 bg-yellow-50 rounded-lg"><strong>脆弱的韌性:</strong> 系統依賴個人犧牲，瀕臨崩潰。</div>
+                    <div class="p-3 bg-red-50 rounded-lg"><strong>隱藏的流行病:</strong> 數據下降可能掩蓋真實傳播風險，AMR威脅加劇。</div>
+                    <div class="p-3 bg-purple-50 rounded-lg"><strong>日益加深的不平等:</strong> 地理位置和社會地位成為決定健康結果的關鍵。</div>
+                 </div>
+                 <h3 class="text-2xl font-semibold mt-8 mb-4 text-gray-700">對公共衛生應對的啟示</h3>
+                 <ul class="list-decimal list-inside space-y-2 text-lg">
+                    <li><strong>從應急轉向長期規劃：</strong>投資於長期的心理健康和物理復健服務體系。</li>
+                    <li><strong>以人為本的投資：</strong>保護、支持和擴充現有的醫療人力資源。</li>
+                    <li><strong>加強監測與數據系統：</strong>揭示被戰爭掩蓋的真實流行病學狀況。</li>
+                    <li><strong>跨部門合作的必要性：</strong>將能源保障、社會保障等視為核心公衛措施。</li>
+                 </ul>
+            </div>
+            
+            <div class="slide flex-col justify-center items-center text-center">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">簡報結束</h1>
+                <p class="text-xl text-gray-600">感謝聆聽</p>
+                <button id="restart-btn" class="mt-8 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition-colors duration-300">
+                    重新開始
+                </button>
+            </div>
+
+
+        </div>
+
+        <div id="navigation" class="mt-6 flex justify-between items-center">
+            <button id="prev-btn" class="px-6 py-2 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                上一頁
+            </button>
+            <div id="slide-counter" class="text-gray-700 font-medium"></div>
+            <button id="next-btn" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition">
+                下一頁
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const slides = document.querySelectorAll('.slide');
+            const nextBtn = document.getElementById('next-btn');
+            const prevBtn = document.getElementById('prev-btn');
+            const restartBtn = document.getElementById('restart-btn');
+            const slideCounter = document.getElementById('slide-counter');
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.classList.remove('active');
+                    if (i === index) {
+                        slide.classList.add('active');
+                    }
+                });
+                updateControls();
+            }
+
+            function updateControls() {
+                // Update slide counter
+                slideCounter.textContent = `第 ${currentSlide + 1} / ${slides.length} 頁`;
+
+                // Update button states
+                prevBtn.disabled = currentSlide === 0;
+                if (currentSlide === slides.length - 1) {
+                    nextBtn.style.display = 'none';
+                } else {
+                    nextBtn.style.display = 'block';
+                }
+            }
+
+            nextBtn.addEventListener('click', () => {
+                if (currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    showSlide(currentSlide);
+                }
+            });
+
+            prevBtn.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    showSlide(currentSlide);
+                }
+            });
+            
+            restartBtn.addEventListener('click', () => {
+                currentSlide = 0;
+                showSlide(currentSlide);
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    nextBtn.click();
+                } else if (e.key === 'ArrowLeft') {
+                    prevBtn.click();
+                }
+            });
+
+            // Initial setup
+            showSlide(currentSlide);
+        });
+    </script>
+</body>
+</html>
