@@ -1,327 +1,514 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Sword, 
-  Shield, 
-  Skull, 
-  Activity, 
-  AlertTriangle, 
-  UserX, 
-  CheckCircle, 
-  ChevronRight, 
-  ChevronLeft,
-  Microscope,
-  Zap
-} from 'lucide-react';
-
-// Slide Content Data
-const slides = [
-  {
-    id: 'intro',
-    type: 'title',
-    title: '微觀世界的逆襲',
-    subtitle: '當細菌穿上鋼鐵人裝甲：抗生素抗藥性',
-    icon: <Skull size={64} className="text-red-500 animate-bounce" />,
-    bg: 'bg-slate-900'
-  },
-  {
-    id: 'enemy',
-    type: 'content',
-    title: '認清你的敵人',
-    content: '感冒通常是「病毒」引起的，抗生素只殺「細菌」！',
-    subContent: '用抗生素殺病毒，就像用物理攻擊打鬼魂，完全無效啊！👻',
-    visual: 'vs',
-    bg: 'bg-indigo-900'
-  },
-  {
-    id: 'weapon',
-    type: 'content',
-    title: '人類的秘密武器：抗生素',
-    content: '抗生素是細菌的狙擊手。',
-    subContent: '自從 1928 年盤尼西林發現後，人類以為自己無敵了... 但我們太天真了。',
-    icon: <Sword size={48} className="text-yellow-400" />,
-    bg: 'bg-blue-900'
-  },
-  {
-    id: 'evolution',
-    type: 'simulation',
-    title: '細菌的修練場：抗藥性是怎麼來的？',
-    content: '這就像是細菌的「大逃殺」遊戲。',
-    subContent: '活下來的那個 1%，就是最強的菁英怪 (BOSS)。',
-    bg: 'bg-gray-900'
-  },
-  {
-    id: 'mistake',
-    type: 'content',
-    title: '人類的自殺行為 (錯誤示範)',
-    content: '「我覺得好多了，藥就不吃了吧？」',
-    subContent: '這是最危險的一句話！你撤退了，剩下的細菌就開香檳慶祝，然後升級裝備。',
-    icon: <UserX size={48} className="text-orange-500" />,
-    bg: 'bg-red-900'
-  },
-  {
-    id: 'future',
-    type: 'content',
-    title: '如果我們輸了...',
-    content: '歡迎來到「無藥可醫」的時代。',
-    subContent: '簡單的擦傷可能會致命，盲腸炎變成絕症。我們將回到中世紀。🏰',
-    icon: <AlertTriangle size={48} className="text-yellow-500" />,
-    bg: 'bg-slate-800'
-  },
-  {
-    id: 'action',
-    type: 'list',
-    title: '你的戰鬥準則 (四不原則)',
-    items: [
-      '不主動要求抗生素',
-      '不隨便自己買抗生素',
-      '不吃別人的抗生素',
-      '不隨便停藥 (醫生說停才停)'
-    ],
-    bg: 'bg-green-900'
-  },
-  {
-    id: 'end',
-    type: 'title',
-    title: '成為聰明的指揮官',
-    subtitle: '保護抗生素，就是保護未來的自己！',
-    icon: <CheckCircle size={64} className="text-green-400" />,
-    bg: 'bg-slate-900'
-  }
-];
-
-export default function App() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [bacteria, setBacteria] = useState(Array(12).fill({ status: 'normal' }));
-  const [simStep, setSimStep] = useState(0); // 0: init, 1: attack, 2: survivors, 3: mutate
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'ArrowRight') nextSlide();
-      if (e.key === 'ArrowLeft') prevSlide();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentSlide]);
-
-  const nextSlide = () => {
-    if (currentSlide < slides.length - 1) setCurrentSlide(c => c + 1);
-  };
-
-  const prevSlide = () => {
-    if (currentSlide > 0) setCurrentSlide(c => c - 1);
-  };
-
-  // Simulation Logic
-  const runSimulation = () => {
-    if (simStep === 0) {
-      // Step 1: Attack - kill most
-      setBacteria(prev => prev.map((b, i) => 
-        i % 4 !== 0 ? { ...b, status: 'dead' } : b
-      ));
-      setSimStep(1);
-    } else if (simStep === 1) {
-      // Step 2: Mutate - survivors become superbugs
-      setBacteria(prev => prev.map(b => 
-        b.status !== 'dead' ? { ...b, status: 'super' } : b
-      ));
-      setSimStep(2);
-    } else if (simStep === 2) {
-      // Step 3: Regrow - superbugs multiply
-      setBacteria(Array(12).fill({ status: 'super' }));
-      setSimStep(3);
-    } else {
-      // Reset
-      setBacteria(Array(12).fill({ status: 'normal' }));
-      setSimStep(0);
-    }
-  };
-
-  const renderSlide = () => {
-    const slide = slides[currentSlide];
-
-    // Common Container
-    const Container = ({ children }) => (
-      <div className={`flex flex-col items-center justify-center h-full w-full p-8 text-center transition-colors duration-500 ${slide.bg} text-white overflow-hidden relative`}>
-        {/* Background Patterns */}
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none overflow-hidden">
-          <div className="absolute top-10 left-10 w-20 h-20 rounded-full bg-white blur-xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-32 h-32 rounded-full bg-purple-500 blur-xl animate-pulse" style={{animationDelay: '1s'}}></div>
-        </div>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>超級細菌大戰：抗生素抗藥性簡報</title>
+    
+    <!-- 引入 React 和 ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- 引入 Babel 用來解析 JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 自定義樣式與動畫 -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;700;900&display=swap');
         
-        <div className="z-10 max-w-4xl w-full">
-          {children}
-        </div>
-      </div>
-    );
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #000;
+            overflow: hidden; /* 防止捲動，保持簡報感 */
+        }
+        
+        .animate-bounce-slow {
+            animation: bounce 3s infinite;
+        }
+        
+        .animate-shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
 
-    if (slide.type === 'title') {
-      return (
-        <Container>
-          <div className="mb-8 animate-bounce-slow">{slide.icon}</div>
-          <h1 className="text-5xl md:text-7xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-            {slide.title}
-          </h1>
-          <p className="text-xl md:text-3xl text-gray-300 font-light">
-            {slide.subtitle}
-          </p>
-          <button 
-            onClick={nextSlide}
-            className="mt-12 px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-full text-white font-bold transition-transform active:scale-95 shadow-lg animate-pulse"
-          >
-            開始戰鬥
-          </button>
-        </Container>
-      );
-    }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
 
-    if (slide.type === 'content') {
-      return (
-        <Container>
-          <h2 className="text-4xl md:text-5xl font-bold mb-8 text-yellow-300">{slide.title}</h2>
-          
-          {slide.visual === 'vs' ? (
-            <div className="flex flex-col md:flex-row items-center justify-center gap-8 mb-8 w-full">
-              <div className="bg-red-800/50 p-6 rounded-xl border-2 border-red-500 w-full md:w-1/2">
-                <div className="text-6xl mb-2">🦠</div>
-                <h3 className="text-2xl font-bold text-red-300">細菌 (Bacteria)</h3>
-                <p className="text-sm text-gray-300 mt-2">活的單細胞生物</p>
-                <div className="mt-4 bg-red-600 text-white px-2 py-1 rounded text-sm font-bold">抗生素有效 ✅</div>
-              </div>
-              <div className="text-4xl font-black text-white">VS</div>
-              <div className="bg-gray-700/50 p-6 rounded-xl border-2 border-gray-500 w-full md:w-1/2 opacity-50 grayscale">
-                <div className="text-6xl mb-2">👻</div>
-                <h3 className="text-2xl font-bold text-gray-300">病毒 (Virus)</h3>
-                <p className="text-sm text-gray-300 mt-2">非生物，像鬼魂</p>
-                <div className="mt-4 bg-gray-600 text-white px-2 py-1 rounded text-sm font-bold">抗生素無效 ❌</div>
-              </div>
-            </div>
-          ) : (
-             <div className="mb-8">{slide.icon}</div>
-          )}
+        .boss-hit {
+            animation: flashRed 0.2s ease-in-out;
+        }
 
-          <p className="text-2xl md:text-4xl font-bold mb-6 leading-relaxed">
-            {slide.content}
-          </p>
-          <div className="bg-black/30 p-6 rounded-lg border-l-4 border-yellow-400 text-left">
-             <p className="text-xl text-gray-200 italic">"{slide.subContent}"</p>
-          </div>
-        </Container>
-      );
-    }
+        @keyframes flashRed {
+            0% { background-color: rgba(255, 0, 0, 0); }
+            50% { background-color: rgba(255, 0, 0, 0.5); }
+            100% { background-color: rgba(255, 0, 0, 0); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
 
-    if (slide.type === 'simulation') {
-      return (
-        <Container>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-green-300">{slide.title}</h2>
-          
-          {/* Simulation Box */}
-          <div className="bg-slate-800 p-6 rounded-xl shadow-inner mb-6 w-full max-w-2xl mx-auto border border-slate-600">
-             <div className="grid grid-cols-4 gap-4 mb-4 h-48 items-center justify-items-center">
-                {bacteria.map((b, idx) => (
-                  <div 
-                    key={idx} 
-                    className={`
-                      transition-all duration-500 transform
-                      ${b.status === 'dead' ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}
-                    `}
-                  >
-                    {b.status === 'normal' && (
-                      <div className="w-10 h-10 bg-green-500 rounded-full animate-bounce shadow-[0_0_10px_#22c55e]" style={{animationDelay: `${idx * 0.1}s`}}>
-                        <div className="w-full h-full flex items-center justify-center text-xs font-bold text-green-900">弱</div>
-                      </div>
-                    )}
-                    {b.status === 'super' && (
-                      <div className="w-12 h-12 bg-red-600 rounded-md animate-pulse shadow-[0_0_15px_#dc2626] border-2 border-yellow-400 rotate-45">
-                        <div className="w-full h-full flex items-center justify-center -rotate-45 text-lg">😈</div>
-                      </div>
-                    )}
-                  </div>
-                ))}
-             </div>
-             <div className="flex justify-between items-center bg-slate-900 p-3 rounded-lg">
-                <div className="text-sm text-gray-400">
-                  狀態: {simStep === 0 ? '感染初期 (普通細菌)' : 
-                         simStep === 1 ? '抗生素攻擊 (殺死弱者)' : 
-                         simStep === 2 ? '突變 (強者生存)' : '大反撲 (全是超級細菌)'}
-                </div>
-                <button 
-                  onClick={runSimulation}
-                  className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-sm font-bold transition-colors"
-                >
-                  {simStep === 3 ? '重置' : '下一步'}
-                </button>
-             </div>
-          </div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-          <p className="text-xl text-gray-300">
-            {simStep === 3 ? 
-              <span className="text-red-400 font-bold blink">糟糕！現在抗生素對它們完全沒用了！</span> : 
-              slide.subContent
+        // --- 簡易 Icon 組件 (避免依賴外部圖庫載入問題) ---
+        const IconSkull = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12.5 17-.5-1-.5 1h1z"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><path d="M8 20v2h8v-2"/><path d="M12.5 17l-.5-1-.5 1h1z"/><path d="M16 20a2 2 0 0 0 1.56-3.25 8 8 0 1 0-11.12 0A2 2 0 0 0 8 20"/></svg>
+        );
+        const IconSword = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" y1="19" x2="19" y2="13"/><line x1="16" y1="16" x2="20" y2="20"/><line x1="19" y1="21" x2="21" y2="19"/></svg>
+        );
+        const IconShield = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        );
+        const IconUserX = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>
+        );
+        const IconCheck = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        );
+        const IconChevronRight = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m9 18 6-6-6-6"/></svg>
+        );
+        const IconChevronLeft = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m15 18-6-6 6-6"/></svg>
+        );
+        const IconStethoscope = ({ className }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v6"/><path d="M9 21v-6a6 6 0 0 0 6-6v-3"/></svg>
+        );
+
+        // --- 資料 ---
+        const slides = [
+            {
+                id: 'intro',
+                type: 'title',
+                title: '微觀世界的逆襲',
+                subtitle: '當細菌穿上鋼鐵人裝甲：抗生素抗藥性',
+                icon: <IconSkull className="w-20 h-20 text-red-500 animate-bounce" />,
+                bg: 'bg-slate-900'
+            },
+            {
+                id: 'enemy',
+                type: 'content',
+                title: 'Level 1: 認清你的敵人',
+                content: '感冒通常是「病毒」引起的，抗生素只殺「細菌」！',
+                subContent: '用抗生素殺病毒，就像用物理攻擊打鬼魂，完全無效啊！👻',
+                visual: 'vs',
+                bg: 'bg-indigo-900'
+            },
+            {
+                id: 'weapon',
+                type: 'content',
+                title: 'Level 2: 人類的秘密武器',
+                content: '抗生素是細菌的「狙擊手」。',
+                subContent: '自從 1928 年盤尼西林發現後，人類以為自己無敵了... 但我們太天真了。',
+                icon: <IconSword className="w-16 h-16 text-yellow-400" />,
+                bg: 'bg-blue-900'
+            },
+            {
+                id: 'evolution',
+                type: 'simulation',
+                title: 'Level 3: 細菌的修練場',
+                content: '抗藥性是怎麼來的？',
+                subContent: '這是一場「大逃殺」遊戲。活下來的那個 1%，就是最強的菁英怪。',
+                bg: 'bg-gray-900'
+            },
+            {
+                id: 'doctor_sim',
+                type: 'doctor_sim',
+                title: 'Level 4: 庸醫 vs 神醫',
+                content: '你是醫生，遇到這種狀況，你開不開抗生素？',
+                bg: 'bg-emerald-900'
+            },
+            {
+                id: 'mistake',
+                type: 'content',
+                title: 'Level 5: 人類的自殺行為',
+                content: '「我覺得好多了，藥就不吃了吧？」',
+                subContent: '這是最危險的一句話！你撤退了，剩下的細菌就開香檳慶祝，然後升級裝備。',
+                icon: <IconUserX className="w-16 h-16 text-orange-500" />,
+                bg: 'bg-red-900'
+            },
+            {
+                id: 'boss_battle',
+                type: 'boss_battle',
+                title: 'FINAL BOSS: 超級細菌王',
+                content: '用你的知識擊敗它！',
+                bg: 'bg-rose-950'
+            },
+            {
+                id: 'action',
+                type: 'list',
+                title: '戰鬥準則 (四不原則)',
+                items: [
+                    '不主動要求抗生素',
+                    '不隨便自己買抗生素',
+                    '不吃別人的抗生素',
+                    '不隨便停藥 (醫生說停才停)'
+                ],
+                bg: 'bg-green-900'
+            },
+            {
+                id: 'end',
+                type: 'title',
+                title: '恭喜通關！',
+                subtitle: '你現在是合格的「抗生素指揮官」了！',
+                icon: <IconCheck className="w-24 h-24 text-green-400" />,
+                bg: 'bg-slate-900'
             }
-          </p>
-        </Container>
-      );
-    }
+        ];
 
-    if (slide.type === 'list') {
-      return (
-        <Container>
-          <h2 className="text-4xl font-bold mb-8 text-green-400">{slide.title}</h2>
-          <div className="grid gap-4 w-full max-w-2xl text-left">
-            {slide.items.map((item, idx) => (
-              <div 
-                key={idx} 
-                className="bg-white/10 p-4 rounded-xl flex items-center transform transition hover:scale-105 hover:bg-white/20 cursor-pointer"
-              >
-                <div className="bg-red-500 w-10 h-10 rounded-full flex items-center justify-center font-bold mr-4 text-xl shadow-lg">
-                  NO
+        // --- 主程式 ---
+        function App() {
+            const [currentSlide, setCurrentSlide] = useState(0);
+            
+            // Simulation State
+            const [bacteria, setBacteria] = useState(Array(12).fill({ status: 'normal' }));
+            const [simStep, setSimStep] = useState(0);
+
+            // Doctor Sim State
+            const [docScenario, setDocScenario] = useState('sneeze'); // sneeze, fever
+            const [docResult, setDocResult] = useState(null);
+
+            // Boss Battle State
+            const [bossHp, setBossHp] = useState(100);
+            const [bossStatus, setBossStatus] = useState('alive'); // alive, dead
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [battleLog, setBattleLog] = useState('超級細菌王正在嘲笑你的免疫系統...');
+            const [isShaking, setIsShaking] = useState(false);
+
+            const questions = [
+                { q: "感冒流鼻水，應該馬上吃抗生素嗎？", a: false, correctMsg: "沒錯！感冒通常是病毒，抗生素無效！(攻擊成功)", wrongMsg: "錯！亂吃抗生素會讓細菌變強！(你受到傷害)" },
+                { q: "症狀好轉了，剩下的抗生素可以留著下次吃嗎？", a: false, correctMsg: "漂亮！一定要把療程吃完，徹底消滅細菌！(爆擊)", wrongMsg: "大錯特錯！停藥會養出超級細菌！(BOSS回血)" },
+                { q: "阿嬤剩下的抗生素，我可以拿來吃嗎？", a: false, correctMsg: "正確！別人的藥不能亂吃！(BOSS 瀕臨崩潰)", wrongMsg: "千萬不行！劑量和種類都不一樣！" }
+            ];
+
+            // Keyboard navigation
+            useEffect(() => {
+                const handleKeyDown = (e) => {
+                    if (e.key === 'ArrowRight') nextSlide();
+                    if (e.key === 'ArrowLeft') prevSlide();
+                };
+                window.addEventListener('keydown', handleKeyDown);
+                return () => window.removeEventListener('keydown', handleKeyDown);
+            }, [currentSlide]);
+
+            const nextSlide = () => {
+                if (currentSlide < slides.length - 1) setCurrentSlide(c => c + 1);
+            };
+
+            const prevSlide = () => {
+                if (currentSlide > 0) setCurrentSlide(c => c - 1);
+            };
+
+            // --- Logic: Simulation ---
+            const runSimulation = () => {
+                if (simStep === 0) { // Attack
+                    setBacteria(prev => prev.map((b, i) => i % 4 !== 0 ? { ...b, status: 'dead' } : b));
+                    setSimStep(1);
+                } else if (simStep === 1) { // Mutate
+                    setBacteria(prev => prev.map(b => b.status !== 'dead' ? { ...b, status: 'super' } : b));
+                    setSimStep(2);
+                } else if (simStep === 2) { // Regrow
+                    setBacteria(Array(12).fill({ status: 'super' }));
+                    setSimStep(3);
+                } else { // Reset
+                    setBacteria(Array(12).fill({ status: 'normal' }));
+                    setSimStep(0);
+                }
+            };
+
+            // --- Logic: Doctor Sim ---
+            const handleDocChoice = (giveMeds) => {
+                if (docScenario === 'sneeze') {
+                    if (giveMeds) {
+                        setDocResult({ type: 'bad', msg: '錯誤！這是病毒性感冒，抗生素沒用，反而殺死好菌！😫' });
+                    } else {
+                        setDocResult({ type: 'good', msg: '正確！多喝水休息，讓免疫系統工作就好！👍' });
+                    }
+                    // Delay then show next scenario button or reset
+                } else if (docScenario === 'fever') {
+                    // This logic can be expanded later
+                }
+            };
+
+            // --- Logic: Boss Battle ---
+            const handleAnswer = (answer) => {
+                const q = questions[currentQuestion];
+                if (answer === q.a) {
+                    // Correct
+                    setBossHp(prev => Math.max(0, prev - 34));
+                    setBattleLog(q.correctMsg);
+                    setIsShaking(true);
+                    setTimeout(() => setIsShaking(false), 500);
+                    if (currentQuestion < questions.length - 1) {
+                        setTimeout(() => setCurrentQuestion(c => c + 1), 1500);
+                    } else {
+                         setBossStatus('dead');
+                         setBattleLog("恭喜！超級細菌王被你消滅了！");
+                    }
+                } else {
+                    // Wrong
+                    setBattleLog(q.wrongMsg);
+                    setBossHp(prev => Math.min(100, prev + 10));
+                }
+            };
+
+            const renderSlide = () => {
+                const slide = slides[currentSlide];
+                
+                const Container = ({ children }) => (
+                    <div className={`flex flex-col items-center justify-center h-full w-full p-4 md:p-8 text-center transition-colors duration-700 ${slide.bg} text-white relative z-10`}>
+                        {children}
+                    </div>
+                );
+
+                if (slide.type === 'title') {
+                    return (
+                        <Container>
+                            <div className="mb-8">{slide.icon}</div>
+                            <h1 className="text-4xl md:text-7xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 leading-tight">
+                                {slide.title}
+                            </h1>
+                            <p className="text-lg md:text-3xl text-gray-300 font-light mt-4">
+                                {slide.subtitle}
+                            </p>
+                            <button onClick={nextSlide} className="mt-12 px-8 py-3 bg-blue-600 hover:bg-blue-500 rounded-full text-white font-bold shadow-lg animate-pulse text-lg">
+                                開始戰鬥
+                            </button>
+                        </Container>
+                    );
+                }
+
+                if (slide.type === 'content') {
+                    return (
+                        <Container>
+                            <h2 className="text-3xl md:text-5xl font-bold mb-8 text-yellow-300 tracking-wider">{slide.title}</h2>
+                            
+                            {slide.visual === 'vs' ? (
+                                <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-8 w-full max-w-4xl">
+                                    <div className="bg-red-800/50 p-6 rounded-xl border-2 border-red-500 w-full md:w-1/2 hover:scale-105 transition-transform">
+                                        <div className="text-6xl mb-2">🦠</div>
+                                        <h3 className="text-2xl font-bold text-red-300">細菌 (Bacteria)</h3>
+                                        <p className="text-sm text-gray-300 mt-2">有細胞結構，會繁殖</p>
+                                        <div className="mt-4 bg-red-600 text-white px-2 py-1 rounded text-sm font-bold">抗生素有效 ✅</div>
+                                    </div>
+                                    <div className="text-4xl font-black text-white animate-pulse">VS</div>
+                                    <div className="bg-gray-700/50 p-6 rounded-xl border-2 border-gray-500 w-full md:w-1/2 opacity-60 grayscale hover:grayscale-0 transition-all">
+                                        <div className="text-6xl mb-2">👻</div>
+                                        <h3 className="text-2xl font-bold text-gray-300">病毒 (Virus)</h3>
+                                        <p className="text-sm text-gray-300 mt-2">像殭屍，寄生才能活</p>
+                                        <div className="mt-4 bg-gray-600 text-white px-2 py-1 rounded text-sm font-bold">抗生素無效 ❌</div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="mb-8 animate-bounce-slow">{slide.icon}</div>
+                            )}
+
+                            <p className="text-xl md:text-4xl font-bold mb-6 leading-relaxed max-w-4xl">
+                                {slide.content}
+                            </p>
+                            <div className="bg-black/30 p-6 rounded-lg border-l-8 border-yellow-400 text-left max-w-3xl">
+                                <p className="text-lg md:text-2xl text-gray-200 italic">"{slide.subContent}"</p>
+                            </div>
+                        </Container>
+                    );
+                }
+
+                if (slide.type === 'simulation') {
+                    return (
+                        <Container>
+                            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-green-300">{slide.title}</h2>
+                            <div className="bg-slate-800 p-6 rounded-xl shadow-2xl mb-6 w-full max-w-2xl border border-slate-600">
+                                <div className="grid grid-cols-4 gap-4 mb-4 h-48 items-center justify-items-center">
+                                    {bacteria.map((b, idx) => (
+                                        <div key={idx} className={`transition-all duration-500 transform ${b.status === 'dead' ? 'opacity-0 scale-0' : 'opacity-100 scale-100'}`}>
+                                            {b.status === 'normal' && (
+                                                <div className="w-10 h-10 bg-green-500 rounded-full animate-bounce shadow-[0_0_10px_#22c55e]" style={{animationDelay: `${idx * 0.1}s`}}>
+                                                    <div className="w-full h-full flex items-center justify-center text-xs font-bold text-green-900">弱</div>
+                                                </div>
+                                            )}
+                                            {b.status === 'super' && (
+                                                <div className="w-12 h-12 bg-red-600 rounded-md animate-pulse shadow-[0_0_15px_#dc2626] border-2 border-yellow-400 rotate-45">
+                                                    <div className="w-full h-full flex items-center justify-center -rotate-45 text-lg">😈</div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="flex justify-between items-center bg-slate-900 p-3 rounded-lg">
+                                    <div className="text-sm text-gray-400">
+                                        狀態: {simStep === 0 ? '1. 感染初期 (細菌大軍)' : 
+                                                simStep === 1 ? '2. 抗生素攻擊 (弱者死亡)' : 
+                                                simStep === 2 ? '3. 突變 (強者倖存)' : '4. 大反撲 (全是超級細菌)'}
+                                    </div>
+                                    <button onClick={runSimulation} className="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded text-sm font-bold transition-colors active:scale-95">
+                                        {simStep === 3 ? '重置實驗' : '下一步'}
+                                    </button>
+                                </div>
+                            </div>
+                            <p className="text-xl text-gray-300">
+                                {simStep === 3 ? <span className="text-red-400 font-bold animate-pulse">糟糕！現在抗生素對它們完全沒用了！</span> : slide.subContent}
+                            </p>
+                        </Container>
+                    );
+                }
+
+                if (slide.type === 'doctor_sim') {
+                    return (
+                        <Container>
+                            <div className="absolute top-10 right-10 text-6xl opacity-20">🏥</div>
+                            <h2 className="text-3xl md:text-5xl font-bold mb-8 text-emerald-300">{slide.title}</h2>
+                            
+                            <div className="bg-white text-black p-6 rounded-xl max-w-2xl w-full shadow-2xl mb-8 relative overflow-hidden">
+                                <div className="flex items-start gap-4 mb-4">
+                                    <div className="bg-gray-200 w-16 h-16 rounded-full flex-shrink-0 flex items-center justify-center text-3xl">🤧</div>
+                                    <div className="text-left">
+                                        <div className="font-bold text-lg text-gray-700">病人：小明 (14歲)</div>
+                                        <div className="text-gray-600 mt-1">
+                                            「醫生，我流鼻涕、喉嚨痛兩天了，體溫 37.2 度。拜託給我那個『粉紅色的藥』(抗生素)，我想要快點好去打球！」
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                {docResult ? (
+                                    <div className={`p-4 rounded-lg text-lg font-bold text-white mb-4 animate-bounce ${docResult.type === 'good' ? 'bg-green-500' : 'bg-red-500'}`}>
+                                        {docResult.msg}
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-2 gap-4 mt-6">
+                                        <button onClick={() => handleDocChoice(true)} className="bg-red-500 hover:bg-red-600 text-white py-4 rounded-lg font-bold text-lg transition-transform hover:scale-105">
+                                            💊 開抗生素給他
+                                            <div className="text-xs font-normal mt-1">(順著病人的意)</div>
+                                        </button>
+                                        <button onClick={() => handleDocChoice(false)} className="bg-green-600 hover:bg-green-700 text-white py-4 rounded-lg font-bold text-lg transition-transform hover:scale-105">
+                                            💧 叫他多喝水休息
+                                            <div className="text-xs font-normal mt-1">(堅持醫療專業)</div>
+                                        </button>
+                                    </div>
+                                )}
+                                
+                                {docResult && (
+                                    <button onClick={() => { setDocResult(null); nextSlide(); }} className="mt-4 text-blue-600 font-bold underline">
+                                        繼續下一關 &rarr;
+                                    </button>
+                                )}
+                            </div>
+                        </Container>
+                    );
+                }
+
+                if (slide.type === 'boss_battle') {
+                    return (
+                        <Container>
+                            <h2 className="text-4xl font-black mb-2 text-red-500 tracking-widest">FINAL BOSS</h2>
+                            
+                            {/* Boss Area */}
+                            <div className={`relative mb-8 transition-transform duration-100 ${isShaking ? 'animate-shake' : ''}`}>
+                                <div className={`w-48 h-48 md:w-64 md:h-64 bg-purple-900 rounded-full flex items-center justify-center text-9xl border-8 transition-all duration-500 ${bossStatus === 'dead' ? 'scale-0 opacity-0' : 'scale-100'} ${bossHp < 30 ? 'border-red-600 animate-pulse' : 'border-purple-600'}`}>
+                                    {bossStatus === 'dead' ? '💀' : '😈'}
+                                </div>
+                                {/* HP Bar */}
+                                <div className="w-64 h-6 bg-gray-700 rounded-full mt-4 mx-auto overflow-hidden border-2 border-gray-500">
+                                    <div 
+                                        className="h-full bg-gradient-to-r from-red-500 to-yellow-500 transition-all duration-500"
+                                        style={{ width: `${bossHp}%` }}
+                                    ></div>
+                                </div>
+                                <div className="text-center font-bold mt-1">HP: {bossHp}/100</div>
+                            </div>
+
+                            {bossStatus === 'alive' ? (
+                                <div className="bg-slate-800 p-6 rounded-xl max-w-2xl w-full border-t-4 border-blue-500">
+                                    <div className="text-yellow-400 font-bold mb-2">戰鬥日誌: {battleLog}</div>
+                                    <div className="text-xl font-bold mb-6 text-white">Q{currentQuestion + 1}: {questions[currentQuestion].q}</div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <button onClick={() => handleAnswer(true)} className="bg-gray-700 hover:bg-gray-600 p-4 rounded text-lg font-bold transition-colors">
+                                            ⭕ 是 / 可以
+                                        </button>
+                                        <button onClick={() => handleAnswer(false)} className="bg-gray-700 hover:bg-gray-600 p-4 rounded text-lg font-bold transition-colors">
+                                            ❌ 否 / 不行
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="animate-bounce">
+                                    <h3 className="text-4xl font-bold text-yellow-400 mb-4">VICTORY!</h3>
+                                    <button onClick={nextSlide} className="bg-green-600 hover:bg-green-500 px-8 py-3 rounded-full font-bold text-xl shadow-lg">
+                                        領取獎勵
+                                    </button>
+                                </div>
+                            )}
+                        </Container>
+                    );
+                }
+
+                if (slide.type === 'list') {
+                    return (
+                        <Container>
+                            <h2 className="text-4xl font-bold mb-8 text-green-400">{slide.title}</h2>
+                            <div className="grid gap-4 w-full max-w-2xl text-left">
+                                {slide.items.map((item, idx) => (
+                                    <div key={idx} className="bg-white/10 p-4 rounded-xl flex items-center transform transition hover:scale-105 hover:bg-white/20 cursor-pointer border border-white/10">
+                                        <div className="bg-red-500 w-10 h-10 rounded-full flex items-center justify-center font-bold mr-4 text-xl shadow-lg shrink-0">
+                                            NO
+                                        </div>
+                                        <span className="text-xl md:text-2xl font-bold text-white">{item}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </Container>
+                    );
+                }
+
+                return null;
+            };
+
+            return (
+                <div className="w-full h-screen bg-black font-sans overflow-hidden relative selection:bg-pink-500 selection:text-white">
+                    {/* 背景動畫裝飾 */}
+                    <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden z-0">
+                        <div className="absolute top-10 left-10 w-40 h-40 rounded-full bg-blue-600 opacity-20 blur-3xl animate-pulse"></div>
+                        <div className="absolute bottom-20 right-10 w-60 h-60 rounded-full bg-purple-600 opacity-20 blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    <button onClick={prevSlide} disabled={currentSlide === 0} className="hidden md:block absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 bg-white/10 hover:bg-white/30 rounded-full text-white disabled:opacity-0 transition-all hover:scale-110 backdrop-blur-sm">
+                        <IconChevronLeft className="w-8 h-8" />
+                    </button>
+                    
+                    <button onClick={nextSlide} disabled={currentSlide === slides.length - 1} className="hidden md:block absolute right-4 top-1/2 -translate-y-1/2 z-50 p-3 bg-white/10 hover:bg-white/30 rounded-full text-white disabled:opacity-0 transition-all hover:scale-110 backdrop-blur-sm">
+                        <IconChevronRight className="w-8 h-8" />
+                    </button>
+
+                    {/* Progress Bar */}
+                    <div className="absolute bottom-0 left-0 w-full h-2 bg-gray-800 z-50">
+                        <div className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300" style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}></div>
+                    </div>
+
+                    {/* Content */}
+                    {renderSlide()}
+                    
+                    {/* Footer Info */}
+                    <div className="absolute bottom-4 w-full text-center text-gray-500 text-xs pointer-events-none z-50">
+                        Slide {currentSlide + 1} / {slides.length} | 使用鍵盤 ← → 或點擊畫面邊緣切換
+                    </div>
+
+                    {/* Mobile Touch Zones */}
+                    <div className="md:hidden absolute top-0 left-0 w-1/6 h-full z-40" onClick={prevSlide}></div>
+                    <div className="md:hidden absolute top-0 right-0 w-1/6 h-full z-40" onClick={nextSlide}></div>
                 </div>
-                <span className="text-2xl font-bold text-white">{item}</span>
-              </div>
-            ))}
-          </div>
-        </Container>
-      );
-    }
+            );
+        }
 
-    return null;
-  };
-
-  return (
-    <div className="w-full h-screen bg-black font-sans overflow-hidden relative selection:bg-pink-500 selection:text-white">
-      {/* Navigation Buttons (Visible on hover) */}
-      <button 
-        onClick={prevSlide}
-        disabled={currentSlide === 0}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-2 bg-white/10 hover:bg-white/30 rounded-full text-white disabled:opacity-0 transition-all"
-      >
-        <ChevronLeft size={40} />
-      </button>
-      
-      <button 
-        onClick={nextSlide}
-        disabled={currentSlide === slides.length - 1}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-50 p-2 bg-white/10 hover:bg-white/30 rounded-full text-white disabled:opacity-0 transition-all"
-      >
-        <ChevronRight size={40} />
-      </button>
-
-      {/* Progress Bar */}
-      <div className="absolute bottom-0 left-0 w-full h-2 bg-gray-800 z-50">
-        <div 
-          className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-300"
-          style={{ width: `${((currentSlide + 1) / slides.length) * 100}%` }}
-        ></div>
-      </div>
-
-      {/* Main Content */}
-      {renderSlide()}
-      
-      {/* Footer hint */}
-      <div className="absolute bottom-4 w-full text-center text-gray-500 text-xs pointer-events-none">
-        使用鍵盤 ← → 操控 | Slide {currentSlide + 1} / {slides.length}
-      </div>
-    </div>
-  );
-}
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
