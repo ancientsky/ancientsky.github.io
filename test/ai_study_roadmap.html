@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>疾管署 (CDC) AI 人才轉型戰略儀表板</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f5f5f0; /* Warm Neutral Background */
+            color: #4a4a4a;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .active-tab {
+            border-bottom: 2px solid #577567; /* Sage Green */
+            color: #2c3e34;
+            font-weight: 700;
+        }
+        .timeline-point {
+            transition: all 0.3s ease;
+        }
+        .timeline-point.active {
+            background-color: #577567;
+            transform: scale(1.2);
+            border-color: #fff;
+        }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals & Sage Green (Professional, Calming, Growth-oriented) -->
+    <!-- Application Structure Plan:
+         1. Hero Section: High-level metrics (830 employees, KPIs) to ground the user in the current reality.
+         2. Effectiveness Simulator: Directly addresses the user's "Lecture vs. Hackathon" anxiety using a line chart comparison.
+         3. 4-Year Roadmap: Interactive timeline to show the progression from "Foundation" to "Innovation", answering the long-term planning request.
+         4. Curriculum Hub: Filterable cards to show specific course content for different skill levels (No-code vs Coding), solving the "varying ability" issue.
+    -->
+    <!-- Visualization & Content Choices:
+         - Doughnut Chart: Employee breakdown (Stats -> Inform -> Doughnut -> Chart.js).
+         - Line Chart: Retention Simulation (Analysis -> Compare -> Line Chart -> Chart.js).
+         - Interactive Timeline: HTML/CSS/JS Grid for Roadmap (Analysis -> Change -> Timeline -> Custom JS).
+         - Filterable Grid: Curriculum (Text -> Organize -> Grid -> Custom JS).
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-gray-800">CDC AI 轉型戰略</span>
+                </div>
+                <div class="flex space-x-8 items-center">
+                    <button onclick="scrollToSection('dashboard')" class="text-gray-600 hover:text-[#577567] font-medium">現況儀表板</button>
+                    <button onclick="scrollToSection('simulation')" class="text-gray-600 hover:text-[#577567] font-medium">成效模擬</button>
+                    <button onclick="scrollToSection('roadmap')" class="text-gray-600 hover:text-[#577567] font-medium">四年藍圖</button>
+                    <button onclick="scrollToSection('curriculum')" class="text-gray-600 hover:text-[#577567] font-medium">課程規劃</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Intro -->
+        <div class="text-center space-y-4">
+            <h1 class="text-3xl font-bold text-gray-800">疾管署 AI 教育訓練與人才發展規劃</h1>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                本平台旨在協助規劃 830 位同仁的 AI 賦能路徑。從基礎法規素養到專案實作，透過分層分眾的策略，解決技能落差，並將「黑客松」精神融入日常業務流程。
+            </p>
+        </div>
+
+        <!-- Section 1: Dashboard (Current State) -->
+        <section id="dashboard" class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="mb-6 border-b border-gray-100 pb-4">
+                <h2 class="text-2xl font-bold text-[#2c3e34]">年度關鍵指標 (KPI)</h2>
+                <p class="text-gray-500 mt-2">
+                    目前疾管署面臨的挑戰是將 AI 訓練從「合規」轉化為「實戰力」。以下是今年的量化目標，我們需要確保這不僅僅是數字，而是質的提升。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Stat Cards -->
+                <div class="space-y-6 col-span-1 md:col-span-1">
+                    <div class="bg-[#f0f4f2] p-5 rounded-lg border-l-4 border-[#577567]">
+                        <div class="text-sm text-gray-500 font-bold">全署員額</div>
+                        <div class="text-3xl font-bold text-[#2c3e34]">~830 <span class="text-sm font-normal">人</span></div>
+                        <div class="mt-2 text-xs text-gray-600">每人需完成 3 小時基礎訓練</div>
+                    </div>
+                    <div class="bg-[#f0f4f2] p-5 rounded-lg border-l-4 border-[#8ba396]">
+                        <div class="text-sm text-gray-500 font-bold">基礎素養目標</div>
+                        <div class="text-3xl font-bold text-[#2c3e34]">40 <span class="text-sm font-normal">人次</span></div>
+                        <div class="mt-2 text-xs text-gray-600">倫理、法規、風險管控</div>
+                    </div>
+                    <div class="bg-[#f0f4f2] p-5 rounded-lg border-l-4 border-[#d4a373]">
+                        <div class="text-sm text-gray-500 font-bold">活用技能目標</div>
+                        <div class="text-3xl font-bold text-[#2c3e34]">120 <span class="text-sm font-normal">人次</span></div>
+                        <div class="mt-2 text-xs text-gray-600">導入業務專案管理與實施</div>
+                    </div>
+                </div>
+
+                <!-- Visualization -->
+                <div class="col-span-1 md:col-span-2 flex flex-col justify-center">
+                    <h3 class="text-lg font-semibold text-center mb-4 text-gray-700">人才分層培訓策略漏斗</h3>
+                    <div class="chart-container">
+                        <canvas id="kpiChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-gray-400 mt-2">透過不同層次的課程設計，篩選並培養核心 AI 種子部隊。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Learning Model Simulation -->
+        <section id="simulation" class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="mb-6 border-b border-gray-100 pb-4">
+                <h2 class="text-2xl font-bold text-[#2c3e34]">學習成效模擬：大堂課 vs. 專案實作</h2>
+                <p class="text-gray-500 mt-2">
+                    您擔心的「拿證書就忘」是傳統培訓的痛點。此模擬器展示引入「實作比例（黑客松/工作坊）」如何影響同仁在 6 個月後的技能留存率。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Controls -->
+                <div class="bg-[#fafaf9] p-6 rounded-lg space-y-6">
+                    <div>
+                        <label for="practiceRatio" class="block text-sm font-medium text-gray-700 mb-2">
+                            實作/黑客松課程比例: <span id="ratioValue" class="text-[#577567] font-bold">20%</span>
+                        </label>
+                        <input type="range" id="practiceRatio" min="0" max="100" value="20" 
+                            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-[#577567]">
+                        <div class="flex justify-between text-xs text-gray-400 mt-1">
+                            <span>純聽講</span>
+                            <span>全實作</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-gray-700">預測結果分析</h4>
+                        <div class="p-3 bg-white rounded border border-gray-200">
+                            <div class="text-xs text-gray-500">6個月後技能留存率</div>
+                            <div id="retentionScore" class="text-2xl font-bold text-[#d4a373]">15%</div>
+                        </div>
+                        <div class="p-3 bg-white rounded border border-gray-200">
+                            <div class="text-xs text-gray-500">產出可用專案數 (估計)</div>
+                            <div id="projectScore" class="text-2xl font-bold text-[#577567]">2</div>
+                        </div>
+                    </div>
+
+                    <div class="text-sm text-gray-600 leading-relaxed">
+                        <p class="font-bold mb-1">專家建議：</p>
+                        <p>針對不同程式能力的同仁，建議採用<span class="font-bold text-[#577567]">「No-Code 黑客松」</span>。讓非資訊人員使用 ChatGPT/Claude 或 Excel AI 工具解決流程問題，而非強求寫程式。</p>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="col-span-1 lg:col-span-2">
+                    <div class="chart-container">
+                        <canvas id="simulationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: 4-Year Roadmap -->
+        <section id="roadmap" class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="mb-6 border-b border-gray-100 pb-4">
+                <h2 class="text-2xl font-bold text-[#2c3e34]">四年期 AI 學習發展藍圖</h2>
+                <p class="text-gray-500 mt-2">
+                    從今年的「基礎建設」到未來的「AI 內化」，我們規劃了漸進式的成長路徑。請點擊年份查看詳細規劃。
+                </p>
+            </div>
+
+            <!-- Timeline Navigation -->
+            <div class="relative mb-8">
+                <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-200 -z-10 transform -translate-y-1/2"></div>
+                <div class="flex justify-between items-center max-w-3xl mx-auto px-4">
+                    <button onclick="updateTimeline(1)" class="timeline-point w-12 h-12 rounded-full bg-[#577567] text-white font-bold flex items-center justify-center border-4 border-white shadow-md z-10 active" id="btn-year1">Y1</button>
+                    <button onclick="updateTimeline(2)" class="timeline-point w-12 h-12 rounded-full bg-gray-300 text-gray-600 font-bold flex items-center justify-center border-4 border-white shadow-md z-10 hover:bg-[#8ba396] hover:text-white" id="btn-year2">Y2</button>
+                    <button onclick="updateTimeline(3)" class="timeline-point w-12 h-12 rounded-full bg-gray-300 text-gray-600 font-bold flex items-center justify-center border-4 border-white shadow-md z-10 hover:bg-[#8ba396] hover:text-white" id="btn-year3">Y3</button>
+                    <button onclick="updateTimeline(4)" class="timeline-point w-12 h-12 rounded-full bg-gray-300 text-gray-600 font-bold flex items-center justify-center border-4 border-white shadow-md z-10 hover:bg-[#8ba396] hover:text-white" id="btn-year4">Y4</button>
+                </div>
+            </div>
+
+            <!-- Timeline Content Display -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in" id="timeline-content">
+                <!-- Content injected by JS -->
+            </div>
+        </section>
+
+        <!-- Section 4: Curriculum Matrix -->
+        <section id="curriculum" class="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center border-b border-gray-100 pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-[#2c3e34]">分眾課程規劃矩陣</h2>
+                    <p class="text-gray-500 mt-2 text-sm">針對不同職能設計的學習路徑，解決能力不均問題。</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex space-x-2">
+                    <button onclick="filterCurriculum('all')" class="px-3 py-1 text-sm rounded-full bg-[#577567] text-white hover:bg-[#465e52] transition">全部</button>
+                    <button onclick="filterCurriculum('general')" class="px-3 py-1 text-sm rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition">一般行政</button>
+                    <button onclick="filterCurriculum('domain')" class="px-3 py-1 text-sm rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition">公衛專家</button>
+                    <button onclick="filterCurriculum('it')" class="px-3 py-1 text-sm rounded-full bg-gray-200 text-gray-600 hover:bg-gray-300 transition">資訊人員</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="curriculum-grid">
+                <!-- Cards injected by JS -->
+            </div>
+        </section>
+
+        <footer class="text-center text-gray-400 text-sm py-8 border-t border-gray-200 mt-12">
+            <p>疾管署 AI 教育訓練規劃建議展示原型</p>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- Data Definitions ---
+
+        // Year 1 is Current Year
+        const roadmapData = {
+            1: {
+                title: "Year 1: 啟蒙與試點 (Current)",
+                focus: "建立共識、消除恐懼、小規模成功",
+                kpi: "全體3小時素養 | 40人次基礎 | 120人次應用",
+                courses: [
+                    "全體：AI 倫理與資安風險 (3hr)",
+                    "進階：Generative AI 辦公室應用 (ChatGPT/Copilot)",
+                    "實作：首屆『疾管署 No-Code 創新競賽』"
+                ],
+                strategy: "針對您提到的成效擔憂，今年不求每個人都會寫程式，而是求每個人都『會問問題 (Prompting)』。黑客松採用『業務出題 + AI 解題』模式，鼓勵使用現成工具解決行政流程。"
+            },
+            2: {
+                title: "Year 2: 擴散與賦能",
+                focus: "培養種子教官、部門級應用",
+                kpi: "各組室至少 1 位 AI 大使 | 產出 5 個跨組室專案",
+                courses: [
+                    "全體：數據分析基礎觀念",
+                    "進階：RAG (檢索增強生成) 基礎概念",
+                    "實作：建立署內 AI 知識庫 (Knowledge Base)"
+                ],
+                strategy: "將表現優秀的 120 人轉化為各組室的 AI 大使。舉辦『AI 應用分享日』，讓同仁分享如何用 AI 節省 1 小時工作時間，而非強調技術難度。"
+            },
+            3: {
+                title: "Year 3: 深化與整合",
+                focus: "流程再造、模型微調",
+                kpi: "30% 業務流程嵌入 AI 輔助 | 建立疾管署專屬小模型",
+                courses: [
+                    "進階：Python 資料科學實戰 (針對分析人員)",
+                    "實作：傳染病預測模型優化工作坊",
+                    "管理：AI 專案採購與驗收標準"
+                ],
+                strategy: "此時基礎建設已備，開始針對特定傳染病資料進行深度訓練。課程轉向更硬核的資料科學，針對企劃組與疫情中心進行深度培訓。"
+            },
+            4: {
+                title: "Year 4: 智慧化文化",
+                focus: "人機協作常態化、預測性決策",
+                kpi: "AI 輔助決策系統上線 | 全署 AI 文化成熟度評估",
+                courses: [
+                    "前瞻：AI Agent (自主代理) 應用",
+                    "實作：跨國疫情 AI 監測黑客松",
+                    "領導：AI 治理與決策思維"
+                ],
+                strategy: "AI 成為如同 Excel 般的日常工具。訓練重點轉向『人機協作』的指揮與決策能力，而非工具操作。"
+            }
+        };
+
+        const curriculumData = [
+            {
+                title: "AI 素養與風險防護",
+                type: "基礎 (必修)",
+                target: "general",
+                hours: "3 hrs",
+                desc: "符合公務人員時數規定。重點不在技術，而在於資安意識、個資保護及 AI 幻覺辨識。",
+                method: "大堂課 / 線上影片 + 測驗"
+            },
+            {
+                title: "No-Code 行政效率優化",
+                type: "應用 (活用)",
+                target: "general",
+                hours: "6 hrs",
+                desc: "學習使用 ChatGPT 撰寫公文草稿、整理會議紀錄、Excel 公式生成。目標：每天省下 30 分鐘。",
+                method: "實作工作坊 (電腦教室)"
+            },
+            {
+                title: "疾管署資料 AI 應用黑客松",
+                type: "專案實作",
+                target: "domain",
+                hours: "12 hrs (2天)",
+                desc: "公衛專家帶題目(BYOP)，學習如何將疫情數據透過 AI 工具視覺化或初步分析。無需寫 code，重點在邏輯。",
+                method: "分組競賽 + 導師輔導"
+            },
+            {
+                title: "Python 疫情資料分析",
+                type: "專業技術",
+                target: "it",
+                hours: "24 hrs",
+                desc: "針對資訊與統計人員。利用 Python 進行資料清洗、建模與自動化報表產製。",
+                method: "系列課程 + 專案產出"
+            },
+            {
+                title: "AI 專案管理與導入",
+                type: "管理決策",
+                target: "domain",
+                hours: "6 hrs",
+                desc: "針對科長級以上或專案PM。如何評估廠商 AI 提案、驗收標準、計算 ROI。",
+                method: "案例研討"
+            },
+            {
+                title: "Prompt Engineering 進階",
+                type: "進階應用",
+                target: "general",
+                hours: "4 hrs",
+                desc: "學習結構化提示詞，讓 AI 協助撰寫政策說帖、衛教素材、國際輿情分析。",
+                method: "實作工作坊"
+            }
+        ];
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderKpiChart();
+            renderSimulationChart(20); // Initial render
+            updateTimeline(1); // Load Year 1
+            filterCurriculum('all'); // Load all courses
+
+            // Scroll helper
+            window.scrollToSection = (id) => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            };
+
+            // Listener for Simulation Slider
+            const slider = document.getElementById('practiceRatio');
+            slider.addEventListener('input', (e) => {
+                const val = parseInt(e.target.value);
+                document.getElementById('ratioValue').innerText = val + "%";
+                renderSimulationChart(val);
+                updateSimulationStats(val);
+            });
+        });
+
+        // --- Charts ---
+
+        let kpiChartInstance = null;
+        let simChartInstance = null;
+
+        function renderKpiChart() {
+            const ctx = document.getElementById('kpiChart').getContext('2d');
+            kpiChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['一般同仁 (基礎素養)', '活用技能目標 (進階)', '資訊/核心種子 (專家)'],
+                    datasets: [{
+                        data: [830 - 120 - 40, 120, 40],
+                        backgroundColor: ['#e5e7eb', '#d4a373', '#577567'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.raw + ' 人';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderSimulationChart(practiceRatio) {
+            // Simplified logic: Higher practice ratio = better retention over time
+            // Baseline retention drops quickly. Practice keeps it higher.
+            const months = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6'];
+            
+            // Formula for retention curve decay
+            const calcRetention = (start, decayFactor, monthIdx) => {
+                return Math.max(10, Math.floor(start * Math.pow(decayFactor, monthIdx)));
+            };
+
+            // Lecture Only (Base decay)
+            const lectureDecay = 0.7; 
+            // Practice Boosted (Decay improves with ratio)
+            const boost = practiceRatio / 200; // max 0.5 boost
+            const practiceDecay = 0.7 + boost;
+
+            const lectureData = months.map((_, i) => calcRetention(100, lectureDecay, i));
+            const practiceData = months.map((_, i) => calcRetention(100, Math.min(0.98, practiceDecay), i));
+
+            const ctx = document.getElementById('simulationChart').getContext('2d');
+            
+            if (simChartInstance) {
+                simChartInstance.destroy();
+            }
+
+            simChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: '傳統講授模式 (Lecture Only)',
+                            data: lectureData,
+                            borderColor: '#9ca3af',
+                            borderDash: [5, 5],
+                            tension: 0.4
+                        },
+                        {
+                            label: '導入實作/專案模式 (Project Based)',
+                            data: practiceData,
+                            borderColor: '#577567',
+                            backgroundColor: 'rgba(87, 117, 103, 0.1)',
+                            fill: true,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: { display: true, text: '技能留存率 (%)' }
+                        }
+                    },
+                    plugins: {
+                        title: { display: true, text: '6個月技能留存率預測' }
+                    }
+                }
+            });
+        }
+
+        function updateSimulationStats(ratio) {
+            // Retention score at month 6 (approximate from logic above)
+            const boost = ratio / 200;
+            const decay = 0.7 + boost;
+            const finalRetention = Math.max(10, Math.floor(100 * Math.pow(Math.min(0.98, decay), 5)));
+            
+            document.getElementById('retentionScore').innerText = finalRetention + "%";
+            
+            // Estimated projects: roughly 1 project per 10% of practice effort per 50 people trained? 
+            // Just a fun estimation for the UI
+            const projects = Math.floor(ratio / 10);
+            document.getElementById('projectScore').innerText = projects;
+        }
+
+        // --- Logic: Timeline ---
+        function updateTimeline(year) {
+            // Update buttons
+            document.querySelectorAll('.timeline-point').forEach(btn => {
+                btn.classList.remove('active', 'bg-[#577567]', 'text-white');
+                btn.classList.add('bg-gray-300', 'text-gray-600');
+            });
+            const activeBtn = document.getElementById(`btn-year${year}`);
+            activeBtn.classList.add('active', 'bg-[#577567]', 'text-white');
+            activeBtn.classList.remove('bg-gray-300', 'text-gray-600');
+
+            // Update content
+            const data = roadmapData[year];
+            const container = document.getElementById('timeline-content');
+            
+            // Build lists
+            const courseList = data.courses.map(c => `<li class="flex items-start"><span class="mr-2 text-[#d4a373]">•</span>${c}</li>`).join('');
+
+            container.innerHTML = `
+                <div class="bg-[#f0f4f2] p-6 rounded-lg border-t-4 border-[#577567] animate-fade-in">
+                    <h3 class="text-xl font-bold text-[#2c3e34] mb-2">${data.title}</h3>
+                    <p class="text-[#577567] font-semibold mb-4">${data.focus}</p>
+                    <div class="mb-4">
+                        <h4 class="font-bold text-gray-700 text-sm uppercase tracking-wide mb-2">年度 KPI</h4>
+                        <p class="text-gray-600 text-sm bg-white p-3 rounded border border-gray-200">${data.kpi}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-gray-700 text-sm uppercase tracking-wide mb-2">重點課程</h4>
+                        <ul class="text-gray-600 text-sm space-y-2">
+                            ${courseList}
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center space-y-4">
+                    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                        <h4 class="text-lg font-bold text-[#2c3e34] mb-3">專家策略建議</h4>
+                        <p class="text-gray-600 leading-relaxed">
+                            ${data.strategy}
+                        </p>
+                    </div>
+                    <div class="bg-[#fffbeb] p-4 rounded-lg border border-[#fcd34d] flex items-start">
+                        <span class="text-2xl mr-3">💡</span>
+                        <div>
+                            <p class="text-sm text-gray-700 font-bold">活動亮點</p>
+                            <p class="text-xs text-gray-600 mt-1">
+                                ${year === 1 ? '推動 No-Code 黑客松，降低參賽門檻，建立信心。' : 
+                                  year === 2 ? '選拔 AI 大使，建立內部社群。' : 
+                                  year === 3 ? '針對特定傳染病模型進行深度優化。' : 'AI 輔助決策系統正式上線。'}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- Logic: Curriculum Filter ---
+        function filterCurriculum(filter) {
+            const grid = document.getElementById('curriculum-grid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' 
+                ? curriculumData 
+                : curriculumData.filter(c => c.target === filter);
+
+            filtered.forEach(c => {
+                const targetLabel = c.target === 'general' ? '一般行政' : c.target === 'domain' ? '公衛專家' : '資訊人員';
+                const badgeColor = c.target === 'general' ? 'bg-gray-100 text-gray-600' : c.target === 'domain' ? 'bg-[#fff7ed] text-[#d4a373]' : 'bg-[#f0fdf4] text-[#577567]';
+                
+                const card = document.createElement('div');
+                card.className = 'bg-white p-5 rounded-lg border border-gray-200 card-hover flex flex-col h-full';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-xs font-bold px-2 py-1 rounded ${badgeColor}">${targetLabel}</span>
+                        <span class="text-xs text-gray-400 font-mono">${c.hours}</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">${c.title}</h3>
+                    <p class="text-xs text-[#577567] font-semibold mb-3">${c.type}</p>
+                    <p class="text-sm text-gray-600 mb-4 flex-grow">${c.desc}</p>
+                    <div class="pt-4 border-t border-gray-100 mt-auto">
+                        <span class="text-xs text-gray-500 flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-gray-400 mr-2"></span>
+                            ${c.method}
+                        </span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+    </script>
+</body>
+</html>
