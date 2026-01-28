@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>繁體中文 NER 示範</title>
+</head>
+<body>
+    <h1>繁體中文命名實體辨識</h1>
+    <textarea id="input" rows="4" cols="50">傅達仁今將執行安樂死，卻突然爆出自己20年前遭緯來體育台封殺。</textarea>
+    <br>
+    <button onclick="analyze()">分析</button>
+    <div id="result"></div>
+
+    <script type="module">
+        import { pipeline } from 'https://cdn.jsdelivr.net/npm/@huggingface/transformers';
+        
+        let ner = null;
+        
+        // 預載模型
+        async function loadModel() {
+            document.getElementById('result').innerHTML = '正在載入模型...';
+            ner = await pipeline('token-classification', 'GanymedeNil/text2vec-large-chinese-onnx');
+            document.getElementById('result').innerHTML = '模型載入完成，請輸入文字後點擊分析';
+        }
+        
+        window.analyze = async function() {
+            if (!ner) {
+                await loadModel();
+            }
+            
+            const text = document.getElementById('input').value;
+            const results = await ner(text);
+            
+            // 合併實體
+            const entities = mergeEntities(results);
+            
+            // 顯示結果
+            let html = '<h3>識別結果：</h3><ul>';
+            entities.forEach(e => {
+                html += `<li><strong>${e.text}</strong> (${e.type})</li>`;
+            });
+            html += '</ul>';
+            
+            document.getElementById('result').innerHTML = html;
+        }
+        
+        function mergeEntities(results) {
+            const entities = [];
+            let current = null;
+            
+            for (const item of results) {
+                const type = item.entity.replace(/^[BI]-/, '');
+                
+                if (item.entity.startsWith('B-')) {
+                    if (current) entities.push(current);
+                    current = { text: item.word, type };
+                } else if (item.entity.startsWith('I-') && current?.type === type) {
+                    current.text += item.word;
+                } else {
+                    if (current) entities.push(current);
+                    current = null;
+                }
+            }
+            if (current) entities.push(current);
+            
+            return entities;
+        }
+        
+        // 頁面載入時預載模型
+        loadModel();
+    </script>
+</body>
+</html>
