@@ -19,7 +19,7 @@
         // 預載模型
         async function loadModel() {
             document.getElementById('result').innerHTML = '正在載入模型...';
-            ner = await pipeline('token-classification', 'GanymedeNil/text2vec-large-chinese-onnx');
+            ner = await pipeline('token-classification', 'GanymedeNil/text2vec-base-chinese-onnx');
             document.getElementById('result').innerHTML = '模型載入完成，請輸入文字後點擊分析';
         }
         
