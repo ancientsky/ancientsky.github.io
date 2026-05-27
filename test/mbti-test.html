@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>性格的鏡像 · MBTI 16 型人格測驗</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=DM+Sans:wght@400;500;600&family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F2EBDC;
+    --paper-light: #FAF5E9;
+    --ink: #1E1A14;
+    --ink-soft: #4A4338;
+    --muted: #8A7F70;
+    --rule: #C9BCA1;
+    --rule-soft: #DDD2BB;
+    --terracotta: #A24A2C;
+    --teal: #2F5752;
+    --gold: #B8862A;
+    --serif: 'Fraunces', 'Noto Serif TC', 'Songti TC', serif;
+    --sans: 'DM Sans', 'Noto Sans TC', -apple-system, system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* paper grain texture using SVG noise */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.10 0 0 0 0 0.08 0 0 0 0.08 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    opacity: 0.6;
+    mix-blend-mode: multiply;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 32px 80px;
+    min-height: 100vh;
+  }
+
+  /* ─── shared header ─── */
+  .masthead {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 64px;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .masthead .brand {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    text-transform: none;
+    color: var(--ink);
+  }
+  .masthead .meta { font-feature-settings: "tnum"; }
+
+  /* ─── view transitions ─── */
+  .view {
+    display: none;
+    animation: fadeUp 0.6s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+  .view.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pop {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  /* ─── intro ─── */
+  .intro-eyebrow {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--terracotta);
+    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+  }
+  .intro-title {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(56px, 9vw, 96px);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+  .intro-title em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--terracotta);
+  }
+  .intro-subtitle {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(22px, 3vw, 30px);
+    color: var(--ink-soft);
+    margin-bottom: 56px;
+    line-height: 1.3;
+  }
+  .intro-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--ink);
+    margin: 56px 0 40px;
+  }
+  .intro-body {
+    font-size: 17px;
+    line-height: 1.85;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+    max-width: 560px;
+  }
+  .intro-body strong {
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .dimension-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 40px;
+    margin: 48px 0;
+    max-width: 560px;
+  }
+  .dim {
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+  .dim-label {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--terracotta);
+    margin-bottom: 6px;
+  }
+  .dim-pair {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+  }
+  .dim-pair span { color: var(--muted); margin: 0 4px; }
+
+  .btn-start {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 36px;
+    background: var(--ink);
+    color: var(--paper-light);
+    border: none;
+    font-family: var(--serif);
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 16px;
+  }
+  .btn-start:hover {
+    background: var(--terracotta);
+    letter-spacing: 0.1em;
+    padding: 18px 44px;
+  }
+  .btn-start .arrow {
+    font-family: var(--sans);
+    font-size: 16px;
+    transition: transform 0.3s ease;
+  }
+  .btn-start:hover .arrow { transform: translateX(6px); }
+
+  /* ─── quiz ─── */
+  .progress-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 56px;
+    font-family: var(--serif);
+    font-style: italic;
+    color: var(--muted);
+  }
+  .progress-counter {
+    font-size: 16px;
+    font-feature-settings: "tnum";
+  }
+  .progress-counter .now {
+    font-size: 32px;
+    color: var(--ink);
+    font-style: normal;
+    margin-right: 4px;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 1px;
+    background: var(--rule-soft);
+    margin: 0 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-bar::after {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--ink);
+    width: var(--p, 0%);
+    transition: width 0.5s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .progress-dim {
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+
+  .question-no {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--terracotta);
+    letter-spacing: 0.04em;
+    margin-bottom: 16px;
+  }
+  .question-text {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(28px, 4.5vw, 40px);
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 56px;
+    letter-spacing: -0.005em;
+  }
+
+  .options { display: grid; gap: 16px; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 26px 28px;
+    background: var(--paper-light);
+    border: 1px solid var(--rule);
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--ink);
+    transition: all 0.25s ease;
+    width: 100%;
+  }
+  .option:hover {
+    background: #fff;
+    border-color: var(--ink);
+    transform: translateX(4px);
+  }
+  .option:active { transform: scale(0.99) translateX(4px); }
+  .option-mark {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 22px;
+    color: var(--terracotta);
+    line-height: 1.2;
+    flex-shrink: 0;
+    min-width: 24px;
+  }
+
+  .quiz-back {
+    margin-top: 40px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 0;
+  }
+  .quiz-back:hover { color: var(--terracotta); }
+  .quiz-back:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* ─── result ─── */
+  .result-eyebrow {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--terracotta);
+    margin-bottom: 20px;
+    letter-spacing: 0.04em;
+  }
+  .result-type {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(80px, 16vw, 160px);
+    line-height: 0.9;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    margin-bottom: 12px;
+    animation: pop 0.8s 0.2s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+  }
+  .result-nickname {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(32px, 5vw, 48px);
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .result-nickname-en {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(20px, 3vw, 26px);
+    color: var(--muted);
+    margin-bottom: 32px;
+    letter-spacing: 0.02em;
+  }
+
+  .result-description {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    border-left: 2px solid var(--terracotta);
+    padding-left: 24px;
+    margin: 40px 0 56px;
+    font-style: italic;
+  }
+
+  .dimensions-readout {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin: 48px 0;
+    padding: 28px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .dim-readout {
+    text-align: center;
+  }
+  .dim-readout-letter {
+    font-family: var(--serif);
+    font-size: 36px;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .dim-readout-bar {
+    height: 3px;
+    background: var(--rule-soft);
+    margin: 8px auto;
+    width: 80%;
+    position: relative;
+    overflow: hidden;
+  }
+  .dim-readout-bar span {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    background: var(--terracotta);
+  }
+  .dim-readout-percent {
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-top: 6px;
+    font-feature-settings: "tnum";
+  }
+  .dim-readout-label {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .result-section {
+    margin: 48px 0;
+  }
+  .section-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .section-label::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .traits-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .trait {
+    padding: 18px 20px;
+    background: var(--paper-light);
+    border: 1px solid var(--rule);
+    font-family: var(--serif);
+    font-size: 17px;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .trait::before {
+    content: "◆";
+    color: var(--terracotta);
+    font-size: 10px;
+  }
+
+  .growth-text, .career-text {
+    font-size: 17px;
+    line-height: 1.85;
+    color: var(--ink-soft);
+  }
+  .career-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .career-list li {
+    list-style: none;
+    padding: 8px 14px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    font-family: var(--serif);
+    font-size: 15px;
+    color: var(--ink);
+  }
+
+  .result-footer {
+    margin-top: 80px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .btn-restart {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: transparent;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .btn-restart:hover {
+    background: var(--ink);
+    color: var(--paper-light);
+  }
+  .colophon {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* ─── mobile ─── */
+  @media (max-width: 600px) {
+    .app { padding: 32px 20px 64px; }
+    .masthead { margin-bottom: 40px; }
+    .dimension-grid { grid-template-columns: 1fr; gap: 16px; }
+    .progress-bar { margin: 0 16px; }
+    .dimensions-readout { grid-template-columns: repeat(2, 1fr); gap: 24px 16px; }
+    .traits-grid { grid-template-columns: 1fr; }
+    .option { padding: 22px 20px; font-size: 16px; gap: 18px; }
+    .result-description { font-size: 19px; padding-left: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="masthead">
+    <div class="brand">性格的鏡像</div>
+    <div class="meta">EST. 16 TYPES</div>
+  </header>
+
+  <!-- ─────────── INTRO ─────────── -->
+  <section class="view active" id="view-intro">
+    <div class="intro-eyebrow">A Quiet Examination of Self</div>
+    <h1 class="intro-title">在二十個<em>選擇</em>之間,<br>遇見自己。</h1>
+    <p class="intro-subtitle">Sixteen ways of being human —<br>which one is yours?</p>
+
+    <div class="intro-divider"></div>
+
+    <p class="intro-body">
+      這是一份基於 <strong>MBTI 十六型人格</strong>架構的自我探索測驗。我們不為你「貼標籤」,而是邀請你用四個維度,去觀察自己如何感知世界、如何做決定、又如何與他人共處。
+    </p>
+    <p class="intro-body">
+      回答時請憑直覺,選擇「更像現在的你」,而不是「你希望成為的你」。每題沒有對錯,僅有差異。
+    </p>
+
+    <div class="dimension-grid">
+      <div class="dim">
+        <div class="dim-label">I. 能量來源</div>
+        <div class="dim-pair">外向 <span>/</span> 內向</div>
+      </div>
+      <div class="dim">
+        <div class="dim-label">II. 訊息接收</div>
+        <div class="dim-pair">實感 <span>/</span> 直覺</div>
+      </div>
+      <div class="dim">
+        <div class="dim-label">III. 決策依據</div>
+        <div class="dim-pair">思考 <span>/</span> 情感</div>
+      </div>
+      <div class="dim">
+        <div class="dim-label">IV. 生活方式</div>
+        <div class="dim-pair">判斷 <span>/</span> 知覺</div>
+      </div>
+    </div>
+
+    <button class="btn-start" onclick="startQuiz()">
+      開始測驗 <span class="arrow">→</span>
+    </button>
+  </section>
+
+  <!-- ─────────── QUIZ ─────────── -->
+  <section class="view" id="view-quiz">
+    <div class="progress-row">
+      <div class="progress-counter">
+        <span class="now" id="q-now">01</span><span id="q-total">/ 20</span>
+      </div>
+      <div class="progress-bar" id="progress-bar"></div>
+      <div class="progress-dim" id="q-dim">能量來源</div>
+    </div>
+
+    <div class="question-no" id="q-no">Question One</div>
+    <h2 class="question-text" id="q-text">—</h2>
+
+    <div class="options" id="options"></div>
+
+    <button class="quiz-back" id="back-btn" onclick="goBack()">← 回到上一題</button>
+  </section>
+
+  <!-- ─────────── RESULT ─────────── -->
+  <section class="view" id="view-result">
+    <div class="result-eyebrow" id="r-eyebrow">你的人格類型 · Your Type</div>
+    <h1 class="result-type" id="r-type">—</h1>
+    <h2 class="result-nickname" id="r-nick">—</h2>
+    <div class="result-nickname-en" id="r-nick-en">—</div>
+
+    <p class="result-description" id="r-desc">—</p>
+
+    <div class="dimensions-readout" id="r-dims"></div>
+
+    <div class="result-section">
+      <div class="section-label">主要特質 · Strengths</div>
+      <div class="traits-grid" id="r-traits"></div>
+    </div>
+
+    <div class="result-section">
+      <div class="section-label">成長方向 · Growth</div>
+      <p class="growth-text" id="r-growth"></p>
+    </div>
+
+    <div class="result-section">
+      <div class="section-label">職涯傾向 · Career Affinities</div>
+      <ul class="career-list" id="r-careers"></ul>
+    </div>
+
+    <div class="result-footer">
+      <button class="btn-restart" onclick="restart()">↻ 再測一次</button>
+      <div class="colophon">Based on Myers–Briggs Type Indicator framework</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ─── Data: 20 questions, 5 per dimension ───
+  const QUESTIONS = [
+    // E/I (能量來源)
+    { dim: 'EI', text: '在一個熱鬧的社交場合,你比較會……', a: '主動穿梭、認識新朋友', b: '找幾個熟人深聊', map: ['E','I'] },
+    { dim: 'EI', text: '結束忙碌的一週後,你恢復精力的方式是……', a: '出門找朋友相聚', b: '獨自待在家放空', map: ['E','I'] },
+    { dim: 'EI', text: '思考一件事情時,你比較傾向……', a: '邊說邊想,在對話中釐清', b: '先在腦中想清楚再開口', map: ['E','I'] },
+    { dim: 'EI', text: '在會議或團體討論裡,你通常……', a: '很自然地表達想法、推動討論', b: '先仔細聆聽,有把握才發言', map: ['E','I'] },
+    { dim: 'EI', text: '對於興趣和話題,你更喜歡……', a: '廣泛涉獵不同領域', b: '專注深入少數幾項', map: ['E','I'] },
+
+    // S/N (訊息接收)
+    { dim: 'SN', text: '你比較信任的是……', a: '親眼所見、有事實依據的事物', b: '直覺感受到的可能性與模式', map: ['S','N'] },
+    { dim: 'SN', text: '學習新事物時,你偏好的方式是……', a: '從具體例子和步驟開始', b: '先掌握整體概念與原理', map: ['S','N'] },
+    { dim: 'SN', text: '描述一件事情時,你會著重在……', a: '發生了什麼、何時、如何發生', b: '它意味著什麼、會帶來什麼影響', map: ['S','N'] },
+    { dim: 'SN', text: '別人最常欣賞你的是……', a: '務實、可靠、注重細節', b: '富想像力、有遠見、有創意', map: ['S','N'] },
+    { dim: 'SN', text: '你比較容易留意到的是……', a: '眼前實際發生的具體事物', b: '事物之間隱藏的關聯與可能', map: ['S','N'] },
+
+    // T/F (決策依據)
+    { dim: 'TF', text: '做重要決定時,你優先考量……', a: '邏輯、原則與客觀的分析', b: '對人的影響與大家的感受', map: ['T','F'] },
+    { dim: 'TF', text: '當朋友向你訴苦,你的第一反應是……', a: '幫他釐清問題、提出建議', b: '同理他的情緒、給予支持', map: ['T','F'] },
+    { dim: 'TF', text: '你比較欣賞別人的是……', a: '能力、效率與洞見', b: '真誠、體貼與善意', map: ['T','F'] },
+    { dim: 'TF', text: '面對團隊衝突,你會優先……', a: '把事情講清楚、追求公正解法', b: '修補關係、照顧彼此的感受', map: ['T','F'] },
+    { dim: 'TF', text: '收到批評時,你比較希望對方……', a: '直接點出問題,不必拐彎', b: '顧及你的感受,委婉地說', map: ['T','F'] },
+
+    // J/P (生活方式)
+    { dim: 'JP', text: '規劃旅行時,你會……', a: '事先排好詳細的行程表', b: '保留彈性,隨興而行', map: ['J','P'] },
+    { dim: 'JP', text: '你的工作空間或桌面通常……', a: '井然有序,東西各歸其位', b: '有點凌亂,但你都找得到', map: ['J','P'] },
+    { dim: 'JP', text: '面對截止日期,你會……', a: '提早動工、從容完成', b: '在最後關頭爆發效率', map: ['J','P'] },
+    { dim: 'JP', text: '一個新計畫中,你最享受的階段是……', a: '逐項完成、結案的時刻', b: '充滿可能性的探索初期', map: ['J','P'] },
+    { dim: 'JP', text: '你比較喜歡的生活步調是……', a: '有規律、可預期、井然有序', b: '有變化、自發、保留彈性', map: ['J','P'] },
+  ];
+
+  const DIM_LABELS = {
+    EI: '能量來源', SN: '訊息接收', TF: '決策依據', JP: '生活方式'
+  };
+
+  // ─── Data: 16 Types ───
+  const TYPES = {
+    INTJ: {
+      nick: '建築師', en: 'The Architect',
+      desc: '富有想像力又極具策略眼光的思考者。你看見的是模式與藍圖,而非眼前的細節——因此你總能在他人尚未察覺前,就為未來鋪好下一步。',
+      traits: ['獨立自主', '富戰略眼光', '果斷堅定', '追求精進'],
+      growth: '允許計畫有點不完美,允許他人按自己的節奏前進。最深刻的洞察,有時來自願意慢下來、傾聽他人感受的時刻。',
+      careers: ['科學家', '系統架構師', '策略顧問', '研究員', '建築師']
+    },
+    INTP: {
+      nick: '邏輯學家', en: 'The Logician',
+      desc: '充滿創新點子的發明者,對知識有著無法滿足的渴望。你享受拆解世界的樂趣——把每一個假設都翻過來看一看,確認它真的站得住腳。',
+      traits: ['分析力強', '充滿好奇', '思想原創', '客觀理性'],
+      growth: '想法不必等到完美才出手。試著重視關係中的情感面向,並把腦中的精彩理論,真正帶入現實實踐。',
+      careers: ['理論物理學家', '軟體工程師', '哲學家', '數學家', '學術研究者']
+    },
+    ENTJ: {
+      nick: '指揮官', en: 'The Commander',
+      desc: '大膽且富有想像力的領導者,如果找不到方法,就會親手打造一條路。你看見的是「可以變成什麼」,並且擁有把它推動成形的意志力。',
+      traits: ['領導才能', '果斷自信', '具效率', '富遠見'],
+      growth: '培養耐心。讓他人也有空間參與決策,不必所有問題都要由你來解決;有時放慢,反而更快。',
+      careers: ['企業執行長', '管理顧問', '創業家', '政治領袖', '投資銀行家']
+    },
+    ENTP: {
+      dim: 'EI',
+      nick: '辯論家', en: 'The Debater',
+      desc: '聰明又充滿好奇心的思想家,無法抗拒一場智力上的挑戰。你樂於攪動既有秩序——不為破壞,而是為了讓更好的可能性浮現。',
+      traits: ['機智敏捷', '富有創意', '勇於挑戰', '思維開闊'],
+      growth: '練習聚焦與完成。讓那些精彩的想法,有機會走完從點子到落地的最後一哩路。',
+      careers: ['企業家', '律師', '記者', '產品經理', '創意總監']
+    },
+    INFJ: {
+      nick: '提倡者', en: 'The Advocate',
+      desc: '安靜卻富有神祕感的理想主義者,能在不刻意之間,激勵身邊的人。你看見的是「事物本應該是的樣子」,並願意默默為它努力。',
+      traits: ['富洞察力', '原則堅定', '深具同理', '志向遠大'],
+      growth: '為自己劃下界線。你不必承擔所有人的情緒,也可以是好人。照顧自己,並不是自私。',
+      careers: ['心理諮商師', '人權律師', '作家', '醫師', '社工']
+    },
+    INFP: {
+      nick: '調停者', en: 'The Mediator',
+      desc: '富有詩意、善良利他,總是熱忱地為良善的事業奮鬥。你的內在有一座花園,別人不一定看得見,但所有美好的事物都在那裡發芽。',
+      traits: ['富想像力', '忠於價值', '深具同理', '溫柔堅韌'],
+      growth: '把理想化為具體行動。允許自己接受不完美的現實——這不會背叛你的價值,反而是讓它真正落地的方式。',
+      careers: ['作家', '心理治療師', '藝術家', '非營利工作者', '教師']
+    },
+    ENFJ: {
+      nick: '主人公', en: 'The Protagonist',
+      desc: '富有魅力且能激勵人心的領導者,讓聽你說話的人為之著迷。你看見的不只是「現在的人」,而是「他們能成為的樣子」。',
+      traits: ['富領導魅力', '利他奉獻', '可靠忠誠', '善解人意'],
+      growth: '記得照顧自己。你不必為每一個人的幸福負責;先把自己的杯子斟滿,才有水可以分給別人。',
+      careers: ['教育工作者', '公益領袖', '組織顧問', '公共關係', '傳道人']
+    },
+    ENFP: {
+      nick: '競選者', en: 'The Campaigner',
+      desc: '熱情、富創造力且善於社交,你總能在最平凡的事情裡找到驚喜。你是房間裡的火花,點燃別人原本不知道自己擁有的可能性。',
+      traits: ['熱情洋溢', '富有創意', '善於社交', '樂觀向上'],
+      growth: '練習專注與收尾。完成一件事的踏實感,會比同時開始十件事更令人滿足。',
+      careers: ['記者', '創意工作者', '行銷企劃', '心理諮商師', '創業家']
+    },
+    ISTJ: {
+      nick: '物流師', en: 'The Logistician',
+      desc: '務實、注重事實,可靠性無可置疑。你是那種「答應了就會做到」的人——這份誠實,在這個時代比想像中珍貴得多。',
+      traits: ['誠實負責', '井然有序', '紀律嚴明', '腳踏實地'],
+      growth: '對新方法保持開放。並非所有規矩都需要被守住——有些慣例,也許正等著被你重新思考。',
+      careers: ['會計師', '稽核', '法律工作者', '行政管理', '工程師']
+    },
+    ISFJ: {
+      nick: '守衛者', en: 'The Defender',
+      desc: '非常專注、溫暖的守護者,隨時準備保護所愛的人。你從不大聲宣告自己付出了什麼,但身邊的人都知道——少了你,事情會變得不一樣。',
+      traits: ['體貼細心', '忠誠可靠', '勤奮努力', '溫柔有韌性'],
+      growth: '練習說出自己的需求,練習說「不」。你的善良不應該以委屈自己為代價。',
+      careers: ['護理師', '小學教師', '社工', '行政助理', '人力資源']
+    },
+    ESTJ: {
+      nick: '總經理', en: 'The Executive',
+      desc: '出色的管理者,在統籌事務或人時無人能及。你擅長把混亂變成秩序——讓每個人都知道自己該做什麼、什麼時候完成。',
+      traits: ['組織力強', '果斷直接', '實事求是', '忠誠可靠'],
+      growth: '對不同意見保持彈性,留意他人情緒。效率重要,但人不是齒輪——傾聽,有時是最快的捷徑。',
+      careers: ['企業主管', '專案經理', '軍警', '法官', '財務長']
+    },
+    ESFJ: {
+      nick: '執政官', en: 'The Consul',
+      desc: '極富同情心、受歡迎且樂於助人,你總是熱心服務。你天生懂得「氣氛是怎麼形成的」——並且願意為了維護它,做許多別人看不見的事。',
+      traits: ['熱心助人', '忠誠合作', '敏銳體貼', '注重和諧'],
+      growth: '你不必為他人的情緒負全責。學會接受不同意見和批評,並相信:被討厭也不會讓你變得不好。',
+      careers: ['護理師', '幼教老師', '公關', '飯店業', '社區工作']
+    },
+    ISTP: {
+      nick: '鑑賞家', en: 'The Virtuoso',
+      desc: '大膽又務實的實驗家,擅長使用各種工具與技藝。你不太說話,但你的雙手知道答案——你會直接拆開它、修好它、再讓它運轉起來。',
+      traits: ['冷靜沉著', '善於觀察', '實用主義', '勇於嘗試'],
+      growth: '練習表達情感與承諾。長期的關係與計畫,需要的不是技巧,而是願意停留。',
+      careers: ['機械工程師', '飛行員', '外科醫師', '攝影師', '消防員']
+    },
+    ISFP: {
+      nick: '探險家', en: 'The Adventurer',
+      desc: '靈活有魅力的藝術家,隨時準備探索新可能。你的世界由感受構成——顏色、氣味、聲音、觸感,你比別人更早察覺它們的細微差別。',
+      traits: ['富藝術感', '感受敏銳', '隨和包容', '忠於自我'],
+      growth: '為自己設定長期目標,並練習跨出舒適圈。你的天賦,值得讓更多人看見。',
+      careers: ['設計師', '插畫家', '料理人', '物理治療師', '園藝家']
+    },
+    ESTP: {
+      nick: '企業家', en: 'The Entrepreneur',
+      desc: '聰明、活力充沛、極具洞察力,你真心享受身處其中的當下。當其他人還在分析時,你已經跳下去、試過了、並從錯誤裡學到了東西。',
+      traits: ['大膽果斷', '反應敏捷', '善於實踐', '充滿活力'],
+      growth: '培養耐心,留意長期影響。並非每件事都需要立刻行動——有時最聰明的舉動,是「再等一等」。',
+      careers: ['業務', '創業家', '緊急救護員', '運動員', '行銷專員']
+    },
+    ESFP: {
+      nick: '表演者', en: 'The Entertainer',
+      desc: '自發、活力充沛、熱情滿溢——有你在的地方,絕不會無聊。你懂得怎麼讓平凡的時刻發光,這是一種被低估的、深刻的天賦。',
+      traits: ['熱情活潑', '原創有趣', '善於應變', '感染力強'],
+      growth: '練習長期規劃,並學會面對更深層的情緒。不必每次都用笑容掩蓋——你的脆弱,也很珍貴。',
+      careers: ['表演者', '活動策劃', '幼教老師', '導遊', '銷售人員']
+    }
+  };
+
+  // ─── State ───
+  let currentQ = 0;
+  let answers = []; // 'E', 'I', etc.
+
+  // ─── Logic ───
+  function startQuiz() {
+    currentQ = 0;
+    answers = [];
+    showView('view-quiz');
+    renderQuestion();
+  }
+
+  function showView(id) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function renderQuestion() {
+    const q = QUESTIONS[currentQ];
+    const total = QUESTIONS.length;
+
+    document.getElementById('q-now').textContent = String(currentQ + 1).padStart(2, '0');
+    document.getElementById('q-total').textContent = ' / ' + total;
+    document.getElementById('q-dim').textContent = DIM_LABELS[q.dim];
+    document.getElementById('progress-bar').style.setProperty('--p', ((currentQ / total) * 100) + '%');
+
+    const ordinals = ['One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
+                      'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen','Twenty'];
+    document.getElementById('q-no').textContent = 'Question ' + ordinals[currentQ];
+    document.getElementById('q-text').textContent = q.text;
+
+    const opts = document.getElementById('options');
+    opts.innerHTML = '';
+    [['A', q.a, q.map[0]], ['B', q.b, q.map[1]]].forEach(([mark, text, letter]) => {
+      const btn = document.createElement('button');
+      btn.className = 'option';
+      btn.innerHTML = `<span class="option-mark">${mark}.</span><span>${text}</span>`;
+      btn.onclick = () => selectAnswer(letter);
+      opts.appendChild(btn);
+    });
+
+    document.getElementById('back-btn').disabled = (currentQ === 0);
+  }
+
+  function selectAnswer(letter) {
+    answers[currentQ] = letter;
+    if (currentQ < QUESTIONS.length - 1) {
+      currentQ++;
+      renderQuestion();
+    } else {
+      // complete progress bar before showing result
+      document.getElementById('progress-bar').style.setProperty('--p', '100%');
+      setTimeout(showResult, 350);
+    }
+  }
+
+  function goBack() {
+    if (currentQ > 0) {
+      currentQ--;
+      renderQuestion();
+    }
+  }
+
+  function calculateType() {
+    const counts = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
+    answers.forEach(l => counts[l]++);
+    const type =
+      (counts.E >= counts.I ? 'E' : 'I') +
+      (counts.S >= counts.N ? 'S' : 'N') +
+      (counts.T >= counts.F ? 'T' : 'F') +
+      (counts.J >= counts.P ? 'J' : 'P');
+    return { type, counts };
+  }
+
+  function showResult() {
+    const { type, counts } = calculateType();
+    const data = TYPES[type];
+
+    document.getElementById('r-type').textContent = type;
+    document.getElementById('r-nick').textContent = data.nick;
+    document.getElementById('r-nick-en').textContent = data.en;
+    document.getElementById('r-desc').textContent = data.desc;
+
+    // dimension readouts
+    const dims = [
+      { letter: type[0], pair: ['E','I'], label: '能量' },
+      { letter: type[1], pair: ['S','N'], label: '感知' },
+      { letter: type[2], pair: ['T','F'], label: '決策' },
+      { letter: type[3], pair: ['J','P'], label: '生活' },
+    ];
+    const dimEl = document.getElementById('r-dims');
+    dimEl.innerHTML = dims.map(d => {
+      const total = counts[d.pair[0]] + counts[d.pair[1]];
+      const pct = Math.round((counts[d.letter] / total) * 100);
+      return `
+        <div class="dim-readout">
+          <div class="dim-readout-letter">${d.letter}</div>
+          <div class="dim-readout-bar"><span style="width:${pct}%"></span></div>
+          <div class="dim-readout-percent">${pct}%</div>
+          <div class="dim-readout-label">${d.label}</div>
+        </div>`;
+    }).join('');
+
+    // traits
+    document.getElementById('r-traits').innerHTML =
+      data.traits.map(t => `<div class="trait">${t}</div>`).join('');
+
+    document.getElementById('r-growth').textContent = data.growth;
+
+    document.getElementById('r-careers').innerHTML =
+      data.careers.map(c => `<li>${c}</li>`).join('');
+
+    showView('view-result');
+  }
+
+  function restart() {
+    showView('view-intro');
+  }
+</script>
+</body>
+</html>
