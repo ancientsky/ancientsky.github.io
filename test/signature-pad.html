@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>手寫簽名板</title>
+<style>
+  :root{
+    --chrome:#16242e;        /* 深墨青：工具列 */
+    --chrome-soft:#22343f;
+    --paper:#fdfcf9;         /* 紙面 */
+    --rule:#c9c2b4;          /* 簽名底線 */
+    --accent:#c8a24a;        /* 鋼筆金 */
+    --text:#e8eef2;
+    --text-dim:#92a4ae;
+    --danger:#c0564a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,"PingFang TC","Noto Sans TC",system-ui,sans-serif;
+    background:var(--chrome);
+    color:var(--text);
+    display:flex;flex-direction:column;
+    height:100dvh;
+    overflow:hidden;
+    user-select:none;-webkit-user-select:none;
+    touch-action:manipulation;
+  }
+
+  header{
+    display:flex;align-items:baseline;gap:10px;
+    padding:14px 18px 10px;
+  }
+  header h1{font-size:17px;font-weight:600;letter-spacing:.08em}
+  header span{font-size:11px;color:var(--text-dim);letter-spacing:.05em}
+
+  /* 畫布 */
+  .pad-wrap{
+    flex:1;min-height:0;
+    margin:0 12px;
+    position:relative;
+    border-radius:14px;
+    background:var(--paper);
+    box-shadow:0 10px 30px rgba(0,0,0,.35), inset 0 0 0 1px rgba(0,0,0,.06);
+    overflow:hidden;
+  }
+  canvas#pad{
+    position:absolute;inset:0;width:100%;height:100%;
+    touch-action:none;       /* 關鍵：避免畫圖時頁面捲動 */
+    cursor:crosshair;
+  }
+  .guide{
+    position:absolute;left:8%;right:8%;bottom:22%;
+    border-bottom:1.5px solid var(--rule);
+    pointer-events:none;
+    transition:opacity .4s;
+  }
+  .guide::before{
+    content:"✕";
+    position:absolute;left:-2px;bottom:6px;
+    font-size:13px;color:var(--rule);
+  }
+  .hint{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    color:#b9b2a2;font-size:14px;letter-spacing:.2em;
+    pointer-events:none;transition:opacity .4s;
+  }
+  .pad-wrap.signed .hint{opacity:0}
+
+  /* 工具列 */
+  .tools{
+    padding:12px 16px calc(14px + env(safe-area-inset-bottom));
+    display:flex;flex-direction:column;gap:12px;
+  }
+  .row{display:flex;align-items:center;gap:10px}
+  .row .label{font-size:11px;color:var(--text-dim);width:52px;flex:none;letter-spacing:.1em}
+
+  /* 墨色 */
+  .swatches{display:flex;gap:10px;flex:1}
+  .swatch{
+    width:30px;height:30px;border-radius:50%;
+    border:2px solid transparent;
+    outline:2px solid rgba(255,255,255,.12);
+    transition:transform .15s, outline-color .15s;
+  }
+  .swatch.active{
+    outline:2px solid var(--accent);
+    transform:scale(1.18);
+  }
+
+  /* 粗細 */
+  input[type=range]{
+    flex:1;appearance:none;-webkit-appearance:none;height:30px;background:transparent;
+  }
+  input[type=range]::-webkit-slider-runnable-track{
+    height:4px;border-radius:2px;background:var(--chrome-soft);
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:24px;height:24px;border-radius:50%;
+    background:var(--accent);margin-top:-10px;
+    box-shadow:0 2px 6px rgba(0,0,0,.4);
+  }
+  .width-preview{
+    width:34px;height:34px;flex:none;border-radius:8px;background:var(--chrome-soft);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .width-preview i{display:block;border-radius:50%;background:var(--text)}
+
+  /* 按鈕 */
+  .actions{display:flex;gap:8px}
+  button{
+    flex:1;padding:12px 0;border:none;border-radius:10px;
+    font-size:14px;font-weight:600;font-family:inherit;
+    background:var(--chrome-soft);color:var(--text);
+    letter-spacing:.1em;
+  }
+  button:active{filter:brightness(1.25)}
+  button:disabled{opacity:.35}
+  #clearBtn{color:var(--danger)}
+  #exportBtn{background:var(--accent);color:#1c1608;flex:1.6}
+
+  /* 匯出預覽層 */
+  .sheet{
+    position:fixed;inset:0;background:rgba(10,16,20,.78);
+    display:none;align-items:center;justify-content:center;
+    padding:24px;z-index:10;backdrop-filter:blur(4px);
+  }
+  .sheet.open{display:flex}
+  .sheet-card{
+    background:var(--chrome);border-radius:16px;padding:18px;
+    width:100%;max-width:380px;
+    display:flex;flex-direction:column;gap:14px;
+    box-shadow:0 18px 50px rgba(0,0,0,.5);
+  }
+  .sheet-card h2{font-size:15px;font-weight:600;letter-spacing:.08em}
+  .sheet-card img{
+    width:100%;border-radius:10px;
+    background:
+      conic-gradient(#e8e8e8 0 25%, #fff 0 50%, #e8e8e8 0 75%, #fff 0) 0 0/16px 16px; /* 透明示意棋盤格 */
+  }
+  .bg-toggle{display:flex;gap:8px}
+  .bg-toggle button{font-size:12px;padding:9px 0}
+  .bg-toggle button.on{outline:2px solid var(--accent)}
+  .sheet-note{font-size:11px;color:var(--text-dim);text-align:center;line-height:1.6}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>手寫簽名板</h1>
+  <span>運筆速度模擬筆壓粗細</span>
+</header>
+
+<div class="pad-wrap" id="padWrap">
+  <canvas id="pad"></canvas>
+  <div class="guide"></div>
+  <div class="hint">請在此簽名</div>
+</div>
+
+<div class="tools">
+  <div class="row">
+    <div class="label">墨色</div>
+    <div class="swatches" id="swatches"></div>
+  </div>
+  <div class="row">
+    <div class="label">筆粗細</div>
+    <input type="range" id="widthRange" min="1.5" max="9" step="0.5" value="4">
+    <div class="width-preview"><i id="widthDot"></i></div>
+  </div>
+  <div class="actions">
+    <button id="undoBtn">復原</button>
+    <button id="clearBtn">清除</button>
+    <button id="exportBtn">匯出簽名</button>
+  </div>
+</div>
+
+<!-- 匯出層 -->
+<div class="sheet" id="sheet">
+  <div class="sheet-card">
+    <h2>匯出簽名圖片</h2>
+    <img id="previewImg" alt="簽名預覽">
+    <div class="bg-toggle">
+      <button id="bgTransparent" class="on">透明背景 PNG</button>
+      <button id="bgWhite">白色背景 PNG</button>
+    </div>
+    <div class="actions">
+      <button id="closeSheet">返回</button>
+      <button id="downloadBtn" style="background:var(--accent);color:#1c1608">下載 PNG</button>
+    </div>
+    <div class="sheet-note">透明背景適合直接貼進文件或 PDF。<br>若下載後找不到檔案，請長按上方預覽圖另存。</div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById('pad');
+  const ctx = canvas.getContext('2d');
+  const padWrap = document.getElementById('padWrap');
+  const dpr = Math.max(window.devicePixelRatio || 1, 2);
+
+  // ---- 狀態 ----
+  const INKS = [
+    {name:'墨黑', hex:'#1c1c1e'},
+    {name:'藍黑', hex:'#1e3a6e'},
+    {name:'寶藍', hex:'#1d4ed8'},
+    {name:'硃紅', hex:'#b9322a'},
+    {name:'墨綠', hex:'#1f5c3d'},
+  ];
+  let inkColor = INKS[0].hex;
+  let baseWidth = 4;
+  let strokes = [];          // [{color, base, points:[{x,y,w}]}]
+  let current = null;
+  let drawing = false;
+  let lastPt = null;
+  let lastTime = 0;
+  let smoothW = 0;
+  let exportBg = 'transparent';
+
+  // ---- 畫布尺寸 ----
+  function resize(){
+    const r = padWrap.getBoundingClientRect();
+    canvas.width  = Math.round(r.width  * dpr);
+    canvas.height = Math.round(r.height * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.lineCap = ctx.lineJoin = 'round';
+    redrawAll();
+  }
+  window.addEventListener('resize', resize);
+
+  // ---- 筆壓模擬 ----
+  // 真實硬體筆壓（Apple Pencil / 觸控筆）優先；
+  // 否則以運筆速度模擬：寫得快 → 筆畫細，慢 → 筆畫粗，並做平滑避免抖動。
+  function computeWidth(e, dist, dt){
+    let target;
+    if (e.pointerType === 'pen' && e.pressure > 0){
+      target = baseWidth * (0.35 + e.pressure * 1.5);
+    } else {
+      const speed = dist / Math.max(dt, 1);        // px/ms
+      const factor = Math.max(0.32, Math.min(1.55, 1.45 - speed * 0.55));
+      target = baseWidth * factor;
+    }
+    smoothW += (target - smoothW) * 0.35;          // 低通平滑
+    return smoothW;
+  }
+
+  // ---- 繪製：以兩點間插補圓點，畫出寬度連續變化的筆畫 ----
+  function drawSegment(c, p1, p2, color){
+    const dist = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+    const steps = Math.max(Math.ceil(dist / 1.2), 1);
+    c.fillStyle = color;
+    for (let i = 0; i <= steps; i++){
+      const t = i / steps;
+      const x = p1.x + (p2.x - p1.x) * t;
+      const y = p1.y + (p2.y - p1.y) * t;
+      const w = p1.w + (p2.w - p1.w) * t;
+      c.beginPath();
+      c.arc(x, y, w / 2, 0, Math.PI * 2);
+      c.fill();
+    }
+  }
+  function drawStroke(c, s){
+    if (s.points.length === 1){
+      const p = s.points[0];
+      c.fillStyle = s.color;
+      c.beginPath(); c.arc(p.x, p.y, p.w/2, 0, Math.PI*2); c.fill();
+      return;
+    }
+    for (let i = 1; i < s.points.length; i++)
+      drawSegment(c, s.points[i-1], s.points[i], s.color);
+  }
+  function redrawAll(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    strokes.forEach(s => drawStroke(ctx, s));
+    padWrap.classList.toggle('signed', strokes.length > 0);
+    undoBtn.disabled = clearBtn.disabled = exportBtn.disabled = strokes.length === 0;
+  }
+
+  // ---- 指標事件 ----
+  function pos(e){
+    const r = canvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+  canvas.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    canvas.setPointerCapture(e.pointerId);
+    drawing = true;
+    const p = pos(e);
+    smoothW = baseWidth * 0.7;
+    lastPt = { ...p, w: smoothW };
+    lastTime = e.timeStamp;
+    current = { color: inkColor, base: baseWidth, points: [lastPt] };
+    drawStroke(ctx, current);
+    padWrap.classList.add('signed');
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!drawing) return;
+    e.preventDefault();
+    // 用 coalesced events 取得高頻取樣，線條更滑順
+    const events = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+    for (const ev of events){
+      const p = pos(ev);
+      const dist = Math.hypot(p.x - lastPt.x, p.y - lastPt.y);
+      if (dist < 0.8) continue;
+      const dt = ev.timeStamp - lastTime;
+      const w = computeWidth(ev, dist, dt);
+      const pt = { ...p, w };
+      drawSegment(ctx, lastPt, pt, current.color);
+      current.points.push(pt);
+      lastPt = pt; lastTime = ev.timeStamp;
+    }
+  });
+  function endStroke(){
+    if (!drawing) return;
+    drawing = false;
+    if (current && current.points.length){
+      // 收筆收尖
+      const tail = { ...lastPt, w: Math.max(lastPt.w * 0.4, 0.8) };
+      drawSegment(ctx, lastPt, tail, current.color);
+      current.points.push(tail);
+      strokes.push(current);
+    }
+    current = null;
+    redrawAll();
+  }
+  canvas.addEventListener('pointerup', endStroke);
+  canvas.addEventListener('pointercancel', endStroke);
+  canvas.addEventListener('pointerleave', e => { if (drawing) endStroke(); });
+
+  // ---- 墨色選擇 ----
+  const swatchesEl = document.getElementById('swatches');
+  INKS.forEach((ink, i) => {
+    const b = document.createElement('div');
+    b.className = 'swatch' + (i === 0 ? ' active' : '');
+    b.style.background = ink.hex;
+    b.title = ink.name;
+    b.addEventListener('click', () => {
+      inkColor = ink.hex;
+      swatchesEl.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+      b.classList.add('active');
+    });
+    swatchesEl.appendChild(b);
+  });
+
+  // ---- 粗細 ----
+  const widthRange = document.getElementById('widthRange');
+  const widthDot = document.getElementById('widthDot');
+  function updateWidthUI(){
+    baseWidth = parseFloat(widthRange.value);
+    const d = Math.min(baseWidth * 2.2, 24);
+    widthDot.style.width = widthDot.style.height = d + 'px';
+  }
+  widthRange.addEventListener('input', updateWidthUI);
+  updateWidthUI();
+
+  // ---- 復原 / 清除 ----
+  const undoBtn = document.getElementById('undoBtn');
+  const clearBtn = document.getElementById('clearBtn');
+  const exportBtn = document.getElementById('exportBtn');
+  undoBtn.addEventListener('click', () => { strokes.pop(); redrawAll(); });
+  clearBtn.addEventListener('click', () => { strokes = []; redrawAll(); });
+
+  // ---- 匯出 ----
+  const sheet = document.getElementById('sheet');
+  const previewImg = document.getElementById('previewImg');
+  const bgT = document.getElementById('bgTransparent');
+  const bgW = document.getElementById('bgWhite');
+  let exportURL = null;
+
+  function buildExport(){
+    // 計算簽名外框（含筆寬），裁切後加留白
+    let minX=Infinity, minY=Infinity, maxX=-Infinity, maxY=-Infinity;
+    strokes.forEach(s => s.points.forEach(p => {
+      minX = Math.min(minX, p.x - p.w); minY = Math.min(minY, p.y - p.w);
+      maxX = Math.max(maxX, p.x + p.w); maxY = Math.max(maxY, p.y + p.w);
+    }));
+    const pad = 24;
+    const w = maxX - minX + pad * 2, h = maxY - minY + pad * 2;
+    const scale = 3;                                  // 高解析輸出
+    const out = document.createElement('canvas');
+    out.width = Math.round(w * scale); out.height = Math.round(h * scale);
+    const oc = out.getContext('2d');
+    oc.setTransform(scale, 0, 0, scale, 0, 0);
+    if (exportBg === 'white'){ oc.fillStyle = '#ffffff'; oc.fillRect(0,0,w,h); }
+    oc.translate(pad - minX, pad - minY);
+    strokes.forEach(s => drawStroke(oc, s));
+    return out;
+  }
+  function refreshPreview(){
+    const out = buildExport();
+    out.toBlob(blob => {
+      if (exportURL) URL.revokeObjectURL(exportURL);
+      exportURL = URL.createObjectURL(blob);
+      previewImg.src = exportURL;
+    }, 'image/png');
+  }
+  exportBtn.addEventListener('click', () => {
+    if (!strokes.length) return;
+    refreshPreview();
+    sheet.classList.add('open');
+  });
+  bgT.addEventListener('click', () => { exportBg='transparent'; bgT.classList.add('on'); bgW.classList.remove('on'); refreshPreview(); });
+  bgW.addEventListener('click', () => { exportBg='white'; bgW.classList.add('on'); bgT.classList.remove('on'); refreshPreview(); });
+  document.getElementById('closeSheet').addEventListener('click', () => sheet.classList.remove('open'));
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = exportURL;
+    a.download = 'signature-' + new Date().toISOString().slice(0,10) + '.png';
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  resize();
+  redrawAll();
+})();
+</script>
+</body>
+</html>
