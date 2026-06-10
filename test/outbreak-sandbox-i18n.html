@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Outbreak Response Sandbox · OASIS</title>
+<style>
+  :root{
+    --bg:#0B1626; --bg2:#0E1E33; --panel:#13243B; --panel2:#172B45;
+    --line:#26405E; --line2:#34577A;
+    --txt:#EAF1F8; --muted:#90A6BD; --faint:#637B95;
+    --teal:#4FC9C0; --mint:#85C79C; --gold:#D6AC6A; --coral:#E37F62;
+    --info:#7FB6E0; --sand:#C7A782; --intl:#9DB4FF;
+    --ok:#5FBE8E; --warn:#E0B057;
+    --inset:#0A1422; --bubble:#D4E2EF; --probtx:#F2DCD2;
+    --h1grad:linear-gradient(100deg,#EAF1F8,#9FD8D2 60%,#D6AC6A);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:"PingFang TC","Microsoft JhengHei","Noto Sans TC","Helvetica Neue",sans-serif;
+  }
+  body.light{
+    --bg:#F4F7FB; --bg2:#E9F0F8; --panel:#FFFFFF; --panel2:#F1F6FC;
+    --line:#D4DEEA; --line2:#BDCDDE;
+    --txt:#15263A; --muted:#566B82; --faint:#8395AA;
+    --teal:#1C9A8E; --mint:#3E9E63; --gold:#B6862C; --coral:#CF5C3C;
+    --info:#2C6FA6; --sand:#9A7A48; --intl:#4258B8;
+    --inset:#EEF3F9; --bubble:#243B52; --probtx:#7A3A28;
+    --h1grad:linear-gradient(100deg,#15263A,#1F9488 55%,#B7872E);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans); color:var(--txt); line-height:1.65;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(79,201,192,.10), transparent 60%),
+      radial-gradient(900px 500px at 0% 0%, rgba(127,182,224,.08), transparent 55%),
+      var(--bg);
+    background-attachment:fixed; min-height:100vh; -webkit-font-smoothing:antialiased;
+    transition:background .4s,color .4s;
+  }
+  body::before{content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.35;
+    background-image:linear-gradient(rgba(52,87,122,.10) 1px,transparent 1px),
+                     linear-gradient(90deg,rgba(52,87,122,.10) 1px,transparent 1px);
+    background-size:46px 46px;}
+  .wrap{position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:0 22px 90px}
+
+  /* toolbar */
+  .toolbar{display:flex; justify-content:flex-end; align-items:center; gap:10px; padding:18px 0 0}
+  .seg{display:inline-flex; border:1px solid var(--line2); border-radius:999px; overflow:hidden; background:var(--panel2)}
+  .seg button{cursor:pointer; border:none; background:transparent; color:var(--muted); font-weight:800;
+    font-size:13px; padding:8px 15px; font-family:var(--sans); transition:.2s}
+  .seg button:hover{color:var(--txt)}
+  .seg button.active{background:linear-gradient(120deg,var(--teal),var(--mint)); color:#06121E}
+  .themebtn{cursor:pointer; border:1px solid var(--line2); background:var(--panel2); color:var(--muted);
+    border-radius:999px; padding:8px 14px; font-weight:800; font-size:13px; font-family:var(--sans); transition:.2s}
+  .themebtn:hover{color:var(--txt); border-color:var(--teal)}
+
+  /* header */
+  header{padding:22px 0 26px; text-align:center}
+  .badge{display:inline-flex; align-items:center; gap:8px; font-size:12.5px; letter-spacing:.14em;
+    color:var(--teal); border:1px solid var(--line2); border-radius:999px; padding:6px 15px;
+    background:rgba(79,201,192,.06); text-transform:uppercase; font-family:var(--mono)}
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);animation:pulse 1.8s infinite}
+  h1{font-size:clamp(26px,4.4vw,44px); font-weight:800; letter-spacing:.01em; margin:20px 0 10px;
+    background:var(--h1grad); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent}
+  .sub{color:var(--muted); font-size:clamp(14px,1.7vw,17px); max-width:700px; margin:0 auto}
+
+  .concept{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:30px 0 8px}
+  @media(max-width:720px){.concept{grid-template-columns:1fr}}
+  .concept .c{background:linear-gradient(180deg,var(--panel),var(--bg2)); border:1px solid var(--line); border-radius:14px; padding:16px 18px}
+  .concept .c b{display:block; color:var(--teal); font-size:14px; margin-bottom:5px}
+  .concept .c span{color:var(--muted); font-size:13px}
+
+  .prob{display:flex; gap:14px; align-items:flex-start; margin:26px 0 22px;
+    background:linear-gradient(110deg,rgba(227,127,98,.10),rgba(19,36,59,.4));
+    border:1px solid rgba(227,127,98,.35); border-left:4px solid var(--coral); border-radius:14px; padding:16px 20px}
+  .prob .ic{font-size:22px; line-height:1}
+  .prob b{color:var(--coral)}
+  .prob p{color:var(--probtx); font-size:14.5px; margin-top:2px}
+
+  .console{background:linear-gradient(180deg,var(--panel),var(--bg2)); border:1px solid var(--line);
+    border-radius:18px; padding:22px; box-shadow:0 24px 60px rgba(0,0,0,.18)}
+  .console .bar{display:flex; align-items:center; justify-content:space-between; gap:14px;
+    padding-bottom:16px; margin-bottom:18px; border-bottom:1px dashed var(--line)}
+  .console .bar .title{font-weight:800; font-size:18px}
+  .console .bar .scn{color:var(--muted); font-size:12.5px; font-family:var(--mono); text-align:right; max-width:48%}
+
+  .btn{cursor:pointer; border:none; border-radius:11px; padding:12px 20px; font-weight:800; font-size:15px;
+    font-family:var(--sans); transition:.2s; color:#06121E;
+    background:linear-gradient(120deg,var(--teal),var(--mint)); box-shadow:0 8px 22px rgba(79,201,192,.28)}
+  .btn:hover{transform:translateY(-2px); box-shadow:0 12px 30px rgba(79,201,192,.4)}
+  .btn:disabled{opacity:.4; cursor:not-allowed; transform:none; box-shadow:none}
+  .btn.ghost{background:transparent; border:1px solid var(--line2); color:var(--muted); box-shadow:none}
+  .btn.ghost:hover{color:var(--txt); border-color:var(--teal)}
+
+  .taskpick{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:6px}
+  .chip{cursor:pointer; border:1px solid var(--line2); background:var(--panel2); color:var(--muted);
+    border-radius:999px; padding:8px 15px; font-size:13px; font-weight:700; transition:.2s}
+  .chip:hover{color:var(--txt); border-color:var(--teal)}
+  .chip.active{color:#06121E; background:var(--teal); border-color:transparent}
+
+  .epi{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; margin:4px 0 20px}
+  .epi .e{background:var(--panel2); border:1px solid var(--line); border-left:3px solid var(--teal); border-radius:11px; padding:11px 13px}
+  .epi .e .k{font-size:10.5px; color:var(--faint); font-family:var(--mono); letter-spacing:.05em; text-transform:uppercase}
+  .epi .e .v{font-size:13px; color:var(--txt); font-weight:700; margin-top:4px; line-height:1.45}
+  .epi .e.warn{border-left-color:var(--coral)} .epi .e.gold{border-left-color:var(--gold)} .epi .e.mint{border-left-color:var(--mint)}
+  .epi-src{grid-column:1/-1; color:var(--faint); font-size:11px; font-family:var(--mono); margin-top:2px; line-height:1.5}
+
+  .grid1{display:grid; grid-template-columns:1.05fr 1fr; gap:20px}
+  @media(max-width:860px){.grid1{grid-template-columns:1fr}}
+  .agents{display:grid; grid-template-columns:1fr 1fr; gap:12px; align-content:start}
+  .agent{position:relative; background:var(--panel2); border:1px solid var(--line); border-radius:14px; padding:14px; transition:.3s; overflow:hidden}
+  .agent .row{display:flex; align-items:center; gap:9px}
+  .agent .av{width:34px;height:34px;border-radius:10px; display:grid; place-items:center; font-size:17px; background:rgba(127,127,127,.10)}
+  .agent .nm{font-weight:800; font-size:13.5px}
+  .agent .fn{color:var(--muted); font-size:11.5px; margin-top:8px; line-height:1.5}
+  .agent .st{position:absolute; top:12px; right:12px; font-size:10px; font-family:var(--mono); color:var(--faint); letter-spacing:.06em}
+  .agent.live{border-color:var(--ac); box-shadow:0 0 0 1px var(--ac),0 0 26px -6px var(--ac)}
+  .agent.live .st{color:var(--ac)}
+  .agent.live::after{content:""; position:absolute; left:0; top:0; height:3px; width:100%; background:var(--ac); animation:scan 1.1s linear infinite}
+  .agent.human{border-style:dashed; border-color:var(--mint)}
+  .agent.human .av{background:rgba(133,199,156,.16)}
+
+  .feed{background:var(--inset); border:1px solid var(--line); border-radius:14px; padding:14px; height:400px; overflow-y:auto; font-size:13.5px}
+  .feed::-webkit-scrollbar{width:8px}.feed::-webkit-scrollbar-thumb{background:var(--line2);border-radius:8px}
+  .msg{margin-bottom:11px; opacity:0; transform:translateY(6px); animation:rise .4s forwards}
+  .msg .who{font-family:var(--mono); font-size:11.5px; font-weight:700; letter-spacing:.03em}
+  .msg .tx{color:var(--bubble); margin-top:2px}
+  .msg.sys .tx{color:var(--muted); font-style:italic}
+  .feed .placeholder{color:var(--faint); text-align:center; padding-top:160px; font-size:13px}
+
+  .decision{margin-top:16px; border:1px solid var(--gold); background:rgba(214,172,106,.07); border-radius:14px; padding:16px; animation:rise .4s}
+  .decision .q{font-weight:800; color:var(--gold); margin-bottom:12px; display:flex; align-items:center; gap:8px}
+  .opts{display:grid; gap:10px}
+  .opt{cursor:pointer; text-align:left; border:1px solid var(--line2); background:var(--panel2); color:var(--txt);
+    border-radius:11px; padding:13px 15px; font-size:14px; font-weight:600; transition:.2s; font-family:var(--sans)}
+  .opt:hover{border-color:var(--gold); background:var(--panel); transform:translateX(3px)}
+  .opt .lbl{font-family:var(--mono); color:var(--gold); margin-right:9px; font-weight:800}
+
+  .score{margin-top:16px; border:1px solid var(--line2); background:rgba(127,182,224,.06); border-radius:14px; padding:18px; animation:rise .4s}
+  .score h4{color:var(--info); font-size:14px; margin-bottom:14px; display:flex; align-items:center; gap:8px}
+  .meter{margin-bottom:13px}
+  .meter .lab{display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted); margin-bottom:5px}
+  .meter .lab b{color:var(--txt); font-family:var(--mono)}
+  .track{height:9px; background:var(--inset); border-radius:6px; overflow:hidden}
+  .fill{height:100%; width:0; border-radius:6px; transition:width 1s cubic-bezier(.2,.8,.2,1)}
+  .verdict{margin-top:6px; color:var(--bubble); font-size:13.5px; border-top:1px dashed var(--line); padding-top:13px}
+
+  .kpis{margin-top:24px}
+  .kpis h3{font-size:15px; color:var(--gold); margin-bottom:14px; display:flex; align-items:center; gap:9px; letter-spacing:.03em}
+  .kgrid{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:13px}
+  .kpi{background:linear-gradient(180deg,var(--panel),var(--bg2)); border:1px solid var(--line); border-top:3px solid var(--teal); border-radius:13px; padding:15px 16px}
+  .kpi .v{font-family:var(--mono); font-weight:800; font-size:24px; color:var(--teal)}
+  .kpi .l{color:var(--muted); font-size:12.5px; margin-top:4px}
+  .kpi.g{border-top-color:var(--gold)} .kpi.g .v{color:var(--gold)}
+  .kpi.m{border-top-color:var(--mint)} .kpi.m .v{color:var(--mint)}
+  .kpi.c{border-top-color:var(--coral)} .kpi.c .v{color:var(--coral)}
+
+  footer{margin-top:46px; border-top:1px solid var(--line); padding-top:24px; text-align:center}
+  .gov{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:14px}
+  .gov .g{font-size:13px; color:var(--muted); border:1px solid var(--line); border-radius:10px; padding:9px 15px}
+  footer .src{color:var(--faint); font-size:12px; font-family:var(--mono); max-width:760px; margin:0 auto; line-height:1.6}
+
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  @keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+  @keyframes rise{to{opacity:1; transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="toolbar">
+    <div class="seg" id="langseg">
+      <button data-lang="zh" class="active">中</button>
+      <button data-lang="en">EN</button>
+      <button data-lang="fil">FIL</button>
+    </div>
+    <button class="themebtn" id="themebtn">☀️ <span id="theme-label">Light</span></button>
+  </div>
+
+  <header>
+    <span class="badge"><span class="dot"></span><span id="ui-badge"></span></span>
+    <h1 id="ui-h1"></h1>
+    <p class="sub" id="ui-sub"></p>
+    <div class="concept">
+      <div class="c"><b id="c1t"></b><span id="c1d"></span></div>
+      <div class="c"><b id="c2t"></b><span id="c2d"></span></div>
+      <div class="c"><b id="c3t"></b><span id="c3d"></span></div>
+    </div>
+  </header>
+
+  <div class="prob">
+    <div class="ic">⚠️</div>
+    <div><b id="prob-label"></b><p id="prob-text"></p></div>
+  </div>
+
+  <div class="console">
+    <div class="bar">
+      <div><div class="title">🛰️ <span id="console-title"></span></div></div>
+      <div class="scn" id="m1-scn"></div>
+    </div>
+
+    <div class="taskpick">
+      <span style="color:var(--muted);font-size:13px;margin-right:4px" id="lbl-select"></span>
+      <button class="chip active" data-scn="unknown" id="chip-unknown"></button>
+      <button class="chip" data-scn="andes" id="chip-andes"></button>
+      <button class="chip" data-scn="bundibugyo" id="chip-bundibugyo"></button>
+      <button class="chip" data-scn="palawan" id="chip-palawan"></button>
+    </div>
+
+    <div class="epi" id="m1-params"></div>
+
+    <div class="grid1">
+      <div class="agents" id="m1-agents"></div>
+      <div><div class="feed" id="m1-feed"></div></div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+      <button class="btn" id="m1-start"></button>
+      <button class="btn ghost" id="m1-reset"></button>
+    </div>
+
+    <div id="m1-decision"></div>
+    <div id="m1-score"></div>
+  </div>
+
+  <div class="kpis">
+    <h3 id="kpi-h3"></h3>
+    <div class="kgrid">
+      <div class="kpi"><div class="v">≥ 4</div><div class="l" id="k1l"></div></div>
+      <div class="kpi g"><div class="v">≥ 4</div><div class="l" id="k2l"></div></div>
+      <div class="kpi m"><div class="v">≥ 100</div><div class="l" id="k3l"></div></div>
+      <div class="kpi c"><div class="v">≥ 1</div><div class="l" id="k4l"></div></div>
+      <div class="kpi"><div class="v">×1</div><div class="l" id="k5l"></div></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="gov">
+      <div class="g" id="gov1"></div>
+      <div class="g" id="gov2"></div>
+      <div class="g" id="gov3"></div>
+    </div>
+    <div class="src" id="ui-src"></div>
+  </footer>
+</div>
+
+<script>
+const L=(zh,en,fil)=>({zh,en,fil});
+let LANG='zh', THEME='dark';
+const T=o=>o?(o[LANG]||o.zh):'';
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ---------------- UI strings ---------------- */
+const UI={
+  badge:L('OASIS · 疫情應變實戰沙盒','OASIS · Outbreak Response Sandbox','OASIS · Sandbox sa Pagtugon sa Outbreak'),
+  h1:L('疫情應變實戰沙盒','Outbreak Response Sandbox','Sandbox sa Pagtugon sa Outbreak'),
+  sub:L('不是一個「全能 AI」，而是一群各有專長的 AI 分工協作、彼此對話，最後由「人」做決策。請親自操作下列情境，感受 multi-agent 的真實協作。',
+        'Not one all-knowing AI, but a team of specialised AI agents that divide the work, talk to each other, and leave the final call to a human. Run a scenario below to feel real multi-agent collaboration.',
+        'Hindi iisang all-knowing na AI, kundi pangkat ng espesyalisadong AI agents na naghahati ng trabaho, nag-uusap, at ang huling desisyon ay nasa tao. Subukan ang isang senaryo sa ibaba.'),
+  c1t:L('各司其職','Specialised roles','Espesyalisadong tungkulin'),
+  c1d:L('每個 agent 只專精一件事，像一支分工明確的專業團隊。','Each agent masters one thing, like a well-divided expert team.','Bawat agent ay eksperto sa isang bagay, parang organisadong team.'),
+  c2t:L('即時對話','Real-time dialogue','Real-time na usapan'),
+  c2d:L('agents 之間互相傳遞情報與成果，協作完成複雜任務。','Agents pass intel and outputs to each other to solve complex tasks.','Nagpapasahan ng intel ang mga agent para tapusin ang kumplikadong gawain.'),
+  c3t:L('人為把關','Human in the loop','Tao ang nasa loop'),
+  c3d:L('AI 做粗活與研判，關鍵決策與責任，永遠在人。','AI does the legwork; the key decision and accountability stay with people.','AI ang gumagawa ng legwork; ang mahalagang desisyon ay nasa tao.'),
+  probLabel:L('它解決什麼問題？','What problem does it solve?','Anong problema ang nilulutas nito?'),
+  probText:L('真實疫情不能重來，也不能拿同仁的失誤換經驗。本沙盒用 AI 打造「會動」的虛擬疫情，讓同仁在零風險環境中反覆實戰。下列情境參數均依真實流行病學數據建模。',
+             'A real outbreak offers no do-overs and no room to learn from staff mistakes. This sandbox uses AI to build a living virtual outbreak so teams can practise repeatedly at zero risk. All scenario parameters are modelled on real epidemiological data.',
+             'Walang ulit sa totoong outbreak. Gumagamit ang sandbox na ito ng AI para gumawa ng buhay na virtual outbreak para makapag-ensayo nang paulit-ulit nang walang panganib. Lahat ng parameter ay base sa totoong datos.'),
+  consoleTitle:L('疫情應變演練 · 即時態勢','Outbreak Drill · Live Situation','Outbreak Drill · Live na Sitwasyon'),
+  selectScn:L('選擇情境：','Select scenario:','Pumili ng senaryo:'),
+  start:L('▶ 啟動演練','▶ Start drill','▶ Simulan'),
+  reset:L('↺ 重新演練','↺ Reset','↺ I-reset'),
+  placeholder:L('按下「啟動演練」，觀察各 AI agent 如何即時協作、互相回報情報 →',
+                'Press Start drill and watch the AI agents collaborate and report in real time →',
+                'Pindutin ang Simulan at panoorin ang mga AI agent na magtulungan at mag-ulat →'),
+  sysStart:L('演練啟動 — 多 agent 環境上線，情境注入中…','Drill started — multi-agent environment online, injecting scenario…','Nagsimula — online na ang multi-agent, ini-inject ang senaryo…'),
+  sysHandoff:L('情報已彙整。指揮官，多個 agent 的態勢同時湧入——這就是真實疫情的壓力。請下達您的決策。',
+               'Intel consolidated. Commander, multiple agents are reporting at once — this is the pressure of a real outbreak. Make your call.',
+               'Nakolekta na ang intel. Komander, sabay-sabay nag-uulat ang mga agent — ito ang presyon ng totoong outbreak. Magdesisyon.'),
+  decideLog:L('決策','Decision','Desisyon'),
+  scoring:L('演練結束，正在自動評分…','Drill complete, auto-scoring…','Tapos na, nag-iiscore…'),
+  scoreH:L('AI 教官 · 本次演練評分','AI Instructor · Drill Scorecard','AI Instructor · Scorecard'),
+  mSpd:L('應變速度','Response speed','Bilis ng tugon'),
+  mAcc:L('研判精準','Assessment accuracy','Katumpakan ng pagtaya'),
+  mCom:L('風險溝通','Risk communication','Risk communication'),
+  verdictLabel:L('教官講評：','Instructor note: ','Puna ng instruktor: '),
+  noPerfect:L('※ 每個決策都有取捨，沒有滿分答案——這正是反覆演練的價值。試試其他選擇？',
+              '※ Every decision is a trade-off; there is no perfect answer — that is the value of repeated drills. Try another option?',
+              '※ May trade-off bawat desisyon; walang perpektong sagot — iyan ang halaga ng pag-eensayo. Subukan ang iba?'),
+  kpiH:L('🎯 預期成果（2028–2031）','🎯 Expected outcomes (2028–2031)','🎯 Inaasahang resulta (2028–2031)'),
+  k1:L('類 multi-agent 演練模組','multi-agent drill modules','multi-agent na module'),
+  k2:L('種傳染病演練情境','infectious-disease scenarios','senaryo ng sakit'),
+  k3:L('四年累積試訓人次','trainees over four years','trainee sa apat na taon'),
+  k4:L('跨國聯合演習（菲／星）','cross-border joint drills (PH/SG)','cross-border na drill (PH/SG)'),
+  k5:L('AI 自動評分機制','AI auto-scoring engine','AI auto-scoring'),
+  gov1:L('治理原則：人類最後決策','Governance: a human makes the final call','Pamamahala: tao ang huling magdedesisyon'),
+  gov2:L('嚴守 個資法 · 國際衛生條例 IHR','Compliant with privacy law and IHR','Sumusunod sa privacy law at IHR'),
+  gov3:L('跨國合作：菲 DOH · 星 MOH','Cross-border: Philippine DOH and Singapore MOH','Cross-border: Philippine DOH at Singapore MOH'),
+  src:L('本頁為概念驗證（POC）互動展示，疫情數據為情境模擬、非真實個案；流病參數依公開文獻設定 · OASIS',
+        'Interactive proof-of-concept (POC). Outbreak data are simulated, not real cases; epidemiological parameters are based on public literature · OASIS',
+        'Interactive POC. Simulated ang datos, hindi totoong kaso; base sa pampublikong literatura ang parameter · OASIS'),
+  liveOn:L('● 運作中','● live','● live'),
+  standby:L('待命','standby','naka-standby'),
+};
+
+/* ---------------- agents ---------------- */
+const AGENT_DEFS={
+  virus:{ic:'🦠',ac:'var(--coral)',nm:L('病原體研判 Agent','Pathogen Agent','Pathogen Agent'),
+    fn:L('模擬病原擴散、變異與傳播鏈，動態推估走勢。','Models pathogen spread, mutation and transmission chains.','Minomodelo ang pagkalat at transmission chains ng pathogen.'),
+    short:L('病原體','Pathogen','Pathogen')},
+  misinfo:{ic:'📡',ac:'var(--gold)',nm:L('社群／假訊息 Agent','Infodemic Agent','Infodemic Agent'),
+    fn:L('生成並監測不實訊息擴散，重現危機溝通壓力。','Generates and tracks the spread of misinformation.','Bumubuo at sinusubaybayan ang kalat ng maling impormasyon.'),
+    short:L('社群輿情','Infodemic','Infodemic')},
+  stake:{ic:'🏛️',ac:'var(--teal)',nm:L('利害關係人 Agent','Stakeholder Agent','Stakeholder Agent'),
+    fn:L('扮演媒體、地方政府、民代、港埠等不同立場。','Plays media, local government, legislators and ports.','Gumaganap bilang media, LGU, mambabatas at port.'),
+    short:L('利害關係人','Stakeholders','Stakeholders')},
+  patient:{ic:'🧍',ac:'var(--sand)',nm:L('模擬病人 Agent','Patient Agent','Patient Agent'),
+    fn:L('具防衛心理、可能隱匿接觸史，提高疫調難度。','May conceal exposure history, complicating tracing.','Maaaring itago ang exposure history, pinahihirap ang tracing.'),
+    short:L('模擬病人','Patient','Pasyente')},
+  intl:{ic:'🌐',ac:'var(--intl)',nm:L('國際聯合調查 Agent','Joint Investigation Agent','Joint Investigation Agent'),
+    fn:L('對接菲 DOH／WHO，協調病例定義、檢體共享與 IHR 通報評估。','Liaises with Philippine DOH and WHO; harmonises case definitions, sample sharing and IHR assessment.','Nakikipag-ugnayan sa Philippine DOH at WHO; case definitions, sample sharing at IHR assessment.'),
+    short:L('國際聯合調查','Joint Invest.','Joint Invest.')},
+  human:{ic:'🧑‍✈️',ac:'var(--mint)',human:true,nm:L('受訓指揮官（您）','Commander (You)','Komander (Ikaw)'),
+    fn:L('綜整情報、下達應變決策——本演練的主角。','Synthesizes intel and makes the call — the protagonist of the drill.','Pinagsasama ang intel at nagdedesisyon — ang bida ng drill.'),
+    short:L('指揮官·您','Commander · You','Komander · Ikaw')},
+  coach:{ic:'🎖️',ac:'var(--info)',nm:L('AI 教官 Agent','AI Instructor Agent','AI Instructor Agent'),
+    fn:L('全程觀察、即時回饋，演練後自動評分與檢討。','Observes, gives feedback and auto-scores after the drill.','Nagmamasid, nagbibigay feedback at auto-score pagkatapos.'),
+    short:L('AI 教官','AI Instructor','AI Instructor')},
+  system:{short:L('系統','System','Sistema'),ac:'var(--muted)'},
+};
+
+const CHIP={
+  unknown:L('🫁 不明肺炎群聚','🫁 Unknown pneumonia cluster','🫁 Unknown pneumonia cluster'),
+  andes:L('🚢 阿根廷魷魚船 · 漢他','🚢 Argentine squid boat · Hanta','🚢 Argentine squid boat · Hanta'),
+  bundibugyo:L('✈️ 烏干達團 · 伊波拉','✈️ Uganda group · Ebola','✈️ Uganda group · Ebola'),
+  palawan:L('🏝️ 巴拉旺團 · 發燒紅疹','🏝️ Palawan group · febrile rash','🏝️ Palawan group · febrile rash'),
+};
+
+/* ---------------- scenarios ---------------- */
+const SCN={
+  unknown:{
+    agents:['virus','misinfo','stake','patient','human','coach'],
+    scn:L('情境：北部醫學中心 5 例不明肺炎群聚','Scenario: 5-case unknown pneumonia cluster at a northern medical centre','Senaryo: 5-kaso na unknown pneumonia cluster sa hilagang medical center'),
+    src:L('※ 參數為情境模擬假設值，供演練用。','※ Parameters are simulated assumptions for the drill.','※ Simulated na halaga para sa drill.'),
+    params:[
+      {k:L('病原體','Pathogen','Pathogen'),v:L('新型呼吸道病毒（定序中）','Novel respiratory virus (sequencing)','Bagong respiratory virus (sino-sequence)')},
+      {k:L('R₀（初估）','R₀ (initial)','R₀ (paunang)'),v:L('≈ 2.4','≈ 2.4','≈ 2.4'),cls:'warn'},
+      {k:L('潛伏期','Incubation','Incubation'),v:L('評估中','Under assessment','Sinusuri'),},
+      {k:L('致死率 CFR','CFR','CFR'),v:L('評估中','Under assessment','Sinusuri'),cls:'warn'},
+      {k:L('傳播途徑','Transmission','Transmission'),v:L('呼吸道飛沫（疑）','Respiratory droplets (suspected)','Respiratory droplets (suspetsa)')},
+    ],
+    intro:[
+      {a:'virus',t:L('病原體比對中…研判為新型呼吸道病毒，R₀ 初估 2.4；若不介入，72 小時內恐擴散至鄰近 3 縣市。','Matching pathogen… likely a novel respiratory virus, R₀ ~2.4. Without action it could spread to 3 nearby counties within 72 hours.','Tinutugma ang pathogen… malamang bagong respiratory virus, R₀ ~2.4. Kung walang aksyon, kakalat sa 3 lalawigan sa loob ng 72 oras.')},
+      {a:'patient',t:L('「咳嗽兩天而已啦，沒去過什麼特別的地方…」（系統偵測：接觸史可能隱匿，疫調出現缺口）','"Just a two-day cough, I did not go anywhere special…" (System: exposure history may be concealed, a tracing gap appears.)','"Dalawang araw na ubo lang, wala naman akong pinuntahan…" (Sistema: maaaring itinatago ang exposure, may butas sa tracing.)')},
+      {a:'misinfo',t:L('社群謠言竄升：「這是工廠外洩的生化病毒！」2 小時擴散逾 8,000 則貼文，民眾恐慌上升。','Rumour spikes: "It is a bioweapon leaked from a factory!" Over 8,000 posts in 2 hours; public panic rises.','Kumakalat: "Bioweapon na tumagas sa pabrika!" 8,000+ post sa 2 oras; tumataas ang takot.')},
+      {a:'stake',t:L('地方首長要求中央 1 小時內說明；媒體申請聯訪；民代質疑通報太慢。','The local mayor demands a central briefing within the hour; media request interviews; legislators question the slow reporting.','Humihingi ng briefing ang mayor sa loob ng 1 oras; humihiling ng interbyu ang media; kinukuwestiyon ng mambabatas ang bagal.')},
+    ],
+    decisionQ:L('⏸ 需要您的決策：面對情報衝突，下一步怎麼走？','⏸ Your call: facing conflicting intel, what is the next move?','⏸ Desisyon mo: may magkakasalungat na intel, ano ang susunod?'),
+    choices:{
+      A:{text:L('立即發布疫情警示，並同步澄清不實訊息','Issue an outbreak alert immediately and debunk misinformation in parallel','Maglabas agad ng alerto at sabay na itama ang maling impormasyon'),
+        react:[{a:'misinfo',t:L('官方澄清已發布，謠言熱度 1 小時內下降約 60%，恐慌趨緩。','Official clarification out; rumour heat drops ~60% within an hour, panic eases.','Lumabas ang paglilinaw; bumaba ~60% ang tsismis sa loob ng 1 oras.')},
+               {a:'stake',t:L('媒體與地方政府取得即時資訊，緊張情勢明顯緩和。','Media and local government get timely info; tensions clearly ease.','Nakakuha ng impormasyon ang media at LGU; bumaba ang tensyon.')},
+               {a:'virus',t:L('惟疫調尚未完全收斂，個案接觸網絡仍有缺口待補。','But the investigation is not fully converged; contact networks still have gaps.','Pero hindi pa kumpleto ang imbestigasyon; may butas pa sa contact network.')}],
+        s:{spd:90,acc:65,com:88},
+        v:L('危機溝通到位、穩住民心。要留意的是：在疫調資訊尚未齊備前對外發言，須拿捏內容精準度，避免後續修正。','Strong crisis communication that steadies the public. Caution: speaking before the investigation is complete requires careful accuracy to avoid later corrections.','Maganda ang crisis communication. Ingat: kapag nagsalita bago kumpleto ang imbestigasyon, kailangang tumpak para iwas pagbabago.')},
+      B:{text:L('先完成疫調、掌握全貌，再對外正式說明','Finish the investigation and get the full picture before any public statement','Tapusin muna ang imbestigasyon bago magpahayag sa publiko'),
+        react:[{a:'virus',t:L('疫調補齊接觸網絡，傳播鏈與感染源研判精準度大幅提升。','Tracing fills the contact network; chain and source assessment sharpen considerably.','Napuno ang contact network; mas tumpak ang transmission chain at source.')},
+               {a:'misinfo',t:L('謠言未獲澄清持續發酵，民眾恐慌續創新高。','Unaddressed rumours keep festering; public panic hits new highs.','Patuloy ang tsismis; umaabot sa bago-bagong taas ang takot.')},
+               {a:'stake',t:L('地方與民代不滿中央「已讀不回」，輿論壓力急遽升高。','Local officials and legislators resent central silence; public pressure spikes.','Naiinis ang LGU at mambabatas sa katahimikan; biglang tumaas ang presyon.')}],
+        s:{spd:55,acc:92,com:48},
+        v:L('專業研判扎實、資訊精準。但對外溝通的延遲，讓不實訊息有了發酵空間——這正是「速度」與「精準」的兩難。','Solid, accurate assessment. But the communication delay lets misinformation grow — the classic tension between speed and precision.','Solid at tumpak. Pero ang pagkaantala sa komunikasyon ay nagbibigay-daan sa tsismis — ang klasikong tunggalian ng bilis at katumpakan.')},
+      C:{text:L('立即啟動跨縣市區域管制','Launch cross-county regional control immediately','Maglunsad agad ng cross-county na kontrol'),
+        react:[{a:'virus',t:L('實際疫情規模仍待確認，大範圍管制恐屬反應過度。','The true scale is still unconfirmed; broad control may be an overreaction.','Hindi pa kumpirmado ang laki; maaaring sobra ang malawakang kontrol.')},
+               {a:'stake',t:L('商圈與交通衝擊大，地方強烈反彈；若事後證實規模有限，公信力將受損。','Heavy hit to business and transport; strong local pushback; credibility suffers if the scale proves limited.','Malaking epekto sa negosyo at transportasyon; matinding tutol; masisira ang kredibilidad kung maliit pala.')},
+               {a:'misinfo',t:L('突然的管制消息反而助長「事情很嚴重」的恐慌謠言。','Sudden control news actually fuels "this is serious" panic rumours.','Ang biglaang kontrol ay nagpapalakas sa "grabe ito" na tsismis.')}],
+        s:{spd:80,acc:50,com:45},
+        v:L('果斷，但成本高昂。在證據不足時的過度反應，可能侵蝕民眾信任、也浪費防疫資源——決策的拿捏正是訓練重點。','Decisive but costly. Overreacting without evidence can erode trust and waste resources — judgement under uncertainty is the training point.','Mapagpasya pero magastos. Ang pagsobra nang walang ebidensya ay nakasisira ng tiwala at nag-aaksaya — ang pagtimbang sa kawalan ng katiyakan ang aral.')},
+    },
+  },
+
+  andes:{
+    agents:['virus','intl','stake','patient','misinfo','human','coach'],
+    scn:L('情境：阿根廷補魷魚船（船員 20）逼近高雄港 · 至少 3 員疑似 ANDV','Scenario: Argentine squid boat (20 crew) nearing Kaohsiung Port · at least 3 suspected ANDV','Senaryo: Argentine squid boat (20 crew) papalapit sa Kaohsiung Port · 3 suspected ANDV'),
+    src:L('※ 來源：WHO Hantavirus Fact Sheet、US CDC、EID；現實對照 2026 MV Hondius 郵輪 ANDV 事件。','※ Sources: WHO Hantavirus fact sheet, US CDC, EID; real-world parallel: 2026 MV Hondius cruise ANDV event.','※ Pinagmulan: WHO, US CDC, EID; katugma ng 2026 MV Hondius cruise ANDV.'),
+    params:[
+      {k:L('病原體','Pathogen','Pathogen'),v:L('Andes 漢他病毒 ANDV','Andes hantavirus (ANDV)','Andes hantavirus (ANDV)')},
+      {k:L('致死率 CFR','CFR','CFR'),v:L('30–40%（住院可達 ~60%）','30–40% (up to ~60% hospitalised)','30–40% (hanggang ~60% naka-ospital)'),cls:'warn'},
+      {k:L('潛伏期','Incubation','Incubation'),v:L('9–40 天','9–40 days','9–40 araw')},
+      {k:L('人傳人','Person-to-person','Tao-sa-tao'),v:L('是 · 唯一可人傳人之漢他病毒（限密切接觸）','Yes · the only hantavirus with documented spread (close contact only)','Oo · tanging hantavirus na kumakalat (close contact lang)'),cls:'gold'},
+      {k:L('重症比例','Severe share','Severe'),v:L('~60% 進展為心肺症候群','~60% progress to HCPS','~60% nagiging HCPS')},
+      {k:L('疫苗／治療','Vaccine / Tx','Bakuna / Gamot'),v:L('無；以支持性療法為主','None; supportive care only','Wala; supportive care lang'),cls:'mint'},
+    ],
+    intro:[
+      {a:'virus',t:L('3 名船員症狀符合 ANDV 心肺症候群前驅期；該船自阿根廷航行約 27 天，落於潛伏期 9–40 天窗口。CFR 約 30–40%。','3 crew match the ANDV prodrome; the boat sailed ~27 days from Argentina, within the 9–40 day window. CFR ~30–40%.','3 crew ang tugma sa ANDV prodrome; ~27 araw mula Argentina, nasa 9–40 araw na window. CFR ~30–40%.')},
+      {a:'patient',t:L('船員：「就重感冒啦，發燒、痠痛…」（研判：發燒＋肌痛＋腹痛＋血小板低下＝典型前驅症；1 人已呼吸急促）','Crew: "Just a bad cold, fever and aches…" (Assessment: fever + myalgia + abdominal pain + thrombocytopenia = classic prodrome; one is already short of breath.)','Crew: "Trangkaso lang, lagnat at pananakit…" (Pagtaya: lagnat + myalgia + sakit ng tiyan + mababang platelet; isa ay hingal na.)')},
+      {a:'intl',t:L('已通報阿根廷衛生當局與 WHO；請求出港前疫情、船員名冊與接觸史，並評估 IHR 通報。','Notified Argentine health authorities and WHO; requesting pre-departure status, crew manifest and exposure history, and assessing IHR notification.','Na-notify ang Argentina at WHO; hiniling ang pre-departure status, crew manifest at exposure history, at IHR assessment.')},
+      {a:'stake',t:L('船公司急催靠泊卸貨；高雄港務、地方衛生局、漁業署待命，要求中央定調。','The shipping firm presses to dock and unload; port authority, local health bureau and fisheries agency stand by for a central decision.','Nagmamadali ang shipping firm na dumaong; naka-standby ang port, health bureau at fisheries para sa desisyon.')},
+    ],
+    decisionQ:L('⏸ 需要您的決策：載有疑似 ANDV 個案的魷魚船逼近高雄港，如何處置？','⏸ Your call: a squid boat with suspected ANDV cases is nearing Kaohsiung Port — what do you do?','⏸ Desisyon mo: papalapit na ang boat na may suspected ANDV — ano ang gagawin?'),
+    choices:{
+      A:{text:L('准予靠泊，全船 20 員留船檢疫、患者後送負壓隔離','Allow berthing; quarantine all 20 on board and transfer cases to negative-pressure isolation','Payagang dumaong; i-quarantine lahat ng 20 at ilipat ang kaso sa negative-pressure isolation'),
+        react:[{a:'virus',t:L('ANDV 人傳人僅限密切接觸；船上隔離可有效阻斷對社區的擴散。','ANDV spreads only via close contact; on-board isolation effectively blocks community spread.','Close contact lang ang ANDV; epektibong humaharang ang on-board isolation.')},
+               {a:'intl',t:L('檢體可即時送驗並與阿根廷比對，加速確診；IHR 通報同步辦理。','Samples can be tested at once and matched with Argentina to speed confirmation; IHR notification proceeds in parallel.','Maaaring ma-test agad at itugma sa Argentina; kasabay ang IHR.')},
+               {a:'patient',t:L('船艙密集，全員恐已暴露——須監測至潛伏期上限（40 天）並備重症量能。','Cabins are cramped; all may be exposed — monitor to the 40-day limit and prepare critical-care capacity.','Siksikan ang kabin; baka lahat exposed — bantayan hanggang 40 araw at maghanda ng critical care.')}],
+        s:{spd:75,acc:85,com:80},
+        v:L('務實且貼合 ANDV 流病特性的平衡解。重點在於隔離期拉到潛伏期上限、全員監測，並備妥負壓病床與葉克膜等重症資源。','A pragmatic, balanced answer that fits ANDV epidemiology. Key: extend isolation to the incubation limit, monitor everyone, and ready negative-pressure beds and ECMO.','Praktikal at balanseng sagot. Susi: iabot ang isolation sa incubation limit, bantayan lahat, at ihanda ang negative-pressure beds at ECMO.')},
+      B:{text:L('拒絕入港，要求錨地檢疫，醫療團隊著全套 PPE 登船採檢','Deny entry; require anchorage quarantine; a fully PPE-equipped team boards to sample','Tanggihan; anchorage quarantine; sumakay ang team na may PPE para mag-sample'),
+        react:[{a:'virus',t:L('完全阻斷上岸風險、為確診爭取時間，對 CFR 偏高病原最為安全。','Fully blocks landing risk and buys time for confirmation — safest for a high-CFR pathogen.','Ganap na humaharang sa landing at bumibili ng oras — pinakaligtas sa high-CFR.')},
+               {a:'stake',t:L('滯港與物資延宕成本升高；登船醫療團隊須完整 PPE 與感控訓練。','Port-delay and cargo costs rise; the boarding team needs full PPE and IPC training.','Tumataas ang gastos sa pagkaantala; kailangan ng PPE at IPC training ang team.')},
+               {a:'misinfo',t:L('「連港都不讓進」短暫加劇「病毒很可怕」的恐慌敘事，須同步溝通。','"Not even allowed to dock" briefly amplifies a "scary virus" panic narrative; communicate in parallel.','Ang "di pinayagang dumaong" ay pansamantalang nagpapalakas ng takot; kailangan ng paliwanag.')}],
+        s:{spd:50,acc:92,com:70},
+        v:L('最謹慎、最安全，符合國際港埠檢疫精神。代價是時間與成本——對 ANDV 而言略偏保守，但病原未確認前，安全優先是合理判斷。','The most cautious and safe option, true to maritime quarantine principles. The cost is time and money — slightly conservative for ANDV, but safety-first is reasonable before confirmation.','Pinaka-maingat at ligtas, ayon sa maritime quarantine. Gastos ay oras at pera — medyo konserbatibo para sa ANDV, pero makatwiran ang safety-first bago kumpirmado.')},
+      C:{text:L('立即放行靠泊卸貨，僅後送 3 名患者就醫','Clear the boat to dock and unload; only transfer the 3 patients to hospital','Payagang dumaong at mag-unload; ilipat lang ang 3 pasyente'),
+        react:[{a:'virus',t:L('ANDV 可人傳人。放行其餘 17 名船員上岸，接觸者散入社區，追蹤難度大增。','ANDV can spread person-to-person. Releasing the other 17 ashore scatters contacts into the community and complicates tracing.','Tao-sa-tao ang ANDV. Ang pagpapalabas ng 17 ay magkakalat ng contacts sa komunidad.')},
+               {a:'stake',t:L('鮮魚卸貨人員直接暴露；若爆發，港埠與防疫公信力重創。','Fish-unloading workers are directly exposed; an outbreak would badly damage port and public-health credibility.','Direktang exposed ang unloaders; sisira sa kredibilidad kung sumabog.')},
+               {a:'intl',t:L('未先採檢比對即放行，等於放棄釐清源頭的最佳時機。','Releasing before sampling and matching forfeits the best chance to clarify the source.','Ang pagpapalabas bago mag-sample ay sayang sa pagtukoy ng source.')}],
+        s:{spd:90,acc:40,com:45},
+        v:L('看似效率最高，實則是最大的防疫破口。放任未檢疫船員上岸違反港埠檢疫原則——這正是「效率」誘惑下最危險的決策。','Seemingly the most efficient, but the biggest breach. Letting unscreened crew ashore violates quarantine principles — the most dangerous decision under the lure of efficiency.','Mukhang pinakamabilis pero pinakamalaking butas. Labag sa quarantine ang pagpapalabas ng crew — pinakadelikadong desisyon dahil sa "efficiency".')},
+    },
+  },
+
+  bundibugyo:{
+    agents:['virus','intl','patient','misinfo','stake','human','coach'],
+    scn:L('情境：烏干達旅行團（16 人）抵桃機 · 90% 團員疑似 BDBV','Scenario: Uganda tour group (16) at Taoyuan Airport · 90% suspected BDBV','Senaryo: Uganda tour group (16) sa Taoyuan Airport · 90% suspected BDBV'),
+    src:L('※ 來源：WHO DON(2026)、US CDC HAN、EID 2010；現實對照 2026 DRC／烏干達 BDBV 疫情(PHEIC)。','※ Sources: WHO DON (2026), US CDC HAN, EID 2010; real-world parallel: 2026 DRC/Uganda BDBV outbreak (PHEIC).','※ Pinagmulan: WHO DON (2026), US CDC HAN, EID 2010; katugma ng 2026 DRC/Uganda BDBV (PHEIC).'),
+    params:[
+      {k:L('病原體','Pathogen','Pathogen'),v:L('Bundibugyo 伊波拉病毒 BDBV','Bundibugyo ebolavirus (BDBV)','Bundibugyo ebolavirus (BDBV)')},
+      {k:L('致死率 CFR','CFR','CFR'),v:L('約 25–40%','~25–40%','~25–40%'),cls:'warn'},
+      {k:L('潛伏期','Incubation','Incubation'),v:L('2–21 天（平均 ~6–7 天）','2–21 days (avg ~6–7)','2–21 araw (avg ~6–7)')},
+      {k:L('人傳人','Person-to-person','Tao-sa-tao'),v:L('是 · 血液／體液接觸；非空氣傳播','Yes · blood/body-fluid contact; not airborne','Oo · dugo/body fluids; hindi airborne'),cls:'gold'},
+      {k:L('傳染力','Infectiousness','Infectiousness'),v:L('發病後才具傳染力','Contagious only after symptom onset','Nakahahawa pagkatapos lumabas ang sintomas')},
+      {k:L('疫苗／治療','Vaccine / Tx','Bakuna / Gamot'),v:L('無核准之 BDBV 專用品','No approved BDBV-specific product','Walang aprubadong BDBV-specific'),cls:'mint'},
+    ],
+    intro:[
+      {a:'virus',t:L('16 人中約 14 人同時出現發燒、頭痛、肌痛、咽痛。「同時發病」高度提示單一共同暴露——與 BDBV 經不安全葬禮放大吻合。','About 14 of 16 simultaneously show fever, headache, myalgia, sore throat. Synchronous onset strongly suggests a single common exposure — consistent with BDBV amplification via unsafe burials.','~14 sa 16 ay sabay na may lagnat, sakit ng ulo, myalgia, sakit ng lalamunan. Sabay na pagsisimula = common exposure; tugma sa unsafe burial.')},
+      {a:'patient',t:L('數名已嘔吐、腹瀉，1 人牙齦滲血（轉入「濕期」警訊）。團員透露曾參加當地喪禮、近距離處理遺體。','Several have vomiting and diarrhoea; one has gum bleeding (a "wet phase" red flag). Members disclose attending a local funeral and handling a body up close.','May nagsusuka at nagtatae; isa ay dumudugo ang gilagid ("wet phase"). Dumalo sa libing at humawak ng bangkay.')},
+      {a:'intl',t:L('已對接烏干達衛生部與 WHO IHR 窗口，索取當地病例定義與序列；評估啟動 IHR 通報與返溯接觸者。','Engaged Uganda Ministry of Health and the WHO IHR focal point for local case definitions and sequences; assessing IHR notification and backward contact tracing.','Nakausap ang Uganda MoH at WHO IHR; hiniling ang case definitions; tinatasa ang IHR at backward tracing.')},
+      {a:'stake',t:L('桃機公司、機場檢疫站、指定隔離醫院、同班機乘客（接觸者）全數待命；指揮中心要求即時定調。','Airport company, the quarantine station, the designated isolation hospital and fellow passengers (contacts) all stand by; the command centre wants an immediate decision.','Naka-standby ang airport, quarantine station, isolation hospital at kapwa pasahero; gusto ng command centre ng agarang desisyon.')},
+    ],
+    decisionQ:L('⏸ 需要您的決策：疑似病毒性出血熱（VHF）團體入境桃機，如何應變？','⏸ Your call: a suspected viral haemorrhagic fever (VHF) group enters via Taoyuan — how do you respond?','⏸ Desisyon mo: suspected VHF group sa Taoyuan — paano tutugon?'),
+    choices:{
+      A:{text:L('啟動 VHF 應變：團員就地負壓隔離後送指定醫院，並啟動全班機接觸者追蹤','Activate VHF response: isolate on site, transfer to the designated hospital, and trace all flight contacts','I-activate ang VHF response: i-isolate, ilipat sa designated hospital, at tracing ng lahat ng pasahero'),
+        react:[{a:'virus',t:L('BDBV 經血液／體液接觸、發病後才傳染。就地隔離＋後送＋接觸者追蹤完全符合 VHF SOP。','BDBV spreads by blood/fluids and only after onset. On-site isolation, transfer and tracing fully match VHF SOP.','Dugo/fluids ang BDBV at pagkatapos lumabas ang sintomas. Tugma sa VHF SOP.')},
+               {a:'intl',t:L('與烏干達同步病例定義與檢驗結果，加速確診並善盡 IHR 義務。','Aligning case definitions and lab results with Uganda speeds confirmation and meets IHR duties.','Pag-align sa Uganda ay nagpapabilis ng confirmation at tumutupad sa IHR.')},
+               {a:'stake',t:L('指定醫院負壓病房啟動；同班機乘客造冊與健康監測同步展開。','The designated hospital opens negative-pressure wards; passenger listing and health monitoring begin in parallel.','Bumukas ang negative-pressure ward; sabay ang passenger listing at monitoring.')}],
+        s:{spd:80,acc:92,com:82},
+        v:L('教科書級的 VHF 應變。關鍵在「精準分層」：症狀者後送、密切接觸者追蹤，而非無差別封鎖。同時守住個資法。','A textbook VHF response. The key is precise tiering: transfer the symptomatic and trace close contacts, not blanket lockdown. Also protect personal-data law.','Textbook na VHF response. Susi ang precise tiering, hindi blanket lockdown. Sundin din ang privacy law.')},
+      B:{text:L('僅隔離有症狀者，其餘無症狀團員居家檢疫','Isolate only the symptomatic; send asymptomatic members to home quarantine','I-isolate lang ang may sintomas; home quarantine ang asymptomatic'),
+        react:[{a:'virus',t:L('潛伏期 2–21 天，無症狀者可能正在潛伏；90% 已發病，其餘恐迅速接續發病。','Incubation is 2–21 days; the asymptomatic may be incubating. With 90% already ill, the rest may follow fast.','2–21 araw incubation; baka nag-iincubate ang asymptomatic. 90% may sakit na, susunod ang iba.')},
+               {a:'patient',t:L('居家檢疫對 VHF 等級病原防護顯不足，一旦居家發病、家戶接觸者即暴露。','Home quarantine is clearly insufficient for a VHF-grade pathogen; onset at home exposes household contacts.','Kulang ang home quarantine sa VHF; kapag nagkasakit sa bahay, exposed ang pamilya.')},
+               {a:'stake',t:L('若有人居家惡化或外出，將造成社區破口與追蹤困難。','If anyone worsens or goes out, it creates a community breach and tracing difficulty.','Kung may lumala o lumabas, magkakaroon ng butas at hirap sa tracing.')}],
+        s:{spd:85,acc:55,com:60},
+        v:L('速度快，但對 VHF 而言風險過高。長潛伏期意味「目前無症狀」不等於「安全」——此類高致死病原宜集中隔離監測。','Fast, but far too risky for VHF. The long incubation means "asymptomatic now" is not "safe" — high-lethality pathogens warrant central isolation and monitoring.','Mabilis pero sobrang risky sa VHF. "Asymptomatic ngayon" ay hindi "ligtas" — central isolation ang dapat.')},
+      C:{text:L('全班機乘客（含其他旅客）一律集中檢疫 21 天','Centrally quarantine all passengers (including others) for 21 days','I-quarantine lahat ng pasahero ng 21 araw'),
+        react:[{a:'virus',t:L('BDBV 非空氣傳播，與病例無接觸之乘客感染風險低；全機無差別集中，流病上未必必要。','BDBV is not airborne; passengers with no contact are low-risk. Blanket central quarantine is not necessarily justified epidemiologically.','Hindi airborne ang BDBV; mababa ang risk ng walang contact. Hindi kailangan ang blanket quarantine.')},
+               {a:'stake',t:L('隔離量能瞬間耗竭，其他旅客強烈反彈；21 天集中的法律依據須極嚴謹。','Isolation capacity is instantly drained; other travellers push back hard; the legal basis for 21-day central quarantine must be very rigorous.','Mauubos agad ang kapasidad; matinding tutol; kailangang matibay ang legal basis.')},
+               {a:'misinfo',t:L('「整班飛機被關 21 天」恐引爆爭議與訴訟，反噬防疫公信力。','"A whole flight locked up for 21 days" risks disputes and lawsuits that backfire on credibility.','"Buong eroplano kulong 21 araw" ay magbubunga ng away at kaso.')}],
+        s:{spd:60,acc:60,com:45},
+        v:L('立意安全，卻可能過度且耗竭量能。精準鎖定密切接觸者遠優於一刀切全機——過度反應同樣有代價。','Safe in intent but likely excessive and capacity-draining. Targeting close contacts beats a blanket approach — overreaction also has costs.','Ligtas sa hangarin pero sobra at nakakaubos. Mas mabuti ang targeted kaysa blanket — may gastos din ang sobrang reaksyon.')},
+    },
+  },
+
+  /* ===== NEW: Palawan febrile-rash cluster ===== */
+  palawan:{
+    agents:['virus','intl','patient','misinfo','stake','human','coach'],
+    scn:L('情境：巴拉旺島旅行團（20 人）返國後 5 天 · 10 人發燒合併紅疹','Scenario: Palawan tour group (20) · 5 days after return, 10 with fever + rash','Senaryo: Palawan tour group (20) · 5 araw pagkauwi, 10 may lagnat + rash'),
+    src:L('※ 來源：WHO、Philippine DOH／PIDSR、Lancet；菲律賓登革熱全國流行，近年並有麻疹疫情。','※ Sources: WHO, Philippine DOH/PIDSR, Lancet; dengue is nationwide-endemic in the Philippines, with recent measles outbreaks.','※ Pinagmulan: WHO, Philippine DOH/PIDSR, Lancet; nationwide ang dengue sa PH, may kamakailang tigdas.'),
+    params:[
+      {k:L('症候群','Syndrome','Sindrom'),v:L('發燒合併紅疹（病因調查中）','Febrile rash illness (etiology under investigation)','Febrile rash (sinisiyasat ang sanhi)')},
+      {k:L('侵襲率','Attack rate','Attack rate'),v:L('50%（20 人中 10 人）','50% (10 of 20)','50% (10 sa 20)')},
+      {k:L('發病時序','Onset','Onset'),v:L('返國後約 5 天，提示行程中共同暴露','~5 days after return → common exposure abroad','~5 araw pagkauwi → common exposure sa biyahe')},
+      {k:L('旅遊地','Destination','Destinasyon'),v:L('菲律賓巴拉旺（登革/屈公/茲卡/麻疹/傷寒流行）','Palawan, PH (dengue/chikungunya/Zika/measles/typhoid endemic)','Palawan, PH (endemic: dengue/chikungunya/Zika/tigdas/typhoid)')},
+      {k:L('鑑別診斷','Differential','Differential'),v:L('病媒蚊傳 vs 人傳人（麻疹）vs 立克次體/傷寒','Vector-borne vs person-to-person (measles) vs rickettsia/typhoid','Vector-borne vs tao-sa-tao (tigdas) vs rickettsia/typhoid'),cls:'gold'},
+      {k:L('關鍵未知','Key unknown','Susing di-alam'),v:L('是否人傳人 → 決定隔離與接觸者追蹤急迫性','Is it person-to-person? → governs isolation and tracing urgency','Tao-sa-tao ba? → magdidikta ng isolation at tracing'),cls:'warn'},
+      {k:L('麻疹 R₀','Measles R₀','Measles R₀'),v:L('12–18（若為麻疹，傳染力極高）','12–18 (if measles, extremely contagious)','12–18 (kung tigdas, sobrang nakahahawa)'),cls:'warn'},
+      {k:L('國際合作','Cooperation','Kooperasyon'),v:L('須與菲 DOH 聯合調查源頭、檢體與病例定義（IHR）','Joint source investigation with Philippine DOH; samples and case definition (IHR)','Joint investigation kasama ang Philippine DOH; samples at case definition (IHR)'),cls:'mint'},
+    ],
+    intro:[
+      {a:'virus',t:L('10/20 同時出現發燒（>39°C）合併斑丘疹，發病集中在返國後 4–6 天，高度提示行程中單一共同暴露。需先釐清：病媒蚊傳（不直接人傳人）或麻疹（極高傳染力）。',
+        '10/20 with fever >39°C and maculopapular rash, onset clustered 4–6 days after return — strongly suggesting a single common exposure abroad. Must clarify: vector-borne (not directly contagious) vs measles (extremely contagious).',
+        '10/20 may lagnat >39°C at maculopapular rash, 4–6 araw pagkauwi — common exposure sa biyahe. Linawin: vector-borne (di direktang nakahahawa) o tigdas (sobrang nakahahawa).')},
+      {a:'patient',t:L('團員曾在巴拉旺多處活動、被蚊蟲叮咬；部分人記得當地有出疹孩童。1 人結膜充血、口腔疑似 Koplik 斑（麻疹警訊，待確認）。',
+        'Members recall many activities in Palawan and mosquito bites; some saw a child with rash locally. One has conjunctivitis and possible Koplik spots (a measles red flag, to be confirmed).',
+        'Maraming aktibidad sa Palawan at kagat ng lamok; may nakitang batang may rash. Isa ay may conjunctivitis at posibleng Koplik spots (red flag ng tigdas, kumpirmahin).')},
+      {a:'intl',t:L('已聯繫菲 DOH 窗口：巴拉旺同期有登革熱與零星麻疹通報。建議啟動聯合調查、統一病例定義、安排檢體比對，並評估 IHR 通報。',
+        'Contacted Philippine DOH: Palawan currently reports dengue plus sporadic measles. Recommend a joint investigation, harmonised case definition, sample cross-matching, and an IHR notification assessment.',
+        'Nakausap ang Philippine DOH: may dengue at sporadic na tigdas sa Palawan. Mungkahi: joint investigation, pareho ang case definition, sample cross-matching, at IHR assessment.')},
+      {a:'misinfo',t:L('「旅行團帶回怪病」洗版，旅行社與同班機旅客恐慌；另傳「政府隱匿疫情」陰謀論。',
+        '"Tour group brought back a mystery disease" goes viral; the agency and fellow passengers panic, plus a government cover-up conspiracy.',
+        '"May dalang misteryosong sakit" ay viral; nataranta ang agency at kapwa pasahero; may "cover-up" na tsismis.')},
+      {a:'stake',t:L('旅行社要求說明、媒體追問是否「封團」；地方衛生局待命；同班機接觸者名單待定。',
+        'The agency demands answers, media ask about quarantining the group, the local health bureau is on standby, and the flight contact list is pending.',
+        'Humihingi ng paliwanag ang agency, tanong ng media kung iku-quarantine, naka-standby ang health office, hinihintay ang flight contact list.')},
+    ],
+    decisionQ:L('⏸ 需要您的決策：病因未明的發燒紅疹群聚（有菲律賓旅遊史），如何處置？','⏸ Your call: an undifferentiated febrile-rash cluster with Philippine travel history — what do you do?','⏸ Desisyon mo: undifferentiated na febrile-rash cluster na may travel sa Pilipinas — ano ang gagawin?'),
+    choices:{
+      A:{text:L('啟動與菲 DOH 國際聯合調查；排除麻疹前先以「可能人傳人」處置（症狀者呼吸道隔離、接觸者追蹤）並送驗鑑別',
+        'Launch a joint investigation with Philippine DOH; until measles is ruled out, treat as possibly person-to-person (respiratory isolation, contact tracing) and run differential lab tests',
+        'Simulan ang joint investigation kasama ang Philippine DOH; bago ma-rule out ang tigdas, ituring na posibleng tao-sa-tao (respiratory isolation, tracing) at mag-lab tests'),
+        react:[{a:'intl',t:L('菲 DOH 提供當地病例定義與序列，雙邊檢體比對加速病因鎖定；IHR 評估同步進行。','Philippine DOH shares local case definitions and sequences; bilateral sample matching speeds etiology; IHR assessment proceeds in parallel.','Nagbahagi ang Philippine DOH ng case definitions at sequences; mas mabilis matukoy ang sanhi; kasabay ang IHR.')},
+               {a:'virus',t:L('在最壞情況（麻疹 R₀ 12–18）下先隔離，能在確診前阻斷潛在高傳染鏈。','Isolating for the worst case (measles R₀ 12–18) blocks a potential high-transmission chain before confirmation.','Ang pag-isolate para sa worst case (measles R₀ 12–18) ay pumipigil ng mabilis na transmission bago kumpirmado.')},
+               {a:'stake',t:L('「先謹慎、再依證據放寬」說法清楚，旅行社與旅客配合度高。','A "cautious first, relax with evidence" message lands well; the agency and passengers cooperate.','Malinaw ang "ingat muna, luluwagan kapag may ebidensya"; kumooperate ang agency at pasahero.')}],
+        s:{spd:80,acc:88,com:82},
+        v:L('教科書級做法。面對未分化的發燒紅疹＋旅遊史，在實驗室排除麻疹前不可貿然當作「單純病媒蚊傳」；同時啟動與來源國的聯合調查，是釐清源頭與善盡 IHR 義務的關鍵。',
+            'Textbook handling. With an undifferentiated febrile rash plus travel history, you must not assume "just vector-borne" before ruling out measles; launching a joint investigation with the source country is key to finding the source and meeting IHR duties.',
+            'Tamang-tama. Sa undifferentiated na febrile rash + travel, huwag ipagpalagay na "vector-borne lang" bago ma-rule out ang tigdas; mahalaga ang joint investigation sa source country para sa IHR.')},
+      B:{text:L('研判為境外移入病媒蚊傳染病（登革／屈公），僅症狀治療與通報，不啟動隔離與接觸者追蹤',
+        'Conclude it is imported vector-borne disease (dengue/chikungunya); provide symptomatic care and notify only — no isolation or tracing',
+        'Ipalagay na imported vector-borne (dengue/chikungunya); symptomatic care at notify lang — walang isolation o tracing'),
+        react:[{a:'virus',t:L('巴拉旺登革熱確實流行，研判有理；但 50% 同時出疹也符合麻疹，過早鎖定單一診斷有風險。','Dengue is indeed endemic in Palawan, so the guess is reasonable; but 50% with simultaneous rash also fits measles — anchoring early is risky.','Endemic nga ang dengue sa Palawan; pero ang 50% na may rash ay bagay din sa tigdas — delikado ang maagang pag-anchor.')},
+               {a:'patient',t:L('若混有麻疹個案，未隔離將使醫院與社區暴露，麻疹極高傳染力恐快速擴散。','If measles cases are mixed in, no isolation exposes hospitals and community; measles spreads fast.','Kung may tigdas, ang walang isolation ay maglalantad sa ospital at komunidad; mabilis kumalat.')},
+               {a:'intl',t:L('未與菲 DOH 聯合調查，可能錯失源頭資訊與 IHR 時效。','Skipping a joint investigation risks missing source intel and IHR timeliness.','Kung walang joint investigation, mawawala ang source intel at IHR timeliness.')}],
+        s:{spd:85,acc:50,com:60},
+        v:L('快，但賭性太大。登革熱雖最可能，卻不能在排除麻疹前就放掉隔離——一旦群聚中藏有麻疹，代價極高。這是「過早收斂診斷」的典型陷阱。',
+            'Fast but a big gamble. Dengue is most likely, yet you cannot drop isolation before ruling out measles — if measles hides in the cluster, the cost is huge. A classic premature-closure trap.',
+            'Mabilis pero sugal. Malamang dengue, pero di puwedeng tanggalin ang isolation bago i-rule out ang tigdas — malaki ang halaga kung may tigdas. Klasikong premature-closure.')},
+      C:{text:L('暫不對外、不啟動任何措施，等所有實驗室確診結果出爐再行動','Hold all action and public communication until every lab confirmation is in','Ipagpaliban ang lahat ng aksyon at public comms hanggang kumpleto ang lab results'),
+        react:[{a:'virus',t:L('麻疹若在其中，等待確診的數日足以讓傳染鏈擴大；時間就是破口。','If measles is present, the days spent waiting let the chain grow; time is the breach.','Kung may tigdas, lalaki ang chain habang naghihintay; oras ang butas.')},
+               {a:'misinfo',t:L('官方沉默助長「隱匿疫情」陰謀論，恐慌與不信任升高。','Official silence feeds cover-up conspiracies; panic and distrust climb.','Ang katahimikan ay nagpapalakas ng cover-up na tsismis; tumataas ang takot.')},
+               {a:'intl',t:L('拖延通報恐違反 IHR 時效原則，影響與菲方互信與後續合作。','Delayed notification may breach IHR timeliness, harming trust and future cooperation with the Philippines.','Ang pagkaantala ay maaaring labag sa IHR, makasisira sa tiwala sa Pilipinas.')}],
+        s:{spd:40,acc:70,com:45},
+        v:L('「等全部確診」聽來嚴謹，卻忽略麻疹的時間敏感性與 IHR 通報義務。公衛常須在不確定中先採可逆的保護措施，而非癱瘓等待。',
+            'Wait for full confirmation sounds rigorous but ignores measles time-sensitivity and IHR duties. Public health often must take reversible protective steps under uncertainty rather than freeze.',
+            'Maganda pakinggan ang "hintayin ang resulta" pero binabalewala ang time-sensitivity ng tigdas at IHR. Kailangan ng reversible na hakbang, hindi mag-freeze.')},
+    },
+  },
+};
+
+/* ---------------- render ---------------- */
+let curScn='unknown', running=false;
+const feedEl=document.getElementById('m1-feed');
+const agentsEl=document.getElementById('m1-agents');
+
+function setText(id,val){const e=document.getElementById(id); if(e)e.textContent=val;}
+function renderUI(){
+  setText('ui-badge',T(UI.badge)); setText('ui-h1',T(UI.h1)); setText('ui-sub',T(UI.sub));
+  setText('c1t',T(UI.c1t)); setText('c1d',T(UI.c1d));
+  setText('c2t',T(UI.c2t)); setText('c2d',T(UI.c2d));
+  setText('c3t',T(UI.c3t)); setText('c3d',T(UI.c3d));
+  setText('prob-label',T(UI.probLabel)); setText('prob-text',T(UI.probText));
+  setText('console-title',T(UI.consoleTitle)); setText('lbl-select',T(UI.selectScn));
+  setText('m1-start',T(UI.start)); setText('m1-reset',T(UI.reset));
+  setText('kpi-h3',T(UI.kpiH));
+  setText('k1l',T(UI.k1)); setText('k2l',T(UI.k2)); setText('k3l',T(UI.k3)); setText('k4l',T(UI.k4)); setText('k5l',T(UI.k5));
+  setText('gov1',T(UI.gov1)); setText('gov2',T(UI.gov2)); setText('gov3',T(UI.gov3)); setText('ui-src',T(UI.src));
+  setText('chip-unknown',T(CHIP.unknown)); setText('chip-andes',T(CHIP.andes));
+  setText('chip-bundibugyo',T(CHIP.bundibugyo)); setText('chip-palawan',T(CHIP.palawan));
+  document.querySelectorAll('#langseg button').forEach(b=>b.classList.toggle('active',b.dataset.lang===LANG));
+  const tl=document.getElementById('theme-label'); const tb=document.getElementById('themebtn');
+  if(THEME==='dark'){ tb.firstChild.textContent='☀️ '; tl.textContent=T(L('淺色','Light','Maliwanag')); }
+  else { tb.firstChild.textContent='🌙 '; tl.textContent=T(L('深色','Dark','Madilim')); }
+}
+
+function renderAgents(){
+  const sc=SCN[curScn];
+  agentsEl.innerHTML='';
+  sc.agents.forEach(id=>{
+    const a=AGENT_DEFS[id];
+    const d=document.createElement('div');
+    d.className='agent'+(a.human?' human':''); d.id='ag-'+id; d.style.setProperty('--ac',a.ac);
+    d.innerHTML='<span class="st">'+T(UI.standby)+'</span>'+
+      '<div class="row"><div class="av" style="color:'+a.ac+'">'+a.ic+'</div><div class="nm">'+T(a.nm)+'</div></div>'+
+      '<div class="fn">'+T(a.fn)+'</div>';
+    agentsEl.appendChild(d);
+  });
+}
+function agentLive(id,on){const e=document.getElementById('ag-'+id); if(!e)return;
+  e.classList.toggle('live',on); e.querySelector('.st').textContent=on?T(UI.liveOn):T(UI.standby);}
+
+function renderParams(){
+  const sc=SCN[curScn];
+  const box=document.getElementById('m1-params');
+  box.innerHTML=sc.params.map(p=>'<div class="e '+(p.cls||'')+'"><div class="k">'+T(p.k)+'</div><div class="v">'+T(p.v)+'</div></div>').join('')
+    +'<div class="epi-src">'+T(sc.src)+'</div>';
+}
+
+function feedMsg(whoTxt,color,text,sys){
+  const m=document.createElement('div'); m.className='msg'+(sys?' sys':'');
+  m.innerHTML='<div class="who" style="color:'+color+'">〔'+whoTxt+'〕</div><div class="tx">'+text+'</div>';
+  feedEl.appendChild(m); feedEl.scrollTop=feedEl.scrollHeight;
+}
+function clearFeed(){ feedEl.innerHTML='<div class="placeholder">'+T(UI.placeholder)+'</div>'; }
+
+function switchScn(){
+  const sc=SCN[curScn];
+  setText('m1-scn',T(sc.scn));
+  renderParams(); renderAgents(); clearFeed();
+  document.getElementById('m1-decision').innerHTML='';
+  document.getElementById('m1-score').innerHTML='';
+}
+
+async function runDrill(){
+  if(running)return; running=true;
+  document.getElementById('m1-start').disabled=true;
+  const sc=SCN[curScn];
+  feedEl.innerHTML=''; document.getElementById('m1-decision').innerHTML=''; document.getElementById('m1-score').innerHTML='';
+  feedMsg(T(AGENT_DEFS.system.short),'var(--muted)',T(UI.sysStart),true);
+  await sleep(700);
+  for(const ev of sc.intro){
+    const a=AGENT_DEFS[ev.a];
+    agentLive(ev.a,true); await sleep(560);
+    feedMsg(T(a.short),a.ac,T(ev.t));
+    await sleep(1000); agentLive(ev.a,false);
+  }
+  await sleep(300);
+  agentLive('human',true);
+  feedMsg(T(AGENT_DEFS.coach.short),'var(--info)',T(UI.sysHandoff),true);
+  showDecision(sc);
+  document.getElementById('m1-start').disabled=false; running=false;
+}
+
+function showDecision(sc){
+  const box=document.getElementById('m1-decision');
+  box.innerHTML='<div class="decision"><div class="q">'+T(sc.decisionQ)+'</div><div class="opts" id="m1-opts"></div></div>';
+  const o=document.getElementById('m1-opts');
+  ['A','B','C'].forEach(k=>{
+    const c=sc.choices[k]; if(!c)return;
+    const b=document.createElement('button'); b.className='opt';
+    b.innerHTML='<span class="lbl">'+k+'</span>'+T(c.text);
+    b.onclick=()=>decide(k); o.appendChild(b);
+  });
+}
+async function decide(k){
+  const sc=SCN[curScn], c=sc.choices[k];
+  document.getElementById('m1-decision').innerHTML='';
+  feedMsg(T(AGENT_DEFS.human.short),'var(--mint)',T(UI.decideLog)+' '+k+'：'+T(c.text));
+  agentLive('human',false); await sleep(500);
+  for(const r of c.react){
+    const a=AGENT_DEFS[r.a];
+    agentLive(r.a,true); await sleep(520);
+    feedMsg(T(a.short),a.ac,T(r.t));
+    await sleep(840); agentLive(r.a,false);
+  }
+  await sleep(300); agentLive('coach',true);
+  feedMsg(T(AGENT_DEFS.coach.short),'var(--info)',T(UI.scoring),true);
+  await sleep(750); showScore(c); agentLive('coach',false);
+}
+function meter(name,val,color){
+  return '<div class="meter"><div class="lab"><span>'+name+'</span><b>'+val+'</b></div>'+
+    '<div class="track"><div class="fill" data-w="'+val+'" style="background:'+color+'"></div></div></div>';
+}
+function showScore(c){
+  const box=document.getElementById('m1-score');
+  box.innerHTML='<div class="score"><h4>🎖️ '+T(UI.scoreH)+'</h4>'+
+    meter(T(UI.mSpd),c.s.spd,'var(--teal)')+
+    meter(T(UI.mAcc),c.s.acc,'var(--gold)')+
+    meter(T(UI.mCom),c.s.com,'var(--info)')+
+    '<div class="verdict"><b style="color:var(--mint)">'+T(UI.verdictLabel)+'</b>'+T(c.v)+
+    '<br><span style="color:var(--faint);font-size:12.5px">'+T(UI.noPerfect)+'</span></div></div>';
+  requestAnimationFrame(()=>{document.querySelectorAll('#m1-score .fill').forEach(f=>f.style.width=f.dataset.w+'%');});
+}
+
+/* ---------------- events ---------------- */
+document.querySelectorAll('.chip').forEach(c=>{
+  c.addEventListener('click',()=>{
+    if(running)return;
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    c.classList.add('active'); curScn=c.dataset.scn; switchScn();
+  });
+});
+document.getElementById('m1-start').onclick=runDrill;
+document.getElementById('m1-reset').onclick=()=>{ if(running)return; switchScn(); };
+
+document.querySelectorAll('#langseg button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    if(running)return;
+    LANG=b.dataset.lang; renderUI(); switchScn();
+  });
+});
+document.getElementById('themebtn').addEventListener('click',()=>{
+  THEME = (THEME==='dark')?'light':'dark';
+  document.body.classList.toggle('light',THEME==='light');
+  renderUI();
+});
+
+/* init */
+renderUI(); switchScn();
+</script>
+</body>
+</html>
