@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDF Studio — 頁面拆分與重組工具</title>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-<script src="https://unpkg.com/sortablejs@1.15.2/Sortable.min.js"></script>
-<script src="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+<script src="https://unpkg.com/sortablejs@1.15.7/Sortable.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet">
 <style>
@@ -554,13 +553,16 @@ input[type=file] { display: none; }
 
 <div class="toast" id="toast"></div>
 
-<script>
-// ── State ──────────────────────────────────────────────────────
-const pdfjsLib = window['pdfjs-dist/build/pdf'];
-// Render on the main thread (no web worker). This works under the file://
-// protocol where cross-origin worker scripts are blocked. The harmless
-// "deprecated API" console notice can be ignored.
-pdfjsLib.GlobalWorkerOptions.workerSrc = '';
+<script type="module">
+// ── PDF.js setup ───────────────────────────────────────────────
+// PDF.js 5.7.284 (legacy build for broad browser compatibility).
+// The legacy build avoids bleeding-edge JS features, so it runs on
+// older government browsers; the version is pinned exactly so the
+// worker URL never redirects (a cross-origin redirect on a module
+// worker is what breaks under the file:// protocol).
+import * as pdfjsLib from 'https://unpkg.com/pdfjs-dist@5.7.284/legacy/build/pdf.min.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://unpkg.com/pdfjs-dist@5.7.284/legacy/build/pdf.worker.min.mjs';
 
 const { PDFLib } = window;
 
@@ -629,7 +631,11 @@ async function handleFile(file) {
   }
   const ab = await file.arrayBuffer();
   let pdfDoc;
-  try { pdfDoc = await pdfjsLib.getDocument({ data: ab.slice(0) }).promise; }
+  try {
+    // isEvalSupported:false disables eval() in font handling — defense in
+    // depth against CVE-2024-4367 on top of the patched 5.x engine.
+    pdfDoc = await pdfjsLib.getDocument({ data: ab.slice(0), isEvalSupported: false }).promise;
+  }
   catch(e) { showToast(`❌ 無法讀取「${file.name}」`); return; }
 
   const id = Date.now() + sources.length;
