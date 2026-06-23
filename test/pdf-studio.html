@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF Studio — 頁面拆分與重組工具</title>
+<title>PDF Studio (PDF.js 6.0.227) — 頁面拆分與重組工具</title>
 <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 <script src="https://unpkg.com/sortablejs@1.15.7/Sortable.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -477,10 +477,23 @@ input[type=file] { display: none; }
 <header class="app-header">
   <div class="header-logo">📑</div>
   <div>
-    <div class="header-title">PDF Studio</div>
+    <div class="header-title">PDF Studio <span style="font-size:0.7rem; color:var(--text-muted); font-weight:400;">PDF.js 6.0.227</span></div>
     <div class="header-sub">拆分 · 重組 · 旋轉 · 合併</div>
   </div>
 </header>
+
+<div id="compatWarning" style="display:none; background:#FBF0DC; border-bottom:1px solid #E5C66A; color:#8A5F1A; padding:0.85rem 1.25rem; font-size:0.85rem; line-height:1.6;">
+  <div style="display:flex; gap:0.6rem; align-items:flex-start; max-width:900px;">
+    <span style="font-size:1.1rem; line-height:1.3;">💡</span>
+    <div>
+      <strong>您的瀏覽器版本較舊,建議更新後再使用</strong><br>
+      這個工具需要較新版本的瀏覽器才能正常顯示 PDF。請將瀏覽器更新到最新版本(Chrome 145 以上、Firefox 144 以上,或 Safari 18.4 以上),再重新開啟本頁面即可正常使用。
+      <div style="margin-top:0.4rem; font-size:0.8rem; color:#A07A2A;">
+        更新方式:在瀏覽器網址列輸入 <code style="background:#F5E4BC; padding:1px 5px; border-radius:3px;">chrome://settings/help</code>(Chrome)即可檢查並更新。若無法更新,請聯繫您的資訊單位協助。
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="app-body">
   <!-- Left Panel -->
@@ -555,14 +568,22 @@ input[type=file] { display: none; }
 
 <script type="module">
 // ── PDF.js setup ───────────────────────────────────────────────
-// PDF.js 5.7.284 (legacy build for broad browser compatibility).
-// The legacy build avoids bleeding-edge JS features, so it runs on
-// older government browsers; the version is pinned exactly so the
-// worker URL never redirects (a cross-origin redirect on a module
-// worker is what breaks under the file:// protocol).
-import * as pdfjsLib from 'https://unpkg.com/pdfjs-dist@5.7.284/legacy/build/pdf.min.mjs';
+// PDF.js 6.0.227 — STANDARD build (latest major release).
+// NOTE: the standard 6.x build uses Map.prototype.getOrInsertComputed,
+// a very new JS feature not yet shipping in stable browsers (absent even
+// in Chrome 141 as of testing). If thumbnails fail to render, the browser
+// lacks this feature — switch to the "legacy build" variant of this tool.
+// Version pinned exactly so the worker URL never redirects.
+import * as pdfjsLib from 'https://unpkg.com/pdfjs-dist@6.0.227/build/pdf.min.mjs';
 pdfjsLib.GlobalWorkerOptions.workerSrc =
-  'https://unpkg.com/pdfjs-dist@5.7.284/legacy/build/pdf.worker.min.mjs';
+  'https://unpkg.com/pdfjs-dist@6.0.227/build/pdf.worker.min.mjs';
+
+// Feature-detect the JS capability the standard 6.x build depends on.
+// If absent, surface a visible banner instead of silent blank thumbnails.
+if (typeof Map.prototype.getOrInsertComputed !== 'function') {
+  const w = document.getElementById('compatWarning');
+  if (w) w.style.display = 'block';
+}
 
 const { PDFLib } = window;
 
