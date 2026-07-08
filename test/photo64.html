@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4x6 專業大頭照產生器</title>
+    
+    <!-- 鎖定 Tailwind CDN 版本，並建議正式環境使用 SRI 或本地編譯，降低供應鏈風險 -->
+    <script src="https://cdn.tailwindcss.com?version=3.4.1"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- AI 去背改用 Google MediaPipe Selfie Segmenter（模型僅 ~250KB，CDN 具備 CORS，可在 file:// 直接運作），於使用時才動態載入 -->
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        dark: {
+                            900: '#1a1b1e', // App background
+                            800: '#25262b', // Sidebar
+                            700: '#2c2d33', // Elements
+                            600: '#3f4048'  // Hover
+                        },
+                        accent: '#ff4d4f' // Red accent
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #1a1b1e;
+            color: #e5e7eb;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1b1e; }
+        ::-webkit-scrollbar-thumb { background: #3f4048; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+
+        /* Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 14px; width: 14px;
+            border-radius: 50%;
+            background: #ff4d4f;
+            cursor: pointer;
+            margin-top: -5px;
+            box-shadow: 0 0 0 2px #25262b;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px;
+            cursor: pointer;
+            background: #4b5563;
+            border-radius: 2px;
+        }
+
+        /* Checkbox Styling */
+        .custom-checkbox {
+            appearance: none;
+            background-color: transparent;
+            margin: 0;
+            font: inherit;
+            color: currentColor;
+            width: 1.15em;
+            height: 1.15em;
+            border: 2px solid #4b5563;
+            border-radius: 0.25em;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: 0.2s all ease-in-out;
+        }
+        .custom-checkbox::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em white;
+            background-color: white;
+            transform-origin: center;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+        .custom-checkbox:checked { border-color: #ff4d4f; background-color: #ff4d4f; }
+        .custom-checkbox:checked::before { transform: scale(1); }
+
+        /* Canvas interaction styles */
+        #preview-canvas { cursor: grab; touch-action: none; }
+        #preview-canvas:active { cursor: grabbing; }
+        
+        .loading-overlay {
+            background: rgba(26, 27, 30, 0.8);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col md:flex-row">
+
+    <!-- Sidebar -->
+    <aside class="w-full md:w-[320px] bg-dark-800 h-full flex flex-col border-r border-gray-700 shadow-xl z-10 flex-shrink-0">
+        <div class="p-5 flex-1 overflow-y-auto">
+            
+            <!-- Logo / Title -->
+            <div class="mb-6 flex items-center gap-2">
+                <svg class="w-6 h-6 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <h1 class="text-lg font-bold text-gray-100 tracking-wide">ID Photo Gen.</h1>
+            </div>
+
+            <!-- Upload Area -->
+            <div id="drop-zone" class="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-accent hover:bg-dark-700 transition cursor-pointer mb-6 relative">
+                <input type="file" id="file-input" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/jpeg, image/png, image/jpg">
+                <svg class="mx-auto h-10 w-10 text-gray-400 mb-2" stroke="currentColor" fill="none" viewBox="0 0 48 48"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <p class="text-sm font-medium text-gray-300">拖曳圖片至此處，或點擊上傳</p>
+                <p class="text-xs text-gray-500 mt-1">支援 JPG, PNG (最大 20MB)</p>
+            </div>
+
+            <!-- Processing Switches -->
+            <div class="mb-8">
+                <h2 class="text-sm font-bold text-gray-400 mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    處理開關
+                </h2>
+                
+                <label id="ai-toggle-label" class="flex items-center gap-3 mb-3 cursor-pointer group transition-all">
+                    <input type="checkbox" id="ai-bg-toggle" class="custom-checkbox">
+                    <span class="text-sm text-gray-300 group-hover:text-white transition">AI 自動去背</span>
+                </label>
+                
+                <label class="flex items-center gap-3 mb-5 cursor-pointer group">
+                    <input type="checkbox" id="beauty-toggle" class="custom-checkbox">
+                    <span class="text-sm text-gray-300 group-hover:text-white transition">美肌 (柔焦濾波)</span>
+                </label>
+
+                <div class="mb-2 flex justify-between items-center">
+                    <span class="text-sm text-gray-300">參考線透明度</span>
+                    <span id="opacity-val" class="text-xs text-accent font-medium">15%</span>
+                </div>
+                <input type="range" id="opacity-slider" min="0" max="100" value="15">
+            </div>
+
+            <!-- Fine-tuning Control -->
+            <div>
+                <h2 class="text-sm font-bold text-gray-400 mb-4 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                    微調控制
+                </h2>
+                
+                <div class="mb-4">
+                    <label class="block text-xs text-gray-400 mb-1">規格</label>
+                    <select id="spec-select" class="w-full bg-dark-700 border border-gray-600 text-sm rounded-md px-3 py-2 text-white focus:outline-none focus:border-accent">
+                        <option value="2inch">2吋 (35x45mm) 標準護照/身分證</option>
+                        <option value="1inch">1吋 (28x35mm) 駕照/證照</option>
+                    </select>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-xs text-gray-400 mb-1">背景顏色</label>
+                    <select id="bg-color-select" class="w-full bg-dark-700 border border-gray-600 text-sm rounded-md px-3 py-2 text-white focus:outline-none focus:border-accent">
+                        <option value="#ffffff">白色 (推薦)</option>
+                        <option value="#3b82f6">藍色</option>
+                        <option value="#ef4444">紅色</option>
+                    </select>
+                </div>
+
+                <div class="mb-2 flex justify-between items-center">
+                    <span class="text-sm text-gray-300">放大/縮小</span>
+                    <span id="zoom-val" class="text-xs text-accent font-medium">1.00x</span>
+                </div>
+                <input type="range" id="zoom-slider" min="0.1" max="3" step="0.01" value="1" class="mb-4">
+
+                <div class="mb-2 flex justify-between items-center">
+                    <span class="text-sm text-gray-300">旋轉微調 (歪頭轉正)</span>
+                    <span id="rotation-val" class="text-xs text-accent font-medium">0°</span>
+                </div>
+                <input type="range" id="rotation-slider" min="-45" max="45" step="0.5" value="0">
+            </div>
+
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col p-4 md:p-8 bg-dark-900 h-full overflow-hidden relative">
+        
+        <!-- Headers -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-4 h-10 flex-shrink-0">
+            <h2 class="text-lg font-bold flex items-center gap-2">
+                <span class="bg-red-500 rounded-full w-5 h-5 flex items-center justify-center text-xs">🎯</span>
+                雙圈對齊預覽
+            </h2>
+            <h2 class="text-lg font-bold flex items-center gap-2 hidden md:flex">
+                <span class="bg-gray-600 rounded-md w-5 h-5 flex items-center justify-center text-xs">🖨️</span>
+                4x6 排版結果
+            </h2>
+        </div>
+
+        <!-- Canvases Container -->
+        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-8 min-h-0">
+            
+            <!-- Preview Section -->
+            <div class="flex flex-col h-full bg-dark-800 rounded-xl p-4 shadow-inner relative overflow-hidden">
+                <div class="flex-1 w-full flex items-center justify-center bg-gray-900/50 rounded-lg overflow-hidden relative">
+                    <!-- Loading Overlay for AI -->
+                    <div id="ai-loading" class="absolute inset-0 z-20 flex flex-col items-center justify-center loading-overlay hidden">
+                        <svg class="animate-spin -ml-1 mr-3 h-10 w-10 text-accent mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p class="text-white text-sm font-medium">AI 去背模型載入與處理中...</p>
+                        <p class="text-gray-400 text-xs mt-1" id="ai-status-text">首次執行需下載約 250KB 模型，通常數秒內完成</p>
+                    </div>
+
+                    <!-- Canvas -->
+                    <canvas id="preview-canvas" class="max-w-full max-h-full object-contain shadow-md"></canvas>
+                </div>
+                
+                <div class="mt-4 text-xs text-center flex items-center justify-center gap-4 text-gray-400">
+                    <div class="flex items-center gap-1">
+                        <span class="w-3 h-3 rounded-full bg-yellow-400/80 inline-block border border-yellow-500"></span>
+                        黃色外圈：對齊頭頂(頭髮)
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="w-3 h-3 rounded-full bg-cyan-400/80 inline-block border border-cyan-500"></span>
+                        青色內圈：對齊臉部/下巴
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Section -->
+            <div class="flex flex-col h-full bg-dark-800 rounded-xl p-4 shadow-inner">
+                <h2 class="text-lg font-bold flex items-center gap-2 md:hidden mb-4">
+                    <span class="bg-gray-600 rounded-md w-5 h-5 flex items-center justify-center text-xs">🖨️</span>
+                    4x6 排版結果
+                </h2>
+                <div class="flex-1 w-full flex items-center justify-center bg-gray-900/50 rounded-lg overflow-hidden">
+                    <img id="result-img" class="max-w-full max-h-full object-contain shadow-2xl bg-white" alt="4x6 Print Result">
+                </div>
+                
+                <!-- Print/Download Button -->
+                <button id="download-btn" class="mt-4 w-full bg-dark-700 hover:bg-dark-600 border border-gray-600 text-white font-medium py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition-all shadow-lg active:scale-[0.98]">
+                    <svg class="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                    下載 4x6 列印檔
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+
+    <script type="module">
+       // State Management
+        const state = {
+            originalImage: null,
+            displayImage: null,
+            spec: '2inch',
+            bgColor: '#ffffff',
+            aiBgRemoval: false,
+            beautyMode: false,
+            borderOpacity: 0.15,
+            scale: 1,
+            rotation: 0,
+            x: 0,
+            y: 0,
+            
+            specs: {
+                '2inch': { w: 413, h: 531, ratio: 413/531 },
+                '1inch': { w: 331, h: 413, ratio: 331/413 }
+            }
+        };
+
+        // DOM Elements
+        const fileInput = document.getElementById('file-input');
+        const dropZone = document.getElementById('drop-zone');
+        const previewCanvas = document.getElementById('preview-canvas');
+        const previewCtx = previewCanvas.getContext('2d', { willReadFrequently: true });
+        const resultImg = document.getElementById('result-img');
+        
+        const aiBgToggle = document.getElementById('ai-bg-toggle');
+        const aiToggleLabel = document.getElementById('ai-toggle-label');
+        const beautyToggle = document.getElementById('beauty-toggle');
+        const opacitySlider = document.getElementById('opacity-slider');
+        const specSelect = document.getElementById('spec-select');
+        const bgColorSelect = document.getElementById('bg-color-select');
+        const zoomSlider = document.getElementById('zoom-slider');
+        const rotationSlider = document.getElementById('rotation-slider');
+        
+        const opacityVal = document.getElementById('opacity-val');
+        const zoomVal = document.getElementById('zoom-val');
+        const rotationVal = document.getElementById('rotation-val');
+        const downloadBtn = document.getElementById('download-btn');
+        const aiLoading = document.getElementById('ai-loading');
+        const aiStatusText = document.getElementById('ai-status-text');
+
+        const printCanvas = document.createElement('canvas');
+        printCanvas.width = 1800;
+        printCanvas.height = 1200;
+        const printCtx = printCanvas.getContext('2d');
+
+        let isDragging = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colorClass = type === 'success' ? 'bg-green-600' : type === 'error' ? 'bg-red-600' : 'bg-blue-600';
+            toast.className = `${colorClass} text-white px-4 py-2 rounded shadow-lg text-sm font-medium transition-all duration-300 transform translate-y-[-20px] opacity-0`;
+            toast.innerText = message;
+            container.appendChild(toast);
+            
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-[-20px]', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-20px]', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function resizePreviewCanvas() {
+            const specData = state.specs[state.spec];
+            const targetHeight = 450; 
+            const targetWidth = targetHeight * specData.ratio;
+            
+            previewCanvas.width = targetWidth;
+            previewCanvas.height = targetHeight;
+            
+            if (state.displayImage) {
+                centerAndFitImage();
+            }
+        }
+
+        function centerAndFitImage() {
+            if (!state.displayImage) return;
+            const img = state.displayImage;
+            const cw = previewCanvas.width;
+            const ch = previewCanvas.height;
+            
+            const fitScale = Math.max(cw / img.width, ch / img.height) * 0.8; 
+            
+            state.scale = fitScale;
+            state.x = (cw - img.width * state.scale) / 2;
+            state.y = (ch - img.height * state.scale) / 3;
+            
+            zoomSlider.value = state.scale;
+            zoomVal.innerText = state.scale.toFixed(2) + 'x';
+        }
+
+        function drawPreview() {
+            if (!state.displayImage) {
+                previewCtx.fillStyle = '#2c2d33';
+                previewCtx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+                return;
+            }
+
+            const cw = previewCanvas.width;
+            const ch = previewCanvas.height;
+
+            previewCtx.fillStyle = state.bgColor;
+            previewCtx.fillRect(0, 0, cw, ch);
+
+            previewCtx.save();
+            if (state.beautyMode) {
+                previewCtx.filter = 'saturate(1.1) brightness(1.05) blur(0.5px)';
+            }
+            
+            const cx = state.x + (state.displayImage.width * state.scale) / 2;
+            const cy = state.y + (state.displayImage.height * state.scale) / 2;
+            previewCtx.translate(cx, cy);
+            previewCtx.rotate(state.rotation * Math.PI / 180);
+            
+            previewCtx.drawImage(
+                state.displayImage, 
+                - (state.displayImage.width * state.scale) / 2, 
+                - (state.displayImage.height * state.scale) / 2, 
+                state.displayImage.width * state.scale, 
+                state.displayImage.height * state.scale
+            );
+            previewCtx.restore();
+
+            previewCtx.beginPath();
+            previewCtx.moveTo(cw / 2, 0);
+            previewCtx.lineTo(cw / 2, ch);
+            previewCtx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            previewCtx.lineWidth = 1;
+            previewCtx.stroke();
+
+            const outerY = ch * 0.45;
+            const outerRadiusY = ch * 0.40;
+            const outerRadiusX = cw * 0.38;
+
+            previewCtx.beginPath();
+            previewCtx.ellipse(cw/2, outerY, outerRadiusX, outerRadiusY, 0, 0, Math.PI * 2);
+            previewCtx.strokeStyle = 'rgba(234, 179, 8, 0.8)';
+            previewCtx.lineWidth = 1.5;
+            previewCtx.setLineDash([4, 4]);
+            previewCtx.stroke();
+
+            const innerY = ch * 0.48;
+            const innerRadiusY = ch * 0.35;
+            const innerRadiusX = cw * 0.32;
+
+            previewCtx.beginPath();
+            previewCtx.ellipse(cw/2, innerY, innerRadiusX, innerRadiusY, 0, 0, Math.PI * 2);
+            previewCtx.strokeStyle = 'rgba(6, 182, 212, 0.8)';
+            previewCtx.lineWidth = 1.5;
+            previewCtx.stroke();
+            previewCtx.setLineDash([]);
+        }
+
+        function drawPrintLayout() {
+            const cw = printCanvas.width;
+            const ch = printCanvas.height;
+
+            printCtx.fillStyle = '#ffffff';
+            printCtx.fillRect(0, 0, cw, ch);
+
+            if (!state.displayImage) {
+                resultImg.src = printCanvas.toDataURL('image/jpeg', 0.9);
+                return;
+            }
+
+            const is2Inch = state.spec === '2inch';
+            const specData = state.specs[state.spec];
+            const itemW = specData.w;
+            const itemH = specData.h;
+            
+            let cols = 4;
+            let rows = 2;
+            
+            if (!is2Inch) {
+                cols = 5;
+                rows = 2;
+            }
+
+            const totalItemW = cols * itemW;
+            const totalItemH = rows * itemH;
+            const spaceX = (cw - totalItemW) / (cols + 1);
+            const spaceY = (ch - totalItemH) / (rows + 1);
+
+            const multiplier = itemW / previewCanvas.width;
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const px = spaceX + c * (itemW + spaceX);
+                    const py = spaceY + r * (itemH + spaceY);
+
+                    printCtx.fillStyle = state.bgColor;
+                    printCtx.fillRect(px, py, itemW, itemH);
+
+                    printCtx.save();
+                    printCtx.beginPath();
+                    printCtx.rect(px, py, itemW, itemH);
+                    printCtx.clip();
+
+                    if (state.beautyMode) {
+                        printCtx.filter = 'saturate(1.1) brightness(1.05) blur(1.5px)';
+                    }
+
+                    const drawW = state.displayImage.width * state.scale * multiplier;
+                    const drawH = state.displayImage.height * state.scale * multiplier;
+                    const drawX = px + (state.x * multiplier);
+                    const drawY = py + (state.y * multiplier);
+
+                    const printCx = drawX + drawW / 2;
+                    const printCy = drawY + drawH / 2;
+                    printCtx.translate(printCx, printCy);
+                    printCtx.rotate(state.rotation * Math.PI / 180);
+
+                    printCtx.drawImage(state.displayImage, -drawW / 2, -drawH / 2, drawW, drawH);
+                    printCtx.restore();
+
+                    if (state.borderOpacity > 0) {
+                        printCtx.strokeStyle = `rgba(150, 150, 150, ${state.borderOpacity})`;
+                        printCtx.lineWidth = 2;
+                        printCtx.strokeRect(px, py, itemW, itemH);
+                    }
+                }
+            }
+
+            resultImg.src = printCanvas.toDataURL('image/jpeg', 0.9);
+        }
+
+        function updateAll() {
+            drawPreview();
+            drawPrintLayout();
+        }
+
+        function loadImage(src) {
+            const img = new Image();
+            img.crossOrigin = "Anonymous";
+            img.onload = () => {
+                // 防範解壓縮炸彈，限制載入超大解析度圖片避免記憶體崩潰
+                if (img.width > 8000 || img.height > 8000) {
+                    showToast(`圖片解析度過大 (${img.width}x${img.height})，為確保系統穩定，請先縮小圖片`, 'error');
+                    return;
+                }
+
+                state.originalImage = img;
+                
+                if (state.aiBgRemoval) {
+                    processAIBgRemoval();
+                } else {
+                    state.displayImage = img;
+                    centerAndFitImage();
+                    updateAll();
+                }
+                showToast('圖片載入成功！');
+            };
+            img.onerror = () => {
+                showToast('圖片載入失敗，請檢查檔案', 'error');
+            };
+            img.src = src;
+        }
+
+        function handleFile(file) {
+            if (!file) return;
+            if (file.size > 20 * 1024 * 1024) {
+                showToast('檔案超過 20MB 限制', 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => loadImage(e.target.result);
+            reader.readAsDataURL(file);
+        }
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-accent', 'bg-dark-700');
+        });
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-accent', 'bg-dark-700');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-accent', 'bg-dark-700');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+
+
+
+/** ==================== AI 去背（MediaPipe Selfie Segmenter 版） ====================
+ * 為什麼換掉 @imgly/background-removal：
+ *   - imgly 需下載 40MB+ 的 ONNX 模型與 onnxruntime WASM，在 file:// (origin=null)
+ *     環境下 worker 與資源路徑解析極不穩定，且首次載入非常慢。
+ *   - MediaPipe Selfie Segmenter 模型僅 ~250KB，專為人像分割設計（正是大頭照場景），
+ *     jsdelivr / Google Storage 均回應 Access-Control-Allow-Origin: *，
+ *     因此本地 file:// 直接雙擊開啟也能正常 fetch。
+ * ================================================================================ */
+
+const MP_VERSION = '0.10.21';
+const MP_BUNDLE = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MP_VERSION}/vision_bundle.mjs`;
+const MP_WASM_ROOT = `https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@${MP_VERSION}/wasm`;
+const MP_MODEL = 'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite';
+
+let mpSegmenter = null;        // 快取，第二次以後去背免重新載入
+let mpSegmenterPromise = null; // 避免重複初始化
+
+async function getSegmenter() {
+    if (mpSegmenter) return mpSegmenter;
+    if (mpSegmenterPromise) return mpSegmenterPromise;
+
+    mpSegmenterPromise = (async () => {
+        const vision = await import(MP_BUNDLE);
+        const fileset = await vision.FilesetResolver.forVisionTasks(MP_WASM_ROOT);
+
+        const buildOptions = (delegate) => ({
+            baseOptions: { modelAssetPath: MP_MODEL, delegate },
+            runningMode: 'IMAGE',
+            outputConfidenceMasks: true,
+            outputCategoryMasks: false
+        });
+
+        try {
+            // 優先使用 GPU (WebGL)，速度較快
+            mpSegmenter = await vision.ImageSegmenter.createFromOptions(fileset, buildOptions('GPU'));
+        } catch (gpuErr) {
+            console.warn('GPU delegate 初始化失敗，改用 CPU：', gpuErr);
+            mpSegmenter = await vision.ImageSegmenter.createFromOptions(fileset, buildOptions('CPU'));
+        }
+        return mpSegmenter;
+    })();
+
+    try {
+        return await mpSegmenterPromise;
+    } catch (e) {
+        mpSegmenterPromise = null; // 失敗時允許下次重試
+        throw e;
+    }
+}
+
+/**
+ * 將信心遮罩 (0~1) 轉為去背後影像。
+ * - 使用 smoothstep 曲線讓髮絲邊緣保留半透明、主體維持實心
+ * - 再套用 1px 羽化，避免鋸齒硬邊
+ */
+function compositeWithMask(sourceImage, maskFloat, maskW, maskH) {
+    const w = sourceImage.width;
+    const h = sourceImage.height;
+
+    // 1. 遮罩 → alpha 通道
+    const maskCanvas = document.createElement('canvas');
+    maskCanvas.width = maskW;
+    maskCanvas.height = maskH;
+    const maskCtx = maskCanvas.getContext('2d');
+    const maskImgData = maskCtx.createImageData(maskW, maskH);
+    const d = maskImgData.data;
+
+    const lo = 0.3, hi = 0.75; // smoothstep 門檻：低於 lo 全透明、高於 hi 全不透明
+    for (let i = 0; i < maskFloat.length; i++) {
+        let v = (maskFloat[i] - lo) / (hi - lo);
+        v = Math.max(0, Math.min(1, v));
+        v = v * v * (3 - 2 * v); // smoothstep
+        const a = Math.round(v * 255);
+        const p = i * 4;
+        d[p] = 255; d[p + 1] = 255; d[p + 2] = 255; d[p + 3] = a;
+    }
+    maskCtx.putImageData(maskImgData, 0, 0);
+
+    // 2. 原圖 + destination-in 遮罩合成（遮罩放大至原圖尺寸並輕微羽化）
+    const outCanvas = document.createElement('canvas');
+    outCanvas.width = w;
+    outCanvas.height = h;
+    const outCtx = outCanvas.getContext('2d');
+    outCtx.drawImage(sourceImage, 0, 0, w, h);
+    outCtx.globalCompositeOperation = 'destination-in';
+    outCtx.filter = 'blur(1px)'; // 邊緣羽化
+    outCtx.imageSmoothingEnabled = true;
+    outCtx.imageSmoothingQuality = 'high';
+    outCtx.drawImage(maskCanvas, 0, 0, w, h);
+    outCtx.filter = 'none';
+    outCtx.globalCompositeOperation = 'source-over';
+
+    return outCanvas;
+}
+
+/**
+ * 從分割結果取出「人像」信心遮罩。
+ * Selfie Segmenter 類別為 0=背景、1=人像；但不同模型版本可能回傳 1 或 2 張遮罩，
+ * 因此加上「畫面中心 vs. 四角」的方向自動偵測，確保取到的是人不是背景。
+ */
+function extractPersonMask(result) {
+    const masks = result.confidenceMasks;
+    if (!masks || masks.length === 0) throw new Error('模型未回傳遮罩');
+
+    const mask = masks.length > 1 ? masks[masks.length - 1] : masks[0];
+    const w = mask.width, h = mask.height;
+    let data = mask.getAsFloat32Array();
+
+    // 方向偵測：大頭照的人一定在中間 → 中心均值應高於四角均值，否則反轉遮罩
+    const sample = (x, y) => data[Math.min(h - 1, y) * w + Math.min(w - 1, x)];
+    const cx = Math.floor(w / 2), cy = Math.floor(h / 2);
+    const centerAvg = (sample(cx, cy) + sample(cx, Math.floor(h * 0.4)) + sample(cx, Math.floor(h * 0.6))) / 3;
+    const cornerAvg = (sample(2, 2) + sample(w - 3, 2) + sample(2, h - 3) + sample(w - 3, h - 3)) / 4;
+    if (centerAvg < cornerAvg) {
+        data = data.map(v => 1 - v);
+    }
+    return { data, w, h };
+}
+
+async function processAIBgRemoval() {
+    if (!state.originalImage) return;
+
+    aiBgToggle.disabled = true;
+    aiToggleLabel.classList.add('opacity-50', 'pointer-events-none');
+    aiLoading.classList.remove('hidden');
+    aiStatusText.innerText = mpSegmenter ? 'AI 去背運算中...' : '正在載入 AI 模型（約 250KB，僅首次需要）...';
+
+    try {
+        const segmenter = await getSegmenter();
+        aiStatusText.innerText = 'AI 去背運算中...';
+
+        // 讓 UI 有機會先繪製 loading 畫面
+        await new Promise(r => setTimeout(r, 30));
+
+        // 以 canvas 作為輸入來源（避免 Image 元素跨來源污染疑慮）
+        const srcCanvas = document.createElement('canvas');
+        srcCanvas.width = state.originalImage.width;
+        srcCanvas.height = state.originalImage.height;
+        srcCanvas.getContext('2d').drawImage(state.originalImage, 0, 0);
+
+        const result = segmenter.segment(srcCanvas);
+        const { data, w, h } = extractPersonMask(result);
+        const outCanvas = compositeWithMask(state.originalImage, data, w, h);
+
+        // 釋放 WASM 端記憶體
+        if (result.confidenceMasks) result.confidenceMasks.forEach(m => m.close && m.close());
+        if (result.close) result.close();
+
+        const resultImg = new Image();
+        resultImg.onload = () => {
+            state.displayImage = resultImg;
+            updateAll();
+            aiLoading.classList.add('hidden');
+            showToast('🎉 AI 自動去背完成！');
+        };
+        resultImg.src = outCanvas.toDataURL('image/png');
+
+    } catch (error) {
+        console.error('AI BG Removal Error:', error);
+        aiLoading.classList.add('hidden');
+        showToast('❌ AI 去背失敗：' + (navigator.onLine ? '模型載入或運算錯誤，請重試' : '目前沒有網路連線'), 'error');
+
+        state.aiBgRemoval = false;
+        aiBgToggle.checked = false;
+        state.displayImage = state.originalImage;
+        updateAll();
+    } finally {
+        aiBgToggle.disabled = false;
+        aiToggleLabel.classList.remove('opacity-50', 'pointer-events-none');
+    }
+}
+/** ==================== End of AI 去背函數 ==================== */
+
+
+
+
+        previewCanvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+        });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+        previewCanvas.addEventListener('mousemove', (e) => {
+            if (!isDragging || !state.displayImage) return;
+            
+            const dx = e.offsetX - lastX;
+            const dy = e.offsetY - lastY;
+            
+            state.x += dx;
+            state.y += dy;
+            
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+            
+            updateAll();
+        });
+
+        previewCanvas.addEventListener('touchstart', (e) => {
+            if(e.touches.length === 1) {
+                isDragging = true;
+                const rect = previewCanvas.getBoundingClientRect();
+                lastX = e.touches[0].clientX - rect.left;
+                lastY = e.touches[0].clientY - rect.top;
+            }
+        }, {passive: false});
+        previewCanvas.addEventListener('touchmove', (e) => {
+            if(!isDragging || !state.displayImage) return;
+            e.preventDefault();
+            const rect = previewCanvas.getBoundingClientRect();
+            const currentX = e.touches[0].clientX - rect.left;
+            const currentY = e.touches[0].clientY - rect.top;
+            
+            state.x += currentX - lastX;
+            state.y += currentY - lastY;
+            lastX = currentX;
+            lastY = currentY;
+            updateAll();
+        }, {passive: false});
+        window.addEventListener('touchend', () => { isDragging = false; });
+
+        previewCanvas.addEventListener('wheel', (e) => {
+            if (!state.displayImage) return;
+            e.preventDefault();
+            
+            const zoomAmount = e.deltaY * -0.001;
+            let newScale = state.scale * (1 + zoomAmount);
+            newScale = Math.max(0.1, Math.min(newScale, 5));
+            
+            const cx = previewCanvas.width / 2;
+            const cy = previewCanvas.height / 2;
+            
+            state.x = cx - (cx - state.x) * (newScale / state.scale);
+            state.y = cy - (cy - state.y) * (newScale / state.scale);
+            state.scale = newScale;
+            
+            zoomSlider.value = state.scale;
+            zoomVal.innerText = state.scale.toFixed(2) + 'x';
+            
+            updateAll();
+        }, {passive: false});
+
+        aiBgToggle.addEventListener('change', (e) => {
+            state.aiBgRemoval = e.target.checked;
+            if (state.aiBgRemoval && state.originalImage) {
+                processAIBgRemoval();
+            } else if (!state.aiBgRemoval && state.originalImage) {
+                state.displayImage = state.originalImage;
+                updateAll();
+            }
+        });
+
+        beautyToggle.addEventListener('change', (e) => {
+            state.beautyMode = e.target.checked;
+            updateAll();
+        });
+
+        opacitySlider.addEventListener('input', (e) => {
+            state.borderOpacity = e.target.value / 100;
+            opacityVal.innerText = e.target.value + '%';
+            drawPrintLayout(); 
+        });
+
+        specSelect.addEventListener('change', (e) => {
+            state.spec = e.target.value;
+            resizePreviewCanvas();
+            updateAll();
+        });
+
+        bgColorSelect.addEventListener('change', (e) => {
+            state.bgColor = e.target.value;
+            updateAll();
+        });
+
+        zoomSlider.addEventListener('input', (e) => {
+            if (!state.displayImage) return;
+            const newScale = parseFloat(e.target.value);
+            
+            const cx = previewCanvas.width / 2;
+            const cy = previewCanvas.height / 2;
+            
+            state.x = cx - (cx - state.x) * (newScale / state.scale);
+            state.y = cy - (cy - state.y) * (newScale / state.scale);
+            state.scale = newScale;
+            
+            zoomVal.innerText = state.scale.toFixed(2) + 'x';
+            updateAll();
+        });
+
+        rotationSlider.addEventListener('input', (e) => {
+            if (!state.displayImage) return;
+            state.rotation = parseFloat(e.target.value);
+            rotationVal.innerText = state.rotation + '°';
+            updateAll();
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            if (!state.displayImage) {
+                showToast('請先上傳圖片', 'error');
+                return;
+            }
+            const link = document.createElement('a');
+            link.download = `ID_Photo_4x6_${state.spec}.jpg`;
+            link.href = printCanvas.toDataURL('image/jpeg', 1.0);
+            link.click();
+            showToast('已開始下載排版檔案！');
+        });
+
+       // DOMContentLoaded
+        window.addEventListener('DOMContentLoaded', () => {
+            resizePreviewCanvas();
+            drawPrintLayout(); 
+            // 預載示範圖片（如果你有 image_778cd7.jpg，可保留；否則改用 PNG）
+            // loadImage('image_778cd7.jpg');
+        });
+    </script>
+</body>
+</html>
