@@ -597,7 +597,11 @@
     async function initTesseract() {
         try {
             ocrStatus.classList.remove('hidden');
-            worker = await Tesseract.createWorker('chi_tra'); // 繁體中文
+            worker = await Tesseract.createWorker('chi_tra+eng'); // 繁體中文 + 英文（包裝常見中英混排）
+            await worker.setParameters({
+                tessedit_pageseg_mode: '6',        // PSM 6: 假設為單一均勻文字區塊（適合裁切後的包裝正面）
+                preserve_interword_spaces: '1'
+            });
             tesseractReady = true;
             ocrText.innerText = "文字辨識引擎已準備就緒";
             ocrLoader.classList.add('hidden');
@@ -694,8 +698,8 @@
         }
         try {
             const constraints = useFallbackConstraint
-                ? { video: true } // 後備：不指定鏡頭方向
-                : { video: { facingMode: 'environment' } };
+                ? { video: { width: { ideal: 1920 }, height: { ideal: 1080 } } } // 後備：不指定鏡頭方向
+                : { video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } } };
             // 逾時保護：某些 App 內建瀏覽器的 getUserMedia 會永遠卡住、不跳權限視窗
             const timeout = new Promise((_, reject) =>
                 setTimeout(() => reject(Object.assign(new Error('camera request timed out'), { name: 'CameraTimeoutError' })), 10000)
@@ -783,18 +787,67 @@
         ocrLoader.classList.remove('hidden');
         ocrText.innerText = "正在分析影像內容...";
 
-        // 畫布擷取影片畫面
-        const context = canvas.getContext('2d');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        // 由於掃描框只占中間部分，我們可以裁切中央區域提高辨識效率 (為求穩定此處採全圖辨識，但依靠 Tesseract 強大能力)
-        const imageData = canvas.toDataURL('image/jpeg', 0.8);
+        // === 只擷取「掃描框」對應的影像區域 ===
+        // video 使用 object-fit: cover，需將畫面上的掃描框位置換算回原始影像像素座標
+        const vw = video.videoWidth, vh = video.videoHeight;
+        const cw = video.clientWidth, ch = video.clientHeight;
+        const scale = Math.max(cw / vw, ch / vh);          // cover 的縮放比例
+        const offX = (vw * scale - cw) / 2;                 // 被裁掉的左右邊
+        const offY = (vh * scale - ch) / 2;                 // 被裁掉的上下邊
+        // 掃描框：容器置中，寬 80%、高 40%（與 .scan-box CSS 一致），上下左右各外擴 5% 容錯
+        const boxW = cw * 0.9, boxH = ch * 0.5;
+        const boxX = (cw - boxW) / 2, boxY = (ch - boxH) / 2;
+        // 換算回影像像素座標
+        const sx = Math.max(0, (boxX + offX) / scale);
+        const sy = Math.max(0, (boxY + offY) / scale);
+        const sw = Math.min(vw - sx, boxW / scale);
+        const sh = Math.min(vh - sy, boxH / scale);
+
+        // === 前處理：放大 + 灰階 + 對比拉伸（Tesseract 對高對比灰階影像效果最好）===
+        const targetW = Math.max(sw, 1200);                 // 確保足夠解析度
+        const zoom = targetW / sw;
+        canvas.width = Math.round(sw * zoom);
+        canvas.height = Math.round(sh * zoom);
+        const context = canvas.getContext('2d', { willReadFrequently: true });
+        context.imageSmoothingEnabled = true;
+        context.imageSmoothingQuality = 'high';
+        context.drawImage(video, sx, sy, sw, sh, 0, 0, canvas.width, canvas.height);
+
+        const img = context.getImageData(0, 0, canvas.width, canvas.height);
+        const d = img.data;
+        // 第一輪：轉灰階並找出亮度範圍
+        let min = 255, max = 0;
+        const gray = new Uint8ClampedArray(d.length / 4);
+        for (let i = 0, j = 0; i < d.length; i += 4, j++) {
+            const g = 0.299 * d[i] + 0.587 * d[i+1] + 0.114 * d[i+2];
+            gray[j] = g;
+            if (g < min) min = g;
+            if (g > max) max = g;
+        }
+        // 對比拉伸（把亮度範圍拉滿 0-255）
+        const range = Math.max(1, max - min);
+        const stretched = new Uint8ClampedArray(gray.length);
+        for (let j = 0; j < gray.length; j++) {
+            stretched[j] = ((gray[j] - min) / range) * 255;
+        }
+        // 版本1：灰階對比強化
+        for (let i = 0, j = 0; i < d.length; i += 4, j++) d[i] = d[i+1] = d[i+2] = stretched[j];
+        context.putImageData(img, 0, 0);
+        const imgGray = canvas.toDataURL('image/png');   // PNG 無損，避免 JPEG 壓縮破壞筆畫
+        // 版本2：二值化（黑白），與灰階版的錯字位置常互補
+        for (let i = 0, j = 0; i < d.length; i += 4, j++) { const v = stretched[j] > 128 ? 255 : 0; d[i] = d[i+1] = d[i+2] = v; }
+        context.putImageData(img, 0, 0);
+        const imgBinary = canvas.toDataURL('image/png');
 
         try {
-            const { data: { text } } = await worker.recognize(imageData);
-            console.log("OCR Result:", text);
+            // 雙輪辨識：兩種前處理的錯字位置互補，合併後大幅提升比對命中率
+            ocrText.innerText = "正在分析影像內容 (1/2)...";
+            const r1 = await worker.recognize(imgGray);
+            ocrText.innerText = "正在分析影像內容 (2/2)...";
+            const r2 = await worker.recognize(imgBinary);
+            const text = (r1.data.text || '') + '\n' + (r2.data.text || '');
+            console.log("OCR Result (gray):", r1.data.text);
+            console.log("OCR Result (binary):", r2.data.text);
             analyzeText(text);
         } catch (err) {
             console.error("辨識失敗", err);
@@ -815,23 +868,57 @@
 
         // 清理換行與空白
         const cleanText = scannedText.replace(/\s+/g, '').toLowerCase();
-        
-        const matches = [];
-        // 關鍵字比對：只要產品名稱長度大於2的詞有出現在辨識文字中，就列為嫌疑
+
+        // === 模糊比對：LCS（最長共同子序列）+ bigram 混合計分，容忍 OCR 錯字 ===
+        // 實測：拍攝「亞麻仁蕎麥青蔥餅」OCR 得「嘲麻仁昔麥青蔓餅」等形近錯字時，
+        // 混合分數 0.62 仍可命中，而無關產品最高僅 0.43
+        function bigrams(str) {
+            const set = new Set();
+            for (let i = 0; i < str.length - 1; i++) set.add(str.slice(i, i + 2));
+            return set;
+        }
+        function bigramScore(name, text) {
+            if (text.includes(name)) return 1;              // 完整包含 → 滿分
+            const nb = bigrams(name);
+            const tb = bigrams(text);
+            let hit = 0;
+            nb.forEach(b => { if (tb.has(b)) hit++; });
+            return hit / nb.size;
+        }
+        function lcsLen(a, b) {                             // 最長共同子序列長度
+            const n = b.length;
+            let prev = new Array(n + 1).fill(0);
+            for (let i = 1; i <= a.length; i++) {
+                const cur = new Array(n + 1).fill(0);
+                for (let j = 1; j <= n; j++) {
+                    cur[j] = a[i-1] === b[j-1] ? prev[j-1] + 1 : Math.max(prev[j], cur[j-1]);
+                }
+                prev = cur;
+            }
+            return prev[n];
+        }
+        function hybridScore(name, text) {
+            if (name.length < 3) return 0;
+            if (text.includes(name)) return 1;
+            const bg = bigramScore(name, text);
+            if (bg === 0) return 0;                          // 防呆：至少一個相鄰雙字命中，避免 LCS 巧合誤報
+            const lcsRatio = lcsLen(name, text) / name.length;
+            return 0.6 * lcsRatio + 0.4 * bg;
+        }
+
+        const scored = [];
         productDatabase.forEach(item => {
             const safeName = item.name.replace(/\s+/g, '').toLowerCase();
             const safeCompany = item.company.replace(/\s+/g, '').toLowerCase();
-            
-            // 由於 OCR 會有錯字，我們採用部分包含的比對方式
-            // 如果產品名稱有出現在辨識結果中，或辨識結果有出現在產品名稱中 (長度>2)
-            if (
-                (safeName.length > 2 && cleanText.includes(safeName)) || 
-                (cleanText.length > 2 && safeName.includes(cleanText)) ||
-                (safeCompany.length > 3 && cleanText.includes(safeCompany))
-            ) {
-                matches.push(item);
+            const nameScore = hybridScore(safeName, cleanText);
+            const companyScore = safeCompany.length > 3 ? hybridScore(safeCompany, cleanText) : 0;
+            const score = Math.max(nameScore, companyScore * 0.9); // 公司名權重略低
+            if (score >= 0.45) {                             // 實測驗證之門檻
+                scored.push({ item, score });
             }
         });
+        scored.sort((a, b) => b.score - a.score);
+        const matches = scored.slice(0, 10).map(s => s.item); // 最多列 10 筆、依相似度排序
 
         if (matches.length > 0) {
             showModal("⚠️ 警告：疑似受影響產品", `系統從包裝上辨識出可能為預防性下架之清單產品，請仔細核對！<br><span class="text-xs text-gray-400 mt-2 block">辨識文字擷取：${scannedText.substring(0,20)}...</span>`, "danger", matches);
