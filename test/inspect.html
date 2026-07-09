@@ -104,7 +104,7 @@
         
         <!-- Tab 1: 拍照掃描 -->
         <div id="tab-scan" class="h-full flex flex-col">
-            <div class="relative flex-1 bg-black overflow-hidden flex flex-col justify-center items-center h-[60vh]">
+            <div class="relative shrink-0 bg-black overflow-hidden flex flex-col justify-center items-center h-[55vh] min-h-[320px]">
                 <video id="camera-feed" class="w-full h-full absolute inset-0 z-0" autoplay playsinline muted></video>
                 <div class="scanner-overlay z-10">
                     <div class="scan-box">
@@ -625,6 +625,25 @@
         if (retryBtn) retryBtn.addEventListener('click', startCamera);
     }
 
+    // 偵測常見 App 內建瀏覽器（這些 WebView 的 getUserMedia 常常無聲失敗）
+    function detectInAppBrowser() {
+        const ua = navigator.userAgent || '';
+        const patterns = [
+            [/Line\//i, 'LINE'],
+            [/FBAN|FBAV|FB_IAB/i, 'Facebook / Messenger'],
+            [/Instagram/i, 'Instagram'],
+            [/MicroMessenger/i, 'WeChat 微信'],
+            [/TikTok|musical_ly|Bytedance/i, 'TikTok'],
+            [/Twitter/i, 'X (Twitter)'],
+            [/GSA\//i, 'Google App'],
+            [/KAKAOTALK/i, 'KakaoTalk'],
+        ];
+        for (const [re, name] of patterns) {
+            if (re.test(ua)) return name;
+        }
+        return null;
+    }
+
     // 頁面載入時先做環境檢測，直接告訴使用者原因
     (function checkCameraEnvironment() {
         // 1. 非安全上下文（http:// 或 file://）→ 瀏覽器根本不提供相機 API
@@ -633,16 +652,29 @@
                 "此網頁未透過 HTTPS 開啟",
                 `目前網址為 <code class="text-yellow-300">${location.protocol}//${location.host || '(本機檔案)'}</code>。<br>
                  手機瀏覽器規定：相機功能只能在 <b>HTTPS 網址</b>下使用。<br>
-                 請將此頁面部署到 HTTPS 網站（如 GitHub Pages）後再開啟，或改用下方「關鍵字查」功能。`
+                 請將此頁面部署到 HTTPS 網站（如 GitHub Pages）後再開啟，或改用下方「關鍵字查」功能。`,
+                false
             );
             return;
         }
-        // 2. 舊瀏覽器或 in-app browser 不支援 mediaDevices
+        // 2. App 內建瀏覽器：即使 API 存在也常常無聲失敗，直接提示改用標準瀏覽器
+        const inApp = detectInAppBrowser();
+        if (inApp) {
+            showCameraError(
+                `您正在 ${inApp} 的內建瀏覽器中`,
+                `App 內建瀏覽器通常<b>無法使用相機</b>（點了不會有任何反應）。<br>
+                 請點選右上角（或右下角）「⋯」選單 → 「<b>以瀏覽器開啟</b>」，改用 Safari 或 Chrome 開啟本頁。<br>
+                 或直接複製網址貼到瀏覽器：<br>
+                 <code class="text-yellow-300 text-xs break-all">${location.href}</code>`
+            );
+            return;
+        }
+        // 3. 舊瀏覽器不支援 mediaDevices
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             showCameraError(
                 "此瀏覽器不支援相機功能",
-                `您可能正在使用 LINE、Facebook 等 App 的內建瀏覽器。<br>
-                 請點右上角選單，選擇「<b>用預設瀏覽器開啟</b>」（Safari / Chrome），或改用「關鍵字查」功能。`
+                `請改用 Safari（iPhone）或 Chrome（Android）開啟本頁，或改用「關鍵字查」功能。`,
+                false
             );
             return;
         }
@@ -664,7 +696,16 @@
             const constraints = useFallbackConstraint
                 ? { video: true } // 後備：不指定鏡頭方向
                 : { video: { facingMode: 'environment' } };
-            stream = await navigator.mediaDevices.getUserMedia(constraints);
+            // 逾時保護：某些 App 內建瀏覽器的 getUserMedia 會永遠卡住、不跳權限視窗
+            const timeout = new Promise((_, reject) =>
+                setTimeout(() => reject(Object.assign(new Error('camera request timed out'), { name: 'CameraTimeoutError' })), 10000)
+            );
+            btnStartCamera.disabled = true;
+            btnStartCamera.innerText = "啟動中…（請留意權限詢問視窗）";
+            stream = await Promise.race([
+                navigator.mediaDevices.getUserMedia(constraints),
+                timeout
+            ]);
             video.srcObject = stream;
             // iOS Safari 有時需要明確呼叫 play()
             try { await video.play(); } catch (e) { /* autoplay 屬性通常已足夠 */ }
@@ -703,10 +744,19 @@
                     detail = "將改以任一可用鏡頭重試，請點「重試開啟相機」。";
                     useFallbackConstraint = true; // 下次重試不指定鏡頭方向
                     break;
+                case "CameraTimeoutError":
+                    title = "相機啟動逾時（未跳出權限詢問）";
+                    detail = `這通常表示您在 <b>App 內建瀏覽器</b>中（如 LINE、Facebook、Gmail），它會攔截相機請求且不顯示任何訊息。<br>
+                              請複製網址，改用 <b>Safari 或 Chrome</b> 開啟：<br>
+                              <code class="text-yellow-300 text-xs break-all">${location.href}</code>`;
+                    break;
                 default:
                     detail += `<br><span class="text-xs text-gray-500">錯誤類型：${err.name || err.message}</span>`;
             }
             showCameraError(title, detail);
+        } finally {
+            btnStartCamera.disabled = false;
+            btnStartCamera.innerText = "開啟相機";
         }
     }
     btnStartCamera.addEventListener('click', startCamera);
