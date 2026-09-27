@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>兒童新冠疫苗建議演變時間軸｜WHO × 美國CDC × ECDC × 台灣疾管署</title>
+<style>
+  :root {
+    --who: #0b6e4f;
+    --us: #1d4ed8;
+    --eu: #7c3aed;
+    --tw: #c2410c;
+    --bg: #0f172a;
+    --card: #1e293b;
+    --line: #334155;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+  }
+  header {
+    padding: 28px 20px 12px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 1.55rem; margin: 0 0 8px; }
+  .sub { color: var(--muted); font-size: 0.95rem; }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0 8px;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: 999px; font-size: 0.82rem;
+    background: #0b1220; border: 1px solid #334155;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .who { background: var(--who); }
+  .us { background: var(--us); }
+  .eu { background: var(--eu); }
+  .tw { background: var(--tw); }
+  .phase {
+    max-width: 1100px; margin: 0 auto; padding: 8px 20px 28px;
+  }
+  .phase h2 {
+    font-size: 1.05rem;
+    margin: 28px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--line);
+    color: #f8fafc;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 12px;
+    margin: 10px 0;
+  }
+  .date {
+    color: #cbd5e1;
+    font-weight: 700;
+    font-size: 0.88rem;
+    padding-top: 10px;
+  }
+  .cards { display: grid; gap: 8px; }
+  .card {
+    background: var(--card);
+    border-left: 5px solid #64748b;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+  .card.who { border-left-color: var(--who); }
+  .card.us { border-left-color: var(--us); }
+  .card.eu { border-left-color: var(--eu); }
+  .card.tw { border-left-color: var(--tw); }
+  .org { font-size: 0.75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 4px; }
+  .card.who .org { color: #34d399; }
+  .card.us .org { color: #93c5fd; }
+  .card.eu .org { color: #c4b5fd; }
+  .card.tw .org { color: #fdba74; }
+  .card p { margin: 0; font-size: 0.92rem; }
+  table {
+    width: 100%; border-collapse: collapse; font-size: 0.86rem;
+    background: var(--card); border-radius: 10px; overflow: hidden;
+  }
+  th, td { border-bottom: 1px solid #334155; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #0b1220; color: #cbd5e1; }
+  .note { color: var(--muted); font-size: 0.86rem; max-width: 1100px; margin: 0 auto 40px; padding: 0 20px; }
+  @media (max-width: 700px) {
+    .row { grid-template-columns: 1fr; }
+    .date { padding-top: 16px; }
+  }
+</style>
+<script type="text/javascript" nonce="90d0539c2566467d844ece01e7e" src="//local.adguard.org?ts=1790478909464&amp;type=content-script&amp;dmn=storage.googleapis.com&amp;url=https%3A%2F%2Fstorage.googleapis.com%2Fgrok-terminal-artifacts-prod%2F6956342f-14f8-4214-92e9-42db8e352d30%2F1394c758-9af4-49d0-99e2-3094028a4d11%2Fartifacts%2Fcovid_pediatric_vaccine_timeline.html%3FX-Goog-Algorithm%3DGOOG4-RSA-SHA256%26X-Goog-Credential%3Dgrok-backend-production%2540enterprise-api-425510.iam.gserviceaccount.com%252F20260927%252Fauto%252Fstorage%252Fgoog4_request%26X-Goog-Date%3D20260927T035801Z%26X-Goog-Expires%3D3600%26X-Goog-SignedHeaders%3Dhost%26response-content-disposition%3Dattachment%253B%2Bfilename%253D%2522covid_pediatric_vaccine_timeline.html%2522%26X-Goog-Signature%3D071508a6afb17427c71c4deafd3202354cb82c9f381f27169a94180b906f7cf3f894459bc7701bcfe033616da8c11e6c37e3a84a475098616d71e012503d268bdf47ba10a63fc9968310e3fedf9109d3e4be615378cf07422377dc6a16d2e402742a6afb1e348d13cac882cf2f52560b8ca47e290b3eac89770efa5c1a5bd37a392c66669eb04bac1281fc4d33d7e6decd289bff2f7ce8fbe4c50b3140e2cb13373a92c159155192e2c1d9ed23076e1f00d64da15548d21c11692dddbd39c2370df843d63ba27b6bcec0c42f12c2baf284694c37490c258fa1a5b5b2953f9ff189cb666ab995a0e39c9a083a0e93ff5832e8077c2defa7c9ccec6bc96048ebdd&amp;app=chrome.exe&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1&amp;stealth=1&amp;st-dnt"></script><script type="text/javascript" nonce="90d0539c2566467d844ece01e7e" src="//local.adguard.org?ts=1790478909464&amp;name=AdGuard%20Extra&amp;name=AdGuard%20Popup%20Blocker&amp;type=user-script"></script></head>
+<body>
+<header>
+  <h1>兒童 COVID-19 疫苗接種建議演變時間軸</h1>
+  <p class="sub">WHO、美國 CDC／ACIP、歐盟 ECDC／EMA、台灣疾管署（2020–2026 年 9 月）。重點是「健康兒童」建議如何從普遍接種轉成風險分層。</p>
+  <div class="legend">
+    <span class="chip"><span class="dot who"></span>WHO SAGE</span>
+    <span class="chip"><span class="dot us"></span>美國 CDC / ACIP</span>
+    <span class="chip"><span class="dot eu"></span>ECDC / EMA（歐盟層級）</span>
+    <span class="chip"><span class="dot tw"></span>台灣疾管署 / ACIP</span>
+  </div>
+</header>
+
+<section class="phase">
+  <h2>2020–2021｜授權下探、青少年先打</h2>
+  <div class="row">
+    <div class="date">2020.10–2021.07</div>
+    <div class="cards">
+      <div class="card who"><div class="org">WHO</div><p>SAGE 優先接種路線圖把疫苗留給最高風險成人、醫護。健康兒童不在優先名單。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2021.05.10</div>
+    <div class="cards">
+      <div class="card us"><div class="org">美國 FDA / CDC</div><p>FDA 授權 Pfizer 用於 12–15 歲；隨後 CDC 建議 12 歲以上接種。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2021.05–07</div>
+    <div class="cards">
+      <div class="card eu"><div class="org">EMA / ECDC</div><p>EMA 核准 Comirnaty 用於 12 歲以上。歐盟國家陸續建議全體 12–17 歲接種。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2021.09.22</div>
+    <div class="cards">
+      <div class="card tw"><div class="org">台灣</div><p>校園開打 BNT，對象為 12–17 歲學生，是台灣兒童青少年新冠疫苗的起點。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2021.10.29–11.02</div>
+    <div class="cards">
+      <div class="card us"><div class="org">美國</div><p>FDA EUA：Pfizer 5–11 歲（10 μg×2）。11/2 ACIP 建議全體 5–11 歲接種，CDC 署長採納。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2021.11.25</div>
+    <div class="cards">
+      <div class="card eu"><div class="org">EMA</div><p>建議核准 Comirnaty 用於 5–11 歲。多數歐盟國家隨後建議全體 5–11 歲；芬蘭、德國、瑞典初期偏風險兒童。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="phase">
+  <h2>2022｜下探到 6 個月，Omicron 兒童住院上升</h2>
+  <div class="row">
+    <div class="date">2022.01.21</div>
+    <div class="cards">
+      <div class="card who"><div class="org">WHO</div><p>更新優先路線圖：健康兒童與青少年列最低優先；有共病者中優先；免疫低下最高優先。強調先打完高風險成人。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2022.05.02 / 05.25</div>
+    <div class="cards">
+      <div class="card tw"><div class="org">台灣</div><p>5/2 起 6–11 歲可打半劑莫德納；5/25 起 5–11 歲 BNT 兒童劑型全台開打（校園／院所）。背景是 BA.2 兒童腦炎重症。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2022.06.17–18</div>
+    <div class="cards">
+      <div class="card us"><div class="org">美國</div><p>FDA 授權 Moderna（6 個月–5 歲，2 劑）與 Pfizer（6 個月–4 歲，3 劑）。ACIP 隨即建議全體 6 個月以上兒童接種。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2022.06.27 / 07.21</div>
+    <div class="cards">
+      <div class="card tw"><div class="org">台灣</div><p>ACIP 開放滿 6 個月–未滿 6 歲打莫德納 2 劑。7/21 全國開打。8 月食藥署另核准 BNT 6 個月–4 歲（3 劑）。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2022.08–10</div>
+    <div class="cards">
+      <div class="card who"><div class="org">WHO</div><p>產品建議更新：6 個月以上可用 mRNA，但健康兒童仍屬最低優先，須先覆蓋高優先族群。</p></div>
+      <div class="card eu"><div class="org">EMA / ECDC</div><p>EMA 擴適應症至 6 個月。2022 秋：約 7 國建議全體幼兒初種、約 13 國只建議有風險因子幼兒、部分國家不建議健康幼兒。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="phase">
+  <h2>2023｜PHEIC 結束，健康兒童降為低優先</h2>
+  <div class="row">
+    <div class="date">2023.03.28</div>
+    <div class="cards">
+      <div class="card who"><div class="org">WHO SAGE</div><p>正式三分層：高優先（含免疫低下兒童）、中優先（有共病兒少）、低優先（健康 6 個月–17 歲）。健康兒童基礎劑「可依國情考慮」，不再是全球常規優先項目。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2023.05.05</div>
+    <div class="cards">
+      <div class="card who"><div class="org">WHO</div><p>COVID-19 不再構成 PHEIC。疫苗政策轉向長期風險管理。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2023.07 起</div>
+    <div class="cards">
+      <div class="card eu"><div class="org">歐盟多數國家</div><p>西班牙等國自 2023 年 7 月起，6 個月–12 歲健康兒童不再常規接種，改限高風險、機構住民、免疫低下同住者。ECDC 秋冬建議優先長者與脆弱族群，而非全體兒童。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2023.09–11</div>
+    <div class="cards">
+      <div class="card us"><div class="org">美國</div><p>ACIP 仍建議 6 個月以上所有人接種更新的 2023–24 配方（XBB.1.5）。美國此時仍是「全體兒童每年一劑」路線。</p></div>
+      <div class="card who"><div class="org">WHO 11.10</div><p>再次修訂路線圖：健康兒童基礎劑僅依疾病負擔、成本效益、機會成本考慮。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="phase">
+  <h2>2024｜美國仍全體建議；歐盟／WHO 已風險導向</h2>
+  <div class="row">
+    <div class="date">2024.06.27</div>
+    <div class="cards">
+      <div class="card us"><div class="org">美國 ACIP</div><p>建議所有 ≥6 個月接種 2024–25 配方（JN.1／KP.2）。健康兒童仍在常規時程表上。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2024 秋冬</div>
+    <div class="cards">
+      <div class="card eu"><div class="org">歐盟典型做法</div><p>多數國家：65+、醫療高風險（含兒童）、孕婦、長照。健康兒童不再全國普打。</p></div>
+      <div class="card tw"><div class="org">台灣</div><p>秋冬公費仍包含滿 6 個月–未滿 6 歲幼兒，以及高風險兒童；6–18 歲健康者通常不在核心公費名單，但常有「尚未接種本季者可打」的擴大期。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="phase">
+  <h2>2025｜美國從「全體建議」改成「醫病共享決策」</h2>
+  <div class="row">
+    <div class="date">2025.01</div>
+    <div class="cards">
+      <div class="card us"><div class="org">美國</div><p>2025 兒童時程表仍寫「1 劑以上 2024–25 疫苗」。此時官方立場仍是普遍接種。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2025.05.27–30</div>
+    <div class="cards">
+      <div class="card us"><div class="org">美國 HHS / CDC</div><p>HHS 宣布不再建議健康兒童與孕婦接種新冠疫苗。CDC 兒童時程改為：健康 6 個月–17 歲改「共享臨床決策（SCDM）」；中重度免疫低下兒童仍建議接種。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2025.06.12 / 10.01</div>
+    <div class="cards">
+      <div class="card tw"><div class="org">台灣</div><p>ACIP 明確轉向「風險族群導向」。114 年秋冬第一階段公費含「滿 6 個月至未滿 6 歲幼兒」（不限從未接種），高風險兒童另列。健康 6–18 歲非公費主體。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2025.09.18–19</div>
+    <div class="cards">
+      <div class="card us"><div class="org">美國 ACIP</div><p>投票把新冠疫苗從「全體建議」改為個人決策／SCDM（當時涵蓋更廣年齡）。健康兒童不再是 routine recommendation。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="phase">
+  <h2>2026｜WHO 出正式 position paper；台灣再收窄幼兒公費</h2>
+  <div class="row">
+    <div class="date">2026.03</div>
+    <div class="cards">
+      <div class="card who"><div class="org">WHO SAGE</div><p>後疫情常規架構底定：高風險族群每年至少 1 劑；健康兒童與青少年不常規再接種。唯一健康兒童例外：從未接種的 6–23 個月，且該國須有「顯著疾病負擔」。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2026.06.24 / 10.01</div>
+    <div class="cards">
+      <div class="card tw"><div class="org">台灣</div><p>ACIP：幼兒公費改為「從未接種之滿 6 個月–未滿 6 歲」。未滿 5 歲從未打過打 2 劑 XFG Moderna；5 歲未滿 6 歲 1 劑。健康 6–18 歲仍非公費。高風險兒童維持公費。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2026.07.31</div>
+    <div class="cards">
+      <div class="card who"><div class="org">WHO</div><p>正式《COVID-19 vaccines position paper》（WER 101:30）。寫明：健康兒少不是重症高風險；疫情後替他們接種公共衛生影響有限；不常規建議再接種。</p></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="date">2026.09（現行）</div>
+    <div class="cards">
+      <div class="card us"><div class="org">美國 CDC</div><p>2026–27：18 歲以上建議接種；6 個月–17 歲中重度免疫低下建議接種；其餘兒童為家長與醫師共享決策。AAP 另行建議全體 6–23 個月，以及特定風險／從未接種的 2–18 歲。</p></div>
+      <div class="card eu"><div class="org">歐盟</div><p>持續風險導向：兒童只在有重症危險因子時建議年度接種。ECDC 不發單一「全歐兒童必打」時程，由各國衛生部決定。</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="phase">
+  <h2>對照總表｜健康兒童現況（2026 年 9 月）</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>機構</th>
+        <th>健康 6–23 個月</th>
+        <th>健康 2–5 歲</th>
+        <th>健康 6–17 歲</th>
+        <th>免疫低下／高風險兒童</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>WHO</td>
+        <td>僅「從未接種 + 當地有顯著負擔」可考慮；不建議再接種</td>
+        <td>不常規建議</td>
+        <td>不常規建議再接種</td>
+        <td>6 個月起納入常規，每年至少 1 劑，最好 2 劑間隔約 6 個月</td>
+      </tr>
+      <tr>
+        <td>美國 CDC</td>
+        <td>共享決策，非全體建議</td>
+        <td>共享決策</td>
+        <td>共享決策</td>
+        <td>建議接種 2026–27 配方</td>
+      </tr>
+      <tr>
+        <td>美國 AAP（學會，非正式政府）</td>
+        <td>建議全體</td>
+        <td>限高風險、機構、從未接種、家中有高風險者</td>
+        <td>同左</td>
+        <td>建議</td>
+      </tr>
+      <tr>
+        <td>ECDC／多數歐盟國家</td>
+        <td>多數不建議健康幼兒常規打</td>
+        <td>多數不建議</td>
+        <td>多數不建議</td>
+        <td>建議年度接種</td>
+      </tr>
+      <tr>
+        <td>台灣疾管署（公費）</td>
+        <td>從未接種者公費（含到未滿 6 歲）</td>
+        <td>從未接種且未滿 6 歲公費</td>
+        <td>一般健康者非公費</td>
+        <td>滿 6 個月以上高風險公費</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<p class="note">
+  說明：ECDC 本身不制定具拘束力的「全歐兒童時程」，產品許可在 EMA，接種對象由各會員國決定。表中「歐盟」指 ECDC／EMA 聯合意見與多數會員國 2023 年後的實際走向。<br>
+  美國 2025–2026 年官方時程曾因 HHS／ACIP 改組、法院暫緩等出現來回，上表以 CDC 官網 2026 年 9 月臨床考量頁為準。<br>
+  整理日期：2026-09-27。
+</p>
+</body>
+</html>
